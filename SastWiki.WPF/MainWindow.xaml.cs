@@ -18,6 +18,8 @@ namespace SastWiki.WPF
             InitializeComponent();
         }
 
+        public bool IsDark { get; private set; } = false;
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
@@ -35,6 +37,18 @@ namespace SastWiki.WPF
                 new WindowInteropHelper(this).Handle,
                 DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE,
                 2
+            );
+
+            RefreshDarkMode();
+        }
+
+        private void RefreshDarkMode()
+        {
+            int flag = IsDark ? 1 : 0;
+            SetWindowAttribute(
+                new WindowInteropHelper(this).Handle,
+                DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE,
+                flag
             );
         }
     }
