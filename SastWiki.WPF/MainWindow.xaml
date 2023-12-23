@@ -8,6 +8,8 @@
     Title="SAST Wiki"
     Width="800"
     Height="450"
+    Background="Transparent"
+    Loaded="OnLoaded"
     mc:Ignorable="d">
     <Grid>
         <TextBlock Text="Hello SAST Wiki!" />
