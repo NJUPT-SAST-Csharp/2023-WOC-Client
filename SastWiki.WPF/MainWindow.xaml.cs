@@ -5,6 +5,8 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
+using SastWiki.WPF.Views.Pages;
+using Microsoft.Extensions.Hosting;
 
 namespace SastWiki.WPF
 {
@@ -19,6 +21,8 @@ namespace SastWiki.WPF
         }
 
         public bool IsDark { get; private set; } = false;
+
+        public int CurrentPage { get; private set; } = 0;
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -51,5 +55,14 @@ namespace SastWiki.WPF
                 flag
             );
         }
+
+        private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
+            ContentFrame.Navigate(App.GetService<HomePage>());
+
+        private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
+            ContentFrame.Navigate(App.GetService<BrowsePage>());
+
+        private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
+            ContentFrame.Navigate(App.GetService<SettingsPage>());
     }
 }
