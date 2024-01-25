@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
     <Folder Include="Styles\" />
   </ItemGroup>
 
