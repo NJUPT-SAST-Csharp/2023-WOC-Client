@@ -1,5 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Windows;
 
 namespace SastWiki.WPF
@@ -9,6 +9,6 @@ namespace SastWiki.WPF
     /// </summary>
     public partial class App : Application
     {
+        public void ConfigureServices(IServiceCollection services) { }
     }
-
 }
