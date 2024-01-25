@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF
 {
@@ -32,10 +33,16 @@ namespace SastWiki.WPF
                 .CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices(
-                    (context, services) => {
+                    (context, services) =>
+                    {
                         // Register Services
 
                         // Register ViewModels
+
+                        // Register Views
+                        services.AddSingleton<HomePage>();
+                        services.AddSingleton<BrowsePage>();
+                        services.AddSingleton<SettingsPage>();
                     }
                 )
                 .Build();

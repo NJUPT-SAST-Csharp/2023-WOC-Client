@@ -21,8 +21,14 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Content="Home" />
-            <Button Grid.Row="1" Content="Browse" />
+            <Button
+                Grid.Row="0"
+                Click="NavigateTo_HomePage"
+                Content="Home" />
+            <Button
+                Grid.Row="1"
+                Click="NavigateTo_BrowsePage"
+                Content="Browse" />
             <TextBox
                 Grid.Row="2"
                 VerticalContentAlignment="Center"
@@ -37,9 +43,12 @@
                     <TreeViewItem Header="测试层级" />
                 </TreeViewItem>
             </TreeView>
-            <Button Grid.Row="4" Content="Settings" />
+            <Button
+                Grid.Row="4"
+                Click="NavigateTo_SettingsPage"
+                Content="Settings" />
             <Button Grid.Row="5" Content="Username" />
         </Grid>
-        <Frame />
+        <Frame x:Name="ContentFrame" />
     </DockPanel>
 </Window>
