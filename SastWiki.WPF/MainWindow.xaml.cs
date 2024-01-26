@@ -7,6 +7,7 @@ using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
 using SastWiki.WPF.Views.Pages;
 using Microsoft.Extensions.Hosting;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF
 {
@@ -15,8 +16,11 @@ namespace SastWiki.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindowVM VM { get; }
+
+        public MainWindow(MainWindowVM mainWindowVM)
         {
+            VM = mainWindowVM;
             InitializeComponent();
         }
 

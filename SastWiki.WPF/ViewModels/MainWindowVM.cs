@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.ViewModels
 {
-    internal class MainWindowVM
-    {
-    }
+    public class MainWindowVM { }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System.Windows;
 using SastWiki.WPF.Views.Pages;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF
 {
@@ -37,7 +38,10 @@ namespace SastWiki.WPF
                     {
                         // Register Services
 
+
+                        services.AddSingleton<MainWindow>();
                         // Register ViewModels
+                        services.AddSingleton<MainWindowVM>();
 
                         // Register Views
                         services.AddSingleton<HomePage>();
@@ -46,6 +50,12 @@ namespace SastWiki.WPF
                     }
                 )
                 .Build();
+        }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            this.MainWindow = GetService<MainWindow>();
+            MainWindow.Show();
         }
     }
 }

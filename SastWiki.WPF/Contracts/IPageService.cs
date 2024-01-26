@@ -6,5 +6,11 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.Contracts
 {
-    internal interface INavigationService { }
+    /// <summary>
+    ///
+    /// </summary>
+    internal interface IPageService
+    {
+        Type GetPageType(string key);
+    }
 }
