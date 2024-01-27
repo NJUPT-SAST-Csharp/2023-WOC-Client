@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using System.Windows;
 using SastWiki.WPF.Views.Pages;
 using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Services;
 
 namespace SastWiki.WPF
 {
@@ -37,19 +39,29 @@ namespace SastWiki.WPF
                     (context, services) =>
                     {
                         // Register Services
+                        services.AddSingleton<IPageService, PageService>();
+                        services.AddSingleton<INavigationService, NavigationService>();
 
-
-                        services.AddSingleton<MainWindow>();
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
+                        services.AddSingleton<HomePageVM>();
+                        services.AddSingleton<BrowsePageVM>();
+                        services.AddSingleton<SettingsVM>();
 
                         // Register Views
+                        services.AddSingleton<MainWindow>();
                         services.AddSingleton<HomePage>();
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
                     }
                 )
                 .Build();
+
+            // Register Pages to PageService
+            var pageService = GetService<IPageService>();
+            pageService.Configure<HomePageVM, HomePage>();
+            pageService.Configure<BrowsePageVM, BrowsePage>();
+            pageService.Configure<SettingsVM, SettingsPage>();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

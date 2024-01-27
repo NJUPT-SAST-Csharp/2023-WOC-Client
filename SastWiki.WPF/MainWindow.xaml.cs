@@ -8,6 +8,7 @@ using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
 using SastWiki.WPF.Views.Pages;
 using Microsoft.Extensions.Hosting;
 using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Contracts;
 
 namespace SastWiki.WPF
 {
@@ -17,10 +18,12 @@ namespace SastWiki.WPF
     public partial class MainWindow : Window
     {
         public MainWindowVM VM { get; }
+        private INavigationService _navigationService;
 
-        public MainWindow(MainWindowVM mainWindowVM)
+        public MainWindow(MainWindowVM mainWindowVM, INavigationService navigationService)
         {
             VM = mainWindowVM;
+            _navigationService = navigationService;
             InitializeComponent();
         }
 
