@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.Contracts
 {
-    internal interface INavigationService
+    public interface INavigationService
     {
+        public bool NavigateTo(string pageKey, object? parameters = null);
+
+        public bool NavigateBackward();
+
+        public bool NavigateForward();
     }
 }
