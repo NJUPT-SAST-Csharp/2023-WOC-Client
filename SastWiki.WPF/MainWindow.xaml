@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:SastWiki.WPF.ViewModels"
     Title="SAST Wiki"
     Width="800"
     Height="450"
@@ -30,9 +31,13 @@
                 Click="NavigateTo_BrowsePage"
                 Content="Browse" />
             <TextBox
+                x:Name="SearchBox"
                 Grid.Row="2"
                 VerticalContentAlignment="Center"
-                Cursor="IBeam" />
+                Cursor="IBeam"
+                PreviewKeyUp="SearchBox_KeyUp"
+                Text="Search" />
+
             <TreeView Grid.Row="3">
                 <TreeViewItem Header="测试用数据">
                     <TreeViewItem Header="测试层级" />

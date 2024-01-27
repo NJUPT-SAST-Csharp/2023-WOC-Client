@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -7,6 +7,9 @@ using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
 using SastWiki.WPF.Views.Pages;
 using Microsoft.Extensions.Hosting;
+using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Contracts;
+using System.Windows.Input;
 
 namespace SastWiki.WPF
 {
@@ -15,8 +18,13 @@ namespace SastWiki.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindowVM VM { get; }
+        private INavigationService _navigationService;
+
+        public MainWindow(MainWindowVM mainWindowVM, INavigationService navigationService)
         {
+            VM = mainWindowVM;
+            _navigationService = navigationService;
             InitializeComponent();
         }
 
@@ -57,12 +65,20 @@ namespace SastWiki.WPF
         }
 
         private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<HomePage>());
+            _navigationService.NavigateTo(App.GetService<HomePage>());
 
         private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<BrowsePage>());
+            _navigationService.NavigateTo(App.GetService<BrowsePage>());
 
         private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<SettingsPage>());
+            _navigationService.NavigateTo(App.GetService<SettingsPage>());
+
+        private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBox.Text);
+            }
+        }
     }
 }

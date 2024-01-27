@@ -1,4 +1,5 @@
-﻿using System;
+using SastWiki.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +21,9 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class SearchResultPage : Page
     {
-        public SearchResultPage()
+        public SearchResultPage(SearchResultVM searchResultVM)
         {
+            this.DataContext = searchResultVM;
             InitializeComponent();
         }
     }

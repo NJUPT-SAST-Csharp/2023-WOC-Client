@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public class MainWindowVM : ObservableObject, INavigationAware
+    internal class BrowsePageVM : ObservableObject, INavigationAware
     {
         bool INavigationAware.OnNavigatedFrom()
         {
@@ -17,6 +18,7 @@ namespace SastWiki.WPF.ViewModels
 
         bool INavigationAware.OnNavigatedTo<T>(T parameters)
         {
+            MessageBox.Show("OnNavigatedTo");
             return true;
         }
     }
