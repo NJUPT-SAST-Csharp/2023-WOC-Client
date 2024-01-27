@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.Contracts
 {
-    internal interface INavigationAware
+    public interface INavigationAware
     {
-        public bool OnNavigatedTo(object? parameters = null);
+        public bool OnNavigatedTo<T>(T parameters);
         public bool OnNavigatedFrom();
     }
 }

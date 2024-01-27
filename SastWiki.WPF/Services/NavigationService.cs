@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Printing;
 using System.Reflection.Metadata;
@@ -19,8 +20,8 @@ namespace SastWiki.WPF.Services
     internal class NavigationService : INavigationService
     {
         private Frame? _frame;
-        private readonly IPageService _pageService;
         private object? _currentParameters;
+        private INavigationAware? _currentVM;
         public Frame? Frame
         {
             get
@@ -36,10 +37,7 @@ namespace SastWiki.WPF.Services
             set { _frame = value; }
         }
 
-        public NavigationService(IPageService pageService)
-        {
-            _pageService = pageService;
-        }
+        public NavigationService() { }
 
         bool INavigationService.NavigateBackward()
         {
@@ -51,30 +49,54 @@ namespace SastWiki.WPF.Services
             throw new NotImplementedException();
         }
 
-        bool INavigationService.NavigateTo(string pageKey, object? parameter)
+        public bool NavigateTo(Page page)
         {
-            var pageType = _pageService.GetPageType(pageKey); // 从PageService中获取要跳转的页面的类型
-
             if (
-                Frame is Frame frame
-                && (
-                    frame.Content?.GetType() != pageType // 如果当前页面与要跳转的页面不是同一个页面
-                    || (parameter != null && !parameter.Equals(_currentParameters)) // 或者当前页面的参数与要跳转的参数不相同
-                )
+                Frame is Frame frame && _currentVM?.GetType() != page.GetType() // 应该避免不了了，开摆
             )
             {
-                var vmBeforeNavigation = frame.Content
-                    ?.GetType()
-                    .GetProperty("DataContext")
-                    ?.GetValue(frame.Content, null); // 借助反射获取跳转前页面的ViewModel，接下来要调用其OnNavigatedFrom方法
-                var navigated = frame.Navigate(App.GetService(pageType), parameter); // 则跳转
+                var navigated = frame.Navigate(page);
 
                 if (navigated)
                 {
-                    _currentParameters = parameter;
-                    if (vmBeforeNavigation is INavigationAware navigationAware)
+                    if (_currentVM is INavigationAware old_viewmodel)
                     {
-                        navigationAware.OnNavigatedFrom();
+                        old_viewmodel.OnNavigatedFrom();
+                    }
+                    _currentParameters = null;
+                    if (page.DataContext is INavigationAware new_viewmodel)
+                    {
+                        _currentVM = new_viewmodel;
+                    }
+                }
+
+                return navigated;
+            }
+            return false;
+        }
+
+        public bool NavigateTo<T>(Page page, T parameter)
+        {
+            if (
+                Frame is Frame frame
+                && (
+                    _currentVM?.GetType() != page.GetType()
+                    || parameter != null && !parameter.Equals(_currentParameters)
+                )
+            )
+            {
+                var navigated = frame.Navigate(page, parameter);
+
+                if (navigated)
+                {
+                    if (_currentVM is INavigationAware old_viewmodel)
+                    {
+                        old_viewmodel.OnNavigatedFrom();
+                    }
+                    _currentParameters = parameter;
+                    if (page.DataContext is INavigationAware new_viewmodel)
+                    {
+                        _currentVM = new_viewmodel;
                     }
                 }
 
@@ -86,20 +108,9 @@ namespace SastWiki.WPF.Services
 
         private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            if (sender is Frame frame)
+            if (sender is Frame frame && _currentVM is INavigationAware navigationAware)
             {
-                if (
-                    frame.Content
-                        ?.GetType()
-                        .GetProperty("DataContext")
-                        ?.GetValue(frame.Content, null)
-                    is INavigationAware navigationAware
-                )
-                {
-                    navigationAware.OnNavigatedTo(e.ExtraData);
-                }
-
-                // Navigated?.Invoke(sender, e);
+                navigationAware.OnNavigatedTo(e.ExtraData);
             }
         }
     }
