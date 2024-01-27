@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.ViewModels
 {
+
     public class MainWindowVM : ObservableObject, INavigationAware
     {
         bool INavigationAware.OnNavigatedFrom()

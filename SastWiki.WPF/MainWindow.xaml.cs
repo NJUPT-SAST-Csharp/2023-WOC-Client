@@ -11,7 +11,6 @@ using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using System.Windows.Input;
 
-
 namespace SastWiki.WPF
 {
     /// <summary>
@@ -66,6 +65,7 @@ namespace SastWiki.WPF
         }
 
         private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
+
             _navigationService.NavigateTo(typeof(HomePageVM).FullName!);
 
         private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
@@ -82,6 +82,5 @@ namespace SastWiki.WPF
                 return;
             }
         }
-
     }
 }
