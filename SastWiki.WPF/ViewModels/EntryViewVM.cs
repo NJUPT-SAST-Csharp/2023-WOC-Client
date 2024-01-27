@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
@@ -20,4 +20,5 @@ namespace SastWiki.WPF.ViewModels
             return true;
         }
     }
+
 }

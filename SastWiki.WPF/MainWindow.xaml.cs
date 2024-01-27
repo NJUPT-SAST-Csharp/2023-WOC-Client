@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using System.Windows.Input;
+
 
 namespace SastWiki.WPF
 {
@@ -81,5 +82,6 @@ namespace SastWiki.WPF
                 return;
             }
         }
+
     }
 }
