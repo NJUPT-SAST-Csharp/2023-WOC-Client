@@ -9,6 +9,7 @@ using SastWiki.WPF.Views.Pages;
 using Microsoft.Extensions.Hosting;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
+using System.Windows.Input;
 
 namespace SastWiki.WPF
 {
@@ -64,12 +65,21 @@ namespace SastWiki.WPF
         }
 
         private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<HomePage>());
+            _navigationService.NavigateTo(typeof(HomePageVM).FullName!);
 
         private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<BrowsePage>());
+            _navigationService.NavigateTo(typeof(BrowsePageVM).FullName!);
 
         private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
-            ContentFrame.Navigate(App.GetService<SettingsPage>());
+            _navigationService.NavigateTo(typeof(SettingsVM).FullName!);
+
+        private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                _navigationService.NavigateTo(typeof(SearchResultVM).FullName!, SearchBox.Text);
+                return;
+            }
+        }
     }
 }

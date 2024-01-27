@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using SastWiki.WPF;
@@ -26,6 +28,7 @@ namespace SastWiki.WPF.Services
                 if (_frame == null)
                 {
                     _frame = App.GetService<MainWindow>().ContentFrame;
+                    _frame.Navigated += OnNavigated;
                 }
 
                 return _frame;
@@ -62,9 +65,9 @@ namespace SastWiki.WPF.Services
             {
                 var vmBeforeNavigation = frame.Content
                     ?.GetType()
-                    .GetProperty("ViewModel")
+                    .GetProperty("DataContext")
                     ?.GetValue(frame.Content, null); // 借助反射获取跳转前页面的ViewModel，接下来要调用其OnNavigatedFrom方法
-                var navigated = frame.Navigate(pageType, parameter); // 则跳转
+                var navigated = frame.Navigate(App.GetService(pageType), parameter); // 则跳转
 
                 if (navigated)
                 {
@@ -86,7 +89,10 @@ namespace SastWiki.WPF.Services
             if (sender is Frame frame)
             {
                 if (
-                    frame.Content?.GetType().GetProperty("ViewModel")?.GetValue(frame.Content, null)
+                    frame.Content
+                        ?.GetType()
+                        .GetProperty("DataContext")
+                        ?.GetValue(frame.Content, null)
                     is INavigationAware navigationAware
                 )
                 {

@@ -28,6 +28,18 @@ namespace SastWiki.WPF
             return service;
         }
 
+        public static object GetService(Type type)
+        {
+            if ((App.Current as App)!.Host.Services.GetService(type) is not object service)
+            {
+                throw new ArgumentException(
+                    $"{type} needs to be registered in ConfigureServices within App.xaml.cs."
+                );
+            }
+
+            return service;
+        }
+
         public App()
         {
             InitializeComponent();
@@ -47,12 +59,14 @@ namespace SastWiki.WPF
                         services.AddSingleton<HomePageVM>();
                         services.AddSingleton<BrowsePageVM>();
                         services.AddSingleton<SettingsVM>();
+                        services.AddTransient<SearchResultVM>();
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
                         services.AddSingleton<HomePage>();
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
+                        services.AddTransient<SearchResultPage>();
                     }
                 )
                 .Build();
@@ -62,6 +76,7 @@ namespace SastWiki.WPF
             pageService.Configure<HomePageVM, HomePage>();
             pageService.Configure<BrowsePageVM, BrowsePage>();
             pageService.Configure<SettingsVM, SettingsPage>();
+            pageService.Configure<SearchResultVM, SearchResultPage>();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

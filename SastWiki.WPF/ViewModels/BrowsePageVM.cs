@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -17,6 +18,7 @@ namespace SastWiki.WPF.ViewModels
 
         bool INavigationAware.OnNavigatedTo(object? parameters)
         {
+            MessageBox.Show("OnNavigatedTo");
             return true;
         }
     }
