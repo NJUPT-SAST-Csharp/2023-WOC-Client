@@ -6,7 +6,6 @@ using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
 
-
 namespace SastWiki.WPF
 {
     /// <summary>
@@ -61,6 +60,7 @@ namespace SastWiki.WPF
                         services.AddSingleton<BrowsePageVM>();
                         services.AddSingleton<SettingsVM>();
                         services.AddTransient<SearchResultVM>();
+                        services.AddTransient<EntryViewVM>();
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
@@ -68,6 +68,7 @@ namespace SastWiki.WPF
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
                         services.AddTransient<SearchResultPage>();
+                        services.AddTransient<EntryViewPage>();
                     }
                 )
                 .Build();
@@ -78,6 +79,7 @@ namespace SastWiki.WPF
             pageService.Configure<BrowsePageVM, BrowsePage>();
             pageService.Configure<SettingsVM, SettingsPage>();
             pageService.Configure<SearchResultVM, SearchResultPage>();
+            pageService.Configure<EntryViewVM, EntryViewPage>();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

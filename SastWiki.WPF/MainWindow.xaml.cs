@@ -11,7 +11,6 @@ using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using System.Windows.Input;
 
-
 namespace SastWiki.WPF
 {
     /// <summary>
@@ -74,6 +73,9 @@ namespace SastWiki.WPF
         private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
             _navigationService.NavigateTo(typeof(SettingsVM).FullName!);
 
+        private void NavigateTo_TestWebview2(object sender, RoutedEventArgs e) =>
+            _navigationService.NavigateTo(typeof(EntryViewVM).FullName!);
+
         private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -82,6 +84,5 @@ namespace SastWiki.WPF
                 return;
             }
         }
-
     }
 }
