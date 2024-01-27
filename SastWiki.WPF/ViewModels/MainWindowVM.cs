@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.ViewModels
 {
-
     public class MainWindowVM : ObservableObject, INavigationAware
     {
         bool INavigationAware.OnNavigatedFrom()
@@ -16,7 +15,7 @@ namespace SastWiki.WPF.ViewModels
             return true;
         }
 
-        bool INavigationAware.OnNavigatedTo(object? parameters)
+        bool INavigationAware.OnNavigatedTo<T>(T parameters)
         {
             return true;
         }
