@@ -65,7 +65,6 @@ namespace SastWiki.WPF
         }
 
         private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
-
             _navigationService.NavigateTo(typeof(HomePageVM).FullName!);
 
         private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
