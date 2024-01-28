@@ -24,7 +24,7 @@ namespace SastWiki.WPF.ViewModels
             return true;
         }
 
-        bool INavigationAware.OnNavigatedTo(object? parameters)
+        bool INavigationAware.OnNavigatedTo<T>(T parameters)
         {
             // MessageBox.Show("OnNavigatedTo");
             if (parameters is string s)
