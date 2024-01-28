@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace SastWiki.WPF.ViewModels
 {
-    internal class EntryViewVM : ObservableObject, INavigationAware
+    public partial class EntryViewVM : ObservableObject, INavigationAware
     {
+        [ObservableProperty]
+        private string _url = string.Empty;
+
         bool INavigationAware.OnNavigatedFrom()
         {
             return true;
@@ -17,7 +20,12 @@ namespace SastWiki.WPF.ViewModels
 
         bool INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            return true;
+            if (parameters is string url)
+            {
+                Url = url;
+                return true;
+            }
+            return false;
         }
     }
 }

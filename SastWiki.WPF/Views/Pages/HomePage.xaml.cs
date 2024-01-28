@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SastWiki.WPF.Contracts;
+using SastWiki.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,8 +22,9 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class HomePage : Page
     {
-        public HomePage()
+        public HomePage(HomePageVM ViewModel)
         {
+            this.DataContext = ViewModel;
             InitializeComponent();
         }
     }

@@ -5,12 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels"
     Title="HomePage"
+    d:DataContext="{d:DesignInstance Type=viewmodels:HomePageVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    <Grid>
+    <StackPanel>
         <TextBlock>Home Page</TextBlock>
-    </Grid>
+        <Button Command="{Binding TestWebView2_Click}">测试 条目阅读页面</Button>
+    </StackPanel>
 </Page>
