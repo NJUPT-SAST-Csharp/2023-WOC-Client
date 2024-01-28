@@ -1,4 +1,5 @@
 ﻿using SastWiki.WPF.Contracts;
+using SastWiki.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,20 +22,10 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class HomePage : Page
     {
-        private INavigationService _navigationService;
-
-        public HomePage(INavigationService navigationSevice)
+        public HomePage(HomePageVM ViewModel)
         {
-            _navigationService = navigationSevice;
+            this.DataContext = ViewModel;
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            _navigationService.NavigateTo(
-                App.GetService<EntryViewPage>(),
-                "https://wiki.sast.fun/"
-            );
         }
     }
 }
