@@ -73,9 +73,6 @@ namespace SastWiki.WPF
         private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
             _navigationService.NavigateTo(App.GetService<SettingsPage>());
 
-        private void NavigateTo_TestWebview2(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(typeof(EntryViewVM).FullName!);
-
         private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)

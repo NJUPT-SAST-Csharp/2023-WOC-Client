@@ -10,7 +10,8 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    <Grid>
+    <StackPanel>
         <TextBlock>Home Page</TextBlock>
-    </Grid>
+        <Button Click="Button_Click">测试 条目阅读页面</Button>
+    </StackPanel>
 </Page>

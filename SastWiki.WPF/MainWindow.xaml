@@ -52,7 +52,7 @@
                 Grid.Row="4"
                 Click="NavigateTo_SettingsPage"
                 Content="Settings" />
-            <Button Grid.Row="5" Content="Test of Webview2" Click="NavigateTo_TestWebview2" />
+            <Button Grid.Row="5" Content="Username" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>
