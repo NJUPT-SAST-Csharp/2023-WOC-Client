@@ -61,7 +61,7 @@ namespace SastWiki.WPF.Services
                 {
                     if (_currentVM is INavigationAware old_viewmodel)
                     {
-                        old_viewmodel.OnNavigatedFrom();
+                        old_viewmodel.OnNavigatedFrom().Wait();
                     }
                     _currentParameters = null;
                     if (page.DataContext is INavigationAware new_viewmodel)
@@ -91,7 +91,7 @@ namespace SastWiki.WPF.Services
                 {
                     if (_currentVM is INavigationAware old_viewmodel)
                     {
-                        old_viewmodel.OnNavigatedFrom();
+                        old_viewmodel.OnNavigatedFrom().Wait();
                     }
                     _currentParameters = parameter;
                     if (page.DataContext is INavigationAware new_viewmodel)
@@ -106,11 +106,11 @@ namespace SastWiki.WPF.Services
             return false;
         }
 
-        private void OnNavigated(object sender, NavigationEventArgs e)
+        private async void OnNavigated(object sender, NavigationEventArgs e)
         {
             if (sender is Frame frame && _currentVM is INavigationAware navigationAware)
             {
-                navigationAware.OnNavigatedTo(e.ExtraData);
+                await navigationAware.OnNavigatedTo(e.ExtraData);
             }
         }
     }

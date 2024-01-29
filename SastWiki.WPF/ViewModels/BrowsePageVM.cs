@@ -11,15 +11,15 @@ namespace SastWiki.WPF.ViewModels
 {
     internal class BrowsePageVM : ObservableObject, INavigationAware
     {
-        bool INavigationAware.OnNavigatedFrom()
+        Task<bool> INavigationAware.OnNavigatedFrom()
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        bool INavigationAware.OnNavigatedTo<T>(T parameters)
+        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
             MessageBox.Show("OnNavigatedTo");
-            return true;
+            return Task.FromResult(true);
         }
     }
 }
