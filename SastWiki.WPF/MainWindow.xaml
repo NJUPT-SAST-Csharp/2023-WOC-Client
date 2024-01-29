@@ -5,14 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:SastWiki.WPF.ViewModels"
     Title="SAST Wiki"
     Width="800"
     Height="450"
-    Background="Transparent"
+    Background="{DynamicResource Gray}"
     Loaded="OnLoaded"
     mc:Ignorable="d">
-    <DockPanel>
+    <DockPanel Background="{DynamicResource Gray}">
         <Grid Width="130" DockPanel.Dock="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
@@ -38,7 +37,7 @@
                 PreviewKeyUp="SearchBox_KeyUp"
                 Text="Search" />
 
-            <TreeView Grid.Row="3">
+            <TreeView Grid.Row="3" Background="{DynamicResource Gray}">
                 <TreeViewItem Header="测试用数据">
                     <TreeViewItem Header="测试层级" />
                     <TreeViewItem Header="测试层级" />
@@ -53,6 +52,7 @@
                 Click="NavigateTo_SettingsPage"
                 Content="Settings" />
             <Button Grid.Row="5" Content="Username" />
+
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>

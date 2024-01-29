@@ -5,6 +5,7 @@ using SastWiki.WPF.Views.Pages;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
+using Prism.Ioc;
 
 namespace SastWiki.WPF
 {
