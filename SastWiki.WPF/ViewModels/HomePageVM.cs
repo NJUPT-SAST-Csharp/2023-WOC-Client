@@ -12,20 +12,11 @@ using System.Windows.Input;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public class HomePageVM : ObservableObject, INavigationAware
+    public partial class HomePageVM : ObservableObject, INavigationAware
     {
-        private INavigationService _navigationService;
-
-        public HomePageVM(INavigationService navigationSevice)
-        {
-            _navigationService = navigationSevice;
-        }
-
-        private void TestWebview2()
-        {
-            _navigationService.NavigateTo(
-                App.GetService<EntryViewPage>(),
-                @"
+        [ObservableProperty]
+        private string _markdown_text =
+            @"
 # Markdown Renderer Test
 
 This is a **paragraph** !
@@ -58,8 +49,18 @@ This is a numbered list:
 2. Item 2
 
 3. Item 3
-                "
-            );
+";
+
+        private INavigationService _navigationService;
+
+        public HomePageVM(INavigationService navigationSevice)
+        {
+            _navigationService = navigationSevice;
+        }
+
+        private void TestWebview2()
+        {
+            _navigationService.NavigateTo(App.GetService<EntryViewPage>(), Markdown_text);
         }
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);
