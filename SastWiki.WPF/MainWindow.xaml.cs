@@ -64,20 +64,23 @@ namespace SastWiki.WPF
             );
         }
 
-        private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<HomePage>());
+        private async void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
+            await _navigationService.NavigateTo(App.GetService<HomePage>());
 
-        private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<BrowsePage>());
+        private async void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
+            await _navigationService.NavigateTo(App.GetService<BrowsePage>());
 
-        private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<SettingsPage>());
+        private async void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
+            await _navigationService.NavigateTo(App.GetService<SettingsPage>());
 
-        private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBox.Text);
+                await _navigationService.NavigateTo(
+                    App.GetService<SearchResultPage>(),
+                    SearchBox.Text
+                );
             }
         }
     }

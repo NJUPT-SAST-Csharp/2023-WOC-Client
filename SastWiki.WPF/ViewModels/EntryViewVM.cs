@@ -13,19 +13,19 @@ namespace SastWiki.WPF.ViewModels
         [ObservableProperty]
         private string _url = string.Empty;
 
-        bool INavigationAware.OnNavigatedFrom()
+        Task<bool> INavigationAware.OnNavigatedFrom()
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        bool INavigationAware.OnNavigatedTo<T>(T parameters)
+        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
             if (parameters is string url)
             {
                 Url = url;
-                return true;
+                return Task.FromResult(true);
             }
-            return false;
+            return Task.FromResult(false);
         }
     }
 }
