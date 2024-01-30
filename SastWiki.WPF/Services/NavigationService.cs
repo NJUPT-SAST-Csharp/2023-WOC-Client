@@ -39,17 +39,17 @@ namespace SastWiki.WPF.Services
 
         public NavigationService() { }
 
-        bool INavigationService.NavigateBackward()
+        Task<bool> INavigationService.NavigateBackward()
         {
             throw new NotImplementedException();
         }
 
-        bool INavigationService.NavigateForward()
+        Task<bool> INavigationService.NavigateForward()
         {
             throw new NotImplementedException();
         }
 
-        public bool NavigateTo(Page page)
+        public async Task<bool> NavigateTo(Page page)
         {
             if (
                 Frame is Frame frame && _currentVM?.GetType() != page.GetType() // 应该避免不了了，开摆
@@ -61,7 +61,7 @@ namespace SastWiki.WPF.Services
                 {
                     if (_currentVM is INavigationAware old_viewmodel)
                     {
-                        old_viewmodel.OnNavigatedFrom().Wait();
+                        await old_viewmodel.OnNavigatedFrom();
                     }
                     _currentParameters = null;
                     if (page.DataContext is INavigationAware new_viewmodel)
@@ -75,7 +75,7 @@ namespace SastWiki.WPF.Services
             return false;
         }
 
-        public bool NavigateTo<T>(Page page, T parameter)
+        public async Task<bool> NavigateTo<T>(Page page, T parameter)
         {
             if (
                 Frame is Frame frame
@@ -91,7 +91,7 @@ namespace SastWiki.WPF.Services
                 {
                     if (_currentVM is INavigationAware old_viewmodel)
                     {
-                        old_viewmodel.OnNavigatedFrom().Wait();
+                        await old_viewmodel.OnNavigatedFrom();
                     }
                     _currentParameters = parameter;
                     if (page.DataContext is INavigationAware new_viewmodel)
@@ -106,11 +106,11 @@ namespace SastWiki.WPF.Services
             return false;
         }
 
-        private async void OnNavigated(object sender, NavigationEventArgs e)
+        private void OnNavigated(object sender, NavigationEventArgs e) // TODO: 是否需要把这玩意换成异步？
         {
             if (sender is Frame frame && _currentVM is INavigationAware navigationAware)
             {
-                await navigationAware.OnNavigatedTo(e.ExtraData);
+                navigationAware.OnNavigatedTo(e.ExtraData);
             }
         }
     }
