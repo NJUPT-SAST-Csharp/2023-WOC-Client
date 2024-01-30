@@ -25,7 +25,40 @@ namespace SastWiki.WPF.ViewModels
         {
             _navigationService.NavigateTo(
                 App.GetService<EntryViewPage>(),
-                "https://wiki.sast.fun/"
+                @"
+# Markdown Renderer Test
+
+This is a **paragraph** !
+
+---
+
+## This is a heading 2
+
+### This is a heading 3
+
+#### This is a heading 4
+
+##### This is a heading 5
+
+This is a paragraph with a [link](https://www.google.com) in it.
+
+This is a List:
+- Item 1
+
+- Item 2
+
+    - Sub Item
+
+- Item 3
+
+This is a numbered list:
+
+1. Item 1
+
+2. Item 2
+
+3. Item 3
+                "
             );
         }
 

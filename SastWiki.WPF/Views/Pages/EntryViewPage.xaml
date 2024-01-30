@@ -14,6 +14,6 @@
     mc:Ignorable="d">
 
     <Grid>
-        <wv2:WebView2 Name="webView" />
+        <wv2:WebView2 Name="WebView" />
     </Grid>
 </Page>
