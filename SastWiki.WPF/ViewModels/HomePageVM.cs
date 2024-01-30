@@ -12,8 +12,45 @@ using System.Windows.Input;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public class HomePageVM : ObservableObject, INavigationAware
+    public partial class HomePageVM : ObservableObject, INavigationAware
     {
+        [ObservableProperty]
+        private string _markdown_text =
+            @"
+# Markdown Renderer Test
+
+This is a **paragraph** !
+
+---
+
+## This is a heading 2
+
+### This is a heading 3
+
+#### This is a heading 4
+
+##### This is a heading 5
+
+This is a paragraph with a [link](https://www.google.com) in it.
+
+This is a List:
+- Item 1
+
+- Item 2
+
+    - Sub Item
+
+- Item 3
+
+This is a numbered list:
+
+1. Item 1
+
+2. Item 2
+
+3. Item 3
+";
+
         private INavigationService _navigationService;
 
         public HomePageVM(INavigationService navigationSevice)
@@ -23,10 +60,7 @@ namespace SastWiki.WPF.ViewModels
 
         private void TestWebview2()
         {
-            _navigationService.NavigateTo(
-                App.GetService<EntryViewPage>(),
-                "https://wiki.sast.fun/"
-            );
+            _navigationService.NavigateTo(App.GetService<EntryViewPage>(), Markdown_text);
         }
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);

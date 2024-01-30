@@ -25,6 +25,7 @@ namespace SastWiki.WPF.Views.Pages
         {
             this.DataContext = ViewModel;
             InitializeComponent();
+            ViewModel.WebView = WebView;
         }
     }
 }

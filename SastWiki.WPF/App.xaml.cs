@@ -52,6 +52,7 @@ namespace SastWiki.WPF
                     {
                         // Register Services
                         services.AddSingleton<INavigationService, NavigationService>();
+                        services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
 
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
