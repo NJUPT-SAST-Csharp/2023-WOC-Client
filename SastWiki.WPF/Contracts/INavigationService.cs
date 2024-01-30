@@ -9,12 +9,12 @@ namespace SastWiki.WPF.Contracts
 {
     public interface INavigationService
     {
-        public bool NavigateTo<T>(Page page, T parameter);
+        public Task<bool> NavigateTo<T>(Page page, T parameter);
 
-        public bool NavigateTo(Page page);
+        public Task<bool> NavigateTo(Page page);
 
-        public bool NavigateBackward();
+        public Task<bool> NavigateBackward();
 
-        public bool NavigateForward();
+        public Task<bool> NavigateForward();
     }
 }

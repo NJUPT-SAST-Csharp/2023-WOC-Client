@@ -8,7 +8,7 @@ namespace SastWiki.WPF.Contracts
 {
     public interface INavigationAware
     {
-        public bool OnNavigatedTo<T>(T parameters);
-        public bool OnNavigatedFrom();
+        public Task<bool> OnNavigatedTo<T>(T parameters);
+        public Task<bool> OnNavigatedFrom();
     }
 }

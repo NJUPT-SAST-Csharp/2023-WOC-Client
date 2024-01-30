@@ -31,14 +31,14 @@ namespace SastWiki.WPF.ViewModels
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);
 
-        bool INavigationAware.OnNavigatedFrom()
+        Task<bool> INavigationAware.OnNavigatedFrom()
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        bool INavigationAware.OnNavigatedTo<T>(T parameters)
+        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }
