@@ -11,7 +11,7 @@ namespace SastWiki.WPF.ViewModels
     public partial class EntryViewVM : ObservableObject, INavigationAware
     {
         [ObservableProperty]
-        private string _url = string.Empty;
+        private string _markdown_text = String.Empty;
 
         Task<bool> INavigationAware.OnNavigatedFrom()
         {
@@ -20,9 +20,9 @@ namespace SastWiki.WPF.ViewModels
 
         Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            if (parameters is string url)
+            if (parameters is string markdown_text)
             {
-                Url = url;
+                Markdown_text = markdown_text;
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
