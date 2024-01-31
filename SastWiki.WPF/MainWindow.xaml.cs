@@ -72,6 +72,12 @@ namespace SastWiki.WPF
 
         private async void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
             await _navigationService.NavigateTo(App.GetService<SettingsPage>());
+        private void NavigateToUsernamePage_Click(object sender, RoutedEventArgs e)
+        {
+
+            UsernameWindow usernameWindow = new UsernameWindow();
+            usernameWindow.ShowDialog();
+        }
 
         private async void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
