@@ -27,6 +27,7 @@ namespace SastWiki.WPF.ViewModels
                 if (value is not null)
                 {
                     _webview = value;
+                    _webview.NavigationStarting += WebView_NavigationStarting;
                     PropertyChanged += LoadMarkdownDoc;
                     _webview
                         .EnsureCoreWebView2Async()
@@ -47,6 +48,14 @@ namespace SastWiki.WPF.ViewModels
         public EntryViewVM(IMarkdownProcessor markdownProcessor)
         {
             _markdownProcessor = markdownProcessor;
+        }
+
+        private void WebView_NavigationStarting(
+            object? sender,
+            CoreWebView2NavigationStartingEventArgs e
+        )
+        {
+            MessageBox.Show(e.Uri);
         }
 
         async void LoadMarkdownDoc(object? sender, PropertyChangedEventArgs e)
