@@ -52,7 +52,9 @@
                 Grid.Row="4"
                 Click="NavigateTo_SettingsPage"
                 Content="Settings" />
-            <Button Grid.Row="5" Content="Username" />
+            <Button Grid.Row="5" 
+                    Content="Username" 
+                    Click="NavigateToUsernamePage_Click"/>
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>

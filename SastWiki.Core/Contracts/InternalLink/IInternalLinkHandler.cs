@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SastWiki.Core.Contracts.User
+namespace SastWiki.Core.Contracts.InternalLink
 {
-    internal interface ILoginStatusProvider
+    public interface IInternalLinkHandler
     {
-
+        public void Trigger(Uri ilink);
     }
 }

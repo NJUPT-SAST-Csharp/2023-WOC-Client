@@ -5,6 +5,10 @@ using SastWiki.WPF.Views.Pages;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
+using SastWiki.Core.Contracts;
+using SastWiki.Core.Services;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Services.InternalLink;
 
 namespace SastWiki.WPF
 {
@@ -53,6 +57,10 @@ namespace SastWiki.WPF
                         // Register Services
                         services.AddSingleton<INavigationService, NavigationService>();
                         services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
+                        services.AddSingleton<IInternalLinkService, InternalLinkService>();
+                        services.AddSingleton<IInternalLinkHandler, InternalLinkHandler>();
+                        services.AddSingleton<IInternalLinkValidator, InternalLinkValidator>();
+                        services.AddSingleton<IInternalLinkCreator, InternalLinkCreator>();
 
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
@@ -72,6 +80,29 @@ namespace SastWiki.WPF
                     }
                 )
                 .Build();
+
+            // Register Internal Links
+            var internalLinkService = GetService<IInternalLinkService>();
+            internalLinkService.Register(
+                "/Home",
+                (sender, e) =>
+                {
+                    var navigationService = GetService<INavigationService>();
+                    navigationService.NavigateTo(GetService<HomePage>());
+                }
+            );
+
+            internalLinkService.Register(
+                "/Entry",
+                (sender, e) =>
+                {
+                    if (int.TryParse(e["id"], out var id))
+                    {
+                        var navigationService = GetService<INavigationService>();
+                        navigationService.NavigateTo(GetService<EntryViewPage>(), id.ToString());
+                    }
+                }
+            );
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
