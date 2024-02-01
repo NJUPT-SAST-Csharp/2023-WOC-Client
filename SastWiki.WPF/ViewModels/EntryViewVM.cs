@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using SastWiki.Core.Models;
 using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Web;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -55,7 +58,17 @@ namespace SastWiki.WPF.ViewModels
             CoreWebView2NavigationStartingEventArgs e
         )
         {
-            MessageBox.Show(e.Uri);
+            if (e.IsUserInitiated)
+            {
+                if (InternalLink.TryParse(e.Uri))
+                {
+                    InternalLink ilink = new(e.Uri);
+                    MessageBox.Show(
+                        $"Internal Link! Path is {ilink.Path}, Query is {System.Web.HttpUtility.UrlDecode(ilink.Query[1..])}" // TODO: Ô½½ç¾¯¸æ
+                    );
+                    e.Cancel = true;
+                }
+            }
         }
 
         async void LoadMarkdownDoc(object? sender, PropertyChangedEventArgs e)

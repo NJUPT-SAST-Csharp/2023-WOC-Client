@@ -33,7 +33,7 @@ This is a **paragraph** !
 
 This is a paragraph with a [external link](https://www.google.com) in it.
 
-This is a paragraph with a [internal link](wiki://entry/114514) in it.
+This is a paragraph with a [internal link](wiki://sast-wiki/Entry?114514) in it.
 
 This is a List:
 - Item 1
