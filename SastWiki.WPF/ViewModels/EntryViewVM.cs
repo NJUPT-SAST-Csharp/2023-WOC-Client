@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-using SastWiki.Core.Models;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 using System;
@@ -14,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Web;
+using SastWiki.Core.Contracts.InternalLink;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -58,16 +58,16 @@ namespace SastWiki.WPF.ViewModels
             CoreWebView2NavigationStartingEventArgs e
         )
         {
-            if (e.IsUserInitiated)
+            if (e.IsUserInitiated) // 判断是否为用户点击，以排除掉图片请求
             {
-                if (InternalLink.TryParse(e.Uri))
-                {
-                    InternalLink ilink = new(e.Uri);
-                    MessageBox.Show(
-                        $"Internal Link! Path is {ilink.Path}, Query is {System.Web.HttpUtility.UrlDecode(ilink.Query[1..])}" // TODO: 越界警告
-                    );
-                    e.Cancel = true;
-                }
+                IInternalLinkValidator validator = App.GetService<IInternalLinkValidator>();
+                if (Uri.TryCreate(e.Uri, UriKind.Absolute, out Uri? result))
+                    if (validator.Validate(result))
+                    {
+                        IInternalLinkHandler handler = App.GetService<IInternalLinkHandler>();
+                        e.Cancel = true;
+                        handler.Trigger(result);
+                    }
             }
         }
 
