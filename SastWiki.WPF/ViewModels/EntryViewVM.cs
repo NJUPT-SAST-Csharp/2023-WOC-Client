@@ -1,7 +1,10 @@
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Web;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Web;
+using SastWiki.Core.Contracts.InternalLink;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -16,7 +21,29 @@ namespace SastWiki.WPF.ViewModels
     {
         private IMarkdownProcessor _markdownProcessor;
 
-        public WebView2? WebView { private get; set; }
+        private WebView2? _webview;
+        public WebView2? WebView
+        {
+            private get => _webview;
+            set
+            {
+                if (value is not null)
+                {
+                    _webview = value;
+                    _webview.NavigationStarting += WebView_NavigationStarting;
+                    PropertyChanged += LoadMarkdownDoc;
+                    _webview
+                        .EnsureCoreWebView2Async()
+                        .ContinueWith(
+                            (_) =>
+                            {
+                                _ensureWebviewInitialized.SetResult(true);
+                            }
+                        );
+                }
+            }
+        }
+        TaskCompletionSource<bool> _ensureWebviewInitialized = new();
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
@@ -24,22 +51,50 @@ namespace SastWiki.WPF.ViewModels
         public EntryViewVM(IMarkdownProcessor markdownProcessor)
         {
             _markdownProcessor = markdownProcessor;
-            PropertyChanged += LoadMarkdownDoc;
+        }
+
+        private void WebView_NavigationStarting(
+            object? sender,
+            CoreWebView2NavigationStartingEventArgs e
+        )
+        {
+            if (e.IsUserInitiated) // 判断是否为用户点击，以排除掉图片请求
+            {
+                IInternalLinkValidator validator = App.GetService<IInternalLinkValidator>();
+                if (Uri.TryCreate(e.Uri, UriKind.Absolute, out Uri? result))
+                    if (validator.Validate(result))
+                    {
+                        IInternalLinkHandler handler = App.GetService<IInternalLinkHandler>();
+                        handler.Trigger(result);
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        // 从默认浏览器打开链接
+                        System.Diagnostics.Process.Start("explorer.exe", e.Uri);
+                        e.Cancel = true;
+                    }
+            }
         }
 
         async void LoadMarkdownDoc(object? sender, PropertyChangedEventArgs e)
         {
-            // string css_text;
-            _markdownProcessor.Output(
-                Markdown_text,
-                out string html_text,
-                out IEnumerable<int> images
-            );
-            // 这两行大概之后会用到，先留着再说
-            // MessageBox.Show(html_text);
-            // MessageBox.Show(Markdown_text);
-            await WebView.EnsureCoreWebView2Async(); // TODO: 到时候处理一下这个null（可能写个事件之类的？）
-            WebView.NavigateToString(html_text);
+            if (e.PropertyName == nameof(Markdown_text))
+            {
+                // string css_text;
+                _markdownProcessor.Output(
+                    Markdown_text,
+                    out string html_text,
+                    out IEnumerable<int> images
+                );
+
+                // 这两行大概之后会用到，先留着再说
+                // MessageBox.Show(html_text);
+                // MessageBox.Show(Markdown_text);
+
+                await _ensureWebviewInitialized.Task;
+                WebView!.NavigateToString(html_text);
+            }
         }
 
         Task<bool> INavigationAware.OnNavigatedFrom()
@@ -47,16 +102,20 @@ namespace SastWiki.WPF.ViewModels
             return Task.FromResult(true);
         }
 
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         async Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         {
             if (parameters is string markdown_text)
             {
                 Markdown_text = markdown_text;
                 return true;
             }
+            if (parameters is Uri internal_uri)
+            {
+                return true;
+            }
             return false;
         }
     }
 }
+
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
