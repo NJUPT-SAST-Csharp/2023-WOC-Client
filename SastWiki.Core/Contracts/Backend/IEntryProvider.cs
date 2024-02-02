@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SastWiki.Core.Contracts.Backend
 {
-    internal interface IEntryProvider
+    public interface IEntryProvider
     {
+        public string GetEntry(int id);
     }
 }
