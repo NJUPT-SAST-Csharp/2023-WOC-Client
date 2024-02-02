@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Web;
 using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Contracts.Backend;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -104,13 +105,9 @@ namespace SastWiki.WPF.ViewModels
 
         async Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            if (parameters is string markdown_text)
+            if (parameters is int id)
             {
-                Markdown_text = markdown_text;
-                return true;
-            }
-            if (parameters is Uri internal_uri)
-            {
+                Markdown_text = App.GetService<IEntryProvider>().GetEntry(id);
                 return true;
             }
             return false;

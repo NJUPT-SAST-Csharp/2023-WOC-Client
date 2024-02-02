@@ -20,12 +20,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0">Home Page</TextBlock>
-        <Button Grid.Row="1" Command="{Binding TestWebView2_Click}">测试 条目阅读页面</Button>
-        <TextBlock Grid.Row="2">输入测试的Markdown文档</TextBlock>
-        <TextBox
-            Grid.Row="3"
-            AcceptsReturn="True"
-            AcceptsTab="True"
-            Text="{Binding Markdown_text}" />
+        <Button Grid.Row="1" Command="{Binding TestWebView2_Click}">测试 条目阅读页面 id=114514</Button>
     </Grid>
 </Page>

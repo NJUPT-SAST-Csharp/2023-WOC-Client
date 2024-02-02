@@ -9,6 +9,8 @@ using SastWiki.Core.Contracts;
 using SastWiki.Core.Services;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.InternalLink;
+using SastWiki.Core.Contracts.Backend;
+using SastWiki.Core.Services.Backend;
 
 namespace SastWiki.WPF
 {
@@ -77,6 +79,9 @@ namespace SastWiki.WPF
                         services.AddSingleton<SettingsPage>();
                         services.AddTransient<SearchResultPage>();
                         services.AddTransient<EntryViewPage>();
+
+                        // 仅仅用于测试，实际应用中应该使用真实的数据源
+                        services.AddSingleton<IEntryProvider, 用于测试的一些文档>();
                     }
                 )
                 .Build();
@@ -99,7 +104,7 @@ namespace SastWiki.WPF
                     if (int.TryParse(e["id"], out var id))
                     {
                         var navigationService = GetService<INavigationService>();
-                        navigationService.NavigateTo(GetService<EntryViewPage>(), id.ToString());
+                        navigationService.NavigateTo(GetService<EntryViewPage>(), id);
                     }
                 }
             );
