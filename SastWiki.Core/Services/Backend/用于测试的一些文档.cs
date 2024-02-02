@@ -50,7 +50,7 @@ This is a numbered list:
 3. Item 3
 ",
                 1919810 => "This is a test entry.",
-                _ => throw new ArgumentException("No such entry.")
+                _ => "No such entry.",
             };
     }
 }
