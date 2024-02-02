@@ -65,8 +65,14 @@ namespace SastWiki.WPF.ViewModels
                     if (validator.Validate(result))
                     {
                         IInternalLinkHandler handler = App.GetService<IInternalLinkHandler>();
-                        e.Cancel = true;
                         handler.Trigger(result);
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        // 从默认浏览器打开链接
+                        System.Diagnostics.Process.Start("explorer.exe", e.Uri);
+                        e.Cancel = true;
                     }
             }
         }
