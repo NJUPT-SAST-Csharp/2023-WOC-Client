@@ -30,7 +30,7 @@ namespace SastWiki.WPF.Services
             // html output
             html = string.Format(HTMLTemplate, CSSStyle, document.ToHtml());
 
-            // image IDs
+            // image IDs, Unfinished
             images = document
                 .Descendants()
                 .OfType<Markdig.Syntax.Inlines.LinkInline>()

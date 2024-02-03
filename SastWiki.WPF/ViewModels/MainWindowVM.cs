@@ -1,23 +1,51 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public class MainWindowVM : ObservableObject, INavigationAware
+    public partial class MainWindowVM : ObservableObject
     {
-        Task<bool> INavigationAware.OnNavigatedFrom()
+        private INavigationService _navigationService;
+
+        public MainWindowVM(INavigationService navigationService)
         {
-            return Task.FromResult(true);
+            _navigationService = navigationService;
         }
 
-        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
-        {
-            return Task.FromResult(true);
-        }
+        [ObservableProperty]
+        private bool isDarkMode = false;
+
+        [ObservableProperty]
+        private int selectedPageIndex = 0;
+
+        [ObservableProperty]
+        private string searchBoxText = String.Empty;
+
+        private async void NavigateTo_HomePage() =>
+            await _navigationService.NavigateTo(App.GetService<HomePage>());
+
+        private async void NavigateTo_BrowsePage() =>
+            await _navigationService.NavigateTo(App.GetService<BrowsePage>());
+
+        private async void NavigateTo_SettingsPage() =>
+            await _navigationService.NavigateTo(App.GetService<SettingsPage>());
+
+        private async void NavigateTo_SearchResultPage() =>
+            await _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBoxText);
+
+        public ICommand GoToHomePageCommand => new RelayCommand(NavigateTo_HomePage);
+        public ICommand GoToBrowsePageCommand => new RelayCommand(NavigateTo_BrowsePage);
+        public ICommand GoToSettingsPageCommand => new RelayCommand(NavigateTo_SettingsPage);
+        public ICommand GoToSearchResultPageCommand =>
+            new RelayCommand(NavigateTo_SearchResultPage);
     }
 }
