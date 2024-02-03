@@ -34,18 +34,6 @@ namespace SastWiki.WPF
             return service;
         }
 
-        /*        public static object GetService(Type type)
-                {
-                    if ((App.Current as App)!.Host.Services.GetService(type) is not object service)
-                    {
-                        throw new ArgumentException(
-                            $"{type} needs to be registered in ConfigureServices within App.xaml.cs."
-                        );
-                    }
-        
-                    return service;
-                }*/
-
         public App()
         {
             InitializeComponent();
