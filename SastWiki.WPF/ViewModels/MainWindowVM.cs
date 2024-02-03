@@ -42,10 +42,17 @@ namespace SastWiki.WPF.ViewModels
         private async void NavigateTo_SearchResultPage() =>
             await _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBoxText);
 
+        private async void NavigateTo_UserPage()
+        {
+            UsernameWindow usernameWindow = new UsernameWindow();
+            usernameWindow.ShowDialog();
+        }
+
         public ICommand GoToHomePageCommand => new RelayCommand(NavigateTo_HomePage);
         public ICommand GoToBrowsePageCommand => new RelayCommand(NavigateTo_BrowsePage);
         public ICommand GoToSettingsPageCommand => new RelayCommand(NavigateTo_SettingsPage);
         public ICommand GoToSearchResultPageCommand =>
             new RelayCommand(NavigateTo_SearchResultPage);
+        public ICommand GoToUserPageCommand => new RelayCommand(NavigateTo_UserPage);
     }
 }

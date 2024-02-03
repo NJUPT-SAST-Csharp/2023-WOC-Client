@@ -56,7 +56,7 @@
                 Content="Settings" />
             <Button
                 Grid.Row="5"
-                Click="NavigateToUsernamePage_Click"
+                Command="{Binding GoToUserPageCommand}"
                 Content="Username" />
         </Grid>
         <Frame x:Name="ContentFrame" />
