@@ -29,10 +29,16 @@ namespace SastWiki.WPF.Views.Pages
             InitializeComponent();
         }
 
-        private void IndividuationPageTurn(object sender, EventArgs e)
+        private void ThemeChangePageTurn(object sender, EventArgs e)
         {
             Page ThemeChangePage = new ThemeChangePage();
             Page_Change.Content = new Frame() { Content = ThemeChangePage, };
+        }
+
+        private void AboutMorePageTurn(object sender, EventArgs e)
+        {
+            Page AboutMorePage = new AboutMorePage();
+            Page_Change.Content = new Frame() { Content = AboutMorePage, };
         }
     }
 }
