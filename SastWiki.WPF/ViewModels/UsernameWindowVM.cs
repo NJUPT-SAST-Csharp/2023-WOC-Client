@@ -9,6 +9,7 @@ using SastWiki.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,13 +31,14 @@ namespace SastWiki.WPF.ViewModels
         }
         public ICommand RegisterCommand => new RelayCommand(Register);
         public ICommand LoginCommand => new RelayCommand(Login);
-        public string Username
+        public string? Username
         {
             get { return _username; }
             set { SetProperty(ref _username, value); }
         }
         private void Login()
         {
+            _ = NewPassword;
             /*if(loginSucess)
             {
                 //关闭登陆页面，进入HomePage;
@@ -60,8 +62,8 @@ namespace SastWiki.WPF.ViewModels
             }
             
         }
-        private string newPassword;
-        public string NewPassword
+        private string? newPassword;
+        public string? NewPassword
         {
             get { return newPassword; }
             set
@@ -79,11 +81,11 @@ namespace SastWiki.WPF.ViewModels
         public static readonly DependencyProperty PasswordProperty =
             DependencyProperty.RegisterAttached("Password", typeof(string), typeof(PasswordBoxHelper), new PropertyMetadata(null, OnPasswordPropertyChanged));
 
-        public static string GetPassword(DependencyObject obj)
+        public static string? GetPassword(DependencyObject obj)
         {
-            return (string)obj.GetValue(PasswordProperty);
+            return (string?)obj.GetValue(PasswordProperty);
         }
-
+        
         public static void SetPassword(DependencyObject obj, string value)
         {
             obj.SetValue(PasswordProperty, value);

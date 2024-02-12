@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SastWiki.WPF"
+        xmlns:local="clr-namespace:SastWiki.WPF" 
+        xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:RegisterWindowVM}"
         mc:Ignorable="d"
         Title="Register" 
         Height="450" Width="600">
@@ -13,12 +15,14 @@
                  Margin="230,113,0,0" 
                  TextWrapping="Wrap"  
                  VerticalAlignment="Top" 
-                 Width="200" Height="20"/>
+                 Width="200" Height="20"
+                 Text="{Binding NewUsername}"/>
         <PasswordBox x:Name="NewPasswordBox"
                      HorizontalAlignment="Left" 
                      Margin="230,160,0,0" 
                      VerticalAlignment="Top" 
-                     Width="200" Height="20"/>
+                     Width="200" Height="20"
+                     viewmodels:CustomPasswordBoxHelper.CustomPassword ="{Binding NewPassword, Mode=TwoWay}"/>
         <Label Content="New Username" 
                HorizontalAlignment="Left" 
                Margin="131,113,0,0" 
@@ -31,7 +35,8 @@
                 HorizontalAlignment="Left" 
                 Margin="230,266,0,0" 
                 VerticalAlignment="Top"
-                Height="30" Width="154" Click ="Register"/>
+                Height="30" Width="154" 
+                Command="{Binding RegisterButton}"/>
         <Label Content="Confirm Password" 
                HorizontalAlignment="Left" 
                Margin="112,217,0,0" 
@@ -41,7 +46,8 @@
                      HorizontalAlignment="Left" 
                      Margin="230,217,0,0" 
                      VerticalAlignment="Top" 
-                     Width="200" Height="20"/>
+                     Width="200" Height="20"
+                     viewmodels:CustomPasswordBoxHelper.CustomPassword="{Binding ConfirmPassword , Mode=TwoWay}"/>
 
     </Grid>
 </Window>
