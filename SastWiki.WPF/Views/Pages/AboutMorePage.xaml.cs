@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SastWiki.WPF.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,18 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class AboutMorePage : Page
     {
-        public AboutMorePage()
+        private INavigationService _navigationService;
+
+        public AboutMorePage(INavigationService navigationService)
         {
+            _navigationService = navigationService;
             InitializeComponent();
         }
+
+        private void NavigateTo_ThemeChangePage(object sender, RoutedEventArgs e) =>
+            _navigationService.NavigateTo(App.GetService<ThemeChangePage>());
+
+        private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
+            _navigationService.NavigateTo(App.GetService<AboutMorePage>());
     }
 }

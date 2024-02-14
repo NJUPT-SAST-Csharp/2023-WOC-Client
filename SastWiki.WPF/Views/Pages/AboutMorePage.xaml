@@ -7,19 +7,44 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AboutMorePage">
+    <Border  Background="{DynamicResource Gray}">
 
-    <Grid Background="{DynamicResource Gray}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="120"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" 
-                   TextAlignment="Center"  
-                   Text="2023C#WOC" 
-                   FontSize = "35" 
-                   FontWeight="Heavy"
-                   Margin="40"/>
-        
-    </Grid>
+                <TextBlock Grid.Row="0" 
+           TextAlignment="Center"  
+           Text="2023C#WOC" 
+           FontSize = "35" 
+           FontWeight="Heavy"
+           Margin="40"/>
+            </Grid>
+            <!-- 侧边栏-->
+            <Border Background="{DynamicResource Gray}" Grid.Column="0">
+                <Grid>
+                    <StackPanel>
+                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_ThemeChangePage">
+                            <TextBlock Text="个性化"/>
+                        </Button>
+                        <Button Height="30" Margin="10,10,10,10">
+                            <TextBlock Text="系统设置"/>
+                        </Button>
+                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_AboutMorePage">
+                            <TextBlock Text="关于更多"/>
+                        </Button>
+                    </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+        </Border>
+
 </Page>

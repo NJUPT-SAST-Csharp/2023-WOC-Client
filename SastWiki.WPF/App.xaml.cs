@@ -6,6 +6,7 @@ using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
 using Prism.Ioc;
+using System.Windows.Controls;
 
 namespace SastWiki.WPF
 {
@@ -67,8 +68,11 @@ namespace SastWiki.WPF
                         services.AddSingleton<HomePage>();
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
+                        services.AddSingleton<ThemeChangePage>();
+                        services.AddSingleton<AboutMorePage>();
                         services.AddTransient<SearchResultPage>();
                         services.AddTransient<EntryViewPage>();
+                        
                     }
                 )
                 .Build();

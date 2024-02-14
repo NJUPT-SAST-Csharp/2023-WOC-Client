@@ -25,7 +25,7 @@
                 <Grid>
                     <StackPanel>
 
-                        <Button Height="30" Margin="10,10,10,10" Click="ThemeChangePageTurn">
+                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_ThemeChangePage">
                             <TextBlock Text="个性化"/>
                         </Button>
 
@@ -33,14 +33,13 @@
                             <TextBlock Text="系统设置"/>
                         </Button>
 
-                        <Button Height="30" Margin="10,10,10,10" Click="AboutMorePageTurn">
+                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_AboutMorePage">
                             <TextBlock Text="关于更多"/>
                         </Button>
-                    
+
                     </StackPanel>
                 </Grid>
             </Border>
-            <ContentControl x:Name="Page_Change" Grid.Column="2"/>
         </Grid> 
 
     </Border>

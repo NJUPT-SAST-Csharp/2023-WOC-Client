@@ -1,5 +1,6 @@
 ﻿using Jamesnet.Wpf.Controls;
 using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,21 +25,18 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class SettingsPage : Page
     {
-        public SettingsPage()
+        private INavigationService _navigationService;
+
+        public SettingsPage(INavigationService navigationService)
         {
+            _navigationService = navigationService;
             InitializeComponent();
         }
 
-        private void ThemeChangePageTurn(object sender, EventArgs e)
-        {
-            Page ThemeChangePage = new ThemeChangePage();
-            Page_Change.Content = new Frame() { Content = ThemeChangePage, };
-        }
+        private void NavigateTo_ThemeChangePage(object sender, RoutedEventArgs e) =>
+            _navigationService.NavigateTo(App.GetService<ThemeChangePage>());
 
-        private void AboutMorePageTurn(object sender, EventArgs e)
-        {
-            Page AboutMorePage = new AboutMorePage();
-            Page_Change.Content = new Frame() { Content = AboutMorePage, };
-        }
+        private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
+            _navigationService.NavigateTo(App.GetService<AboutMorePage>());
     }
 }
