@@ -9,8 +9,8 @@ using SastWiki.Core.Contracts;
 using SastWiki.Core.Services;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.InternalLink;
-using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Services.Backend;
+using SastWiki.Core.Contracts.Backend.Entry;
 
 namespace SastWiki.WPF
 {

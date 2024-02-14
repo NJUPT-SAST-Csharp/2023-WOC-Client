@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SastWiki.Core.Contracts.User
+namespace SastWiki.Core.Contracts.Backend.Image
 {
-    internal interface ILoginStatusProvider
-    {
-
-    }
+    internal interface IImageProvider { }
 }

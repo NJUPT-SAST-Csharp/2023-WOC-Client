@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Web;
 using SastWiki.Core.Contracts.InternalLink;
-using SastWiki.Core.Contracts.Backend;
+using SastWiki.Core.Contracts.Backend.Entry;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -44,7 +44,7 @@ namespace SastWiki.WPF.ViewModels
                 }
             }
         }
-        TaskCompletionSource<bool> _ensureWebviewInitialized = new();
+        readonly TaskCompletionSource<bool> _ensureWebviewInitialized = new();
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
@@ -107,7 +107,7 @@ namespace SastWiki.WPF.ViewModels
         {
             if (parameters is int id)
             {
-                Markdown_text = App.GetService<IEntryProvider>().GetEntry(id);
+                Markdown_text = App.GetService<IEntryProvider>().GetEntry(id).Content;
                 return true;
             }
             return false;
