@@ -1,4 +1,5 @@
-﻿using SastWiki.WPF.ViewModels;
+﻿using SastWiki.WPF.Contracts;
+using SastWiki.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,21 +12,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SastWiki.WPF.Views.Pages
+namespace SastWiki.WPF
 {
     /// <summary>
-    /// EntryViewPage.xaml 的交互逻辑
+    /// UsernameWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class EntryViewPage : Page
+    public partial class UsernameWindow : Window
     {
-        public EntryViewPage(EntryViewVM ViewModel)
+        public UsernameWindow()
         {
-            this.DataContext = ViewModel;
             InitializeComponent();
-            ViewModel.WebView = WebView;
+            this.DataContext = new UsernameWindowVM();
         }
     }
 }

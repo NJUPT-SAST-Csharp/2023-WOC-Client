@@ -8,5 +8,6 @@ namespace SastWiki.Core.Contracts.User
 {
     internal interface ILoginStatusProvider
     {
+
     }
 }

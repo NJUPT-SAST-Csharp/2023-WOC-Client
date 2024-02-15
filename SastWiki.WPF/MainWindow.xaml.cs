@@ -18,12 +18,11 @@ namespace SastWiki.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindowVM VM { get; }
         private INavigationService _navigationService;
 
         public MainWindow(MainWindowVM mainWindowVM, INavigationService navigationService)
         {
-            VM = mainWindowVM;
+            this.DataContext = mainWindowVM;
             _navigationService = navigationService;
             InitializeComponent();
         }
@@ -38,11 +37,14 @@ namespace SastWiki.WPF
             HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
             mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
 
-            MARGINS margins = new MARGINS();
-            margins.cxLeftWidth = -1;
-            margins.cxRightWidth = -1;
-            margins.cyTopHeight = -1;
-            margins.cyBottomHeight = -1;
+            MARGINS margins =
+                new()
+                {
+                    cxLeftWidth = -1,
+                    cxRightWidth = -1,
+                    cyTopHeight = -1,
+                    cyBottomHeight = -1
+                };
 
             ExtendFrame(mainWindowSrc.Handle, margins);
             SetWindowAttribute(
@@ -64,20 +66,11 @@ namespace SastWiki.WPF
             );
         }
 
-        private void NavigateTo_HomePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<HomePage>());
-
-        private void NavigateTo_BrowsePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<BrowsePage>());
-
-        private void NavigateTo_SettingsPage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<SettingsPage>());
-
         private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBox.Text);
+                (this.DataContext as MainWindowVM)?.GoToSearchResultPageCommand.Execute(null);
             }
         }
     }

@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public class HomePageVM : ObservableObject, INavigationAware
+    public partial class HomePageVM : ObservableObject, INavigationAware
     {
         private INavigationService _navigationService;
 
@@ -23,22 +23,19 @@ namespace SastWiki.WPF.ViewModels
 
         private void TestWebview2()
         {
-            _navigationService.NavigateTo(
-                App.GetService<EntryViewPage>(),
-                "https://wiki.sast.fun/"
-            );
+            _navigationService.NavigateTo(App.GetService<EntryViewPage>(), 114514);
         }
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);
 
-        bool INavigationAware.OnNavigatedFrom()
+        Task<bool> INavigationAware.OnNavigatedFrom()
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        bool INavigationAware.OnNavigatedTo<T>(T parameters)
+        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

@@ -19,19 +19,19 @@ namespace SastWiki.WPF.ViewModels
             InquiryText = "123";
         }
 
-        bool INavigationAware.OnNavigatedFrom()
+        Task<bool> INavigationAware.OnNavigatedFrom()
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        bool INavigationAware.OnNavigatedTo<T>(T parameters)
+        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
             // MessageBox.Show("OnNavigatedTo");
             if (parameters is string s)
             {
                 InquiryText = s;
             }
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

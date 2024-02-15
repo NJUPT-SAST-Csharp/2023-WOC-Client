@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SastWiki.Core.Contracts.Backend
+namespace SastWiki.Core.Contracts.InternalLink
 {
-    public interface IEntryProvider
+    public interface IInternalLinkHandler
     {
-        public string GetEntry(int id);
+        public void Trigger(Uri ilink);
     }
 }

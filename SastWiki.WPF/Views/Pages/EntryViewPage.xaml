@@ -5,13 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:EntryViewVM}"
+    xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="EntryViewPage"
+    d:DataContext="{d:DesignInstance Type=viewmodels:EntryViewVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
     <Grid>
-        <wv2:WebView2 Name="webView" Source="{Binding Url}" />
+        <wv2:WebView2 Name="WebView" />
     </Grid>
 </Page>

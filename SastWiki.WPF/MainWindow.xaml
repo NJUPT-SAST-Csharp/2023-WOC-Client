@@ -3,12 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:SastWiki.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="SAST Wiki"
     Width="800"
     Height="450"
     Background="{DynamicResource Gray}"
+    d:DataContext="{d:DesignInstance Type=vm:MainWindowVM}"
     Loaded="OnLoaded"
     mc:Ignorable="d">
     <DockPanel Background="{DynamicResource Gray}">
@@ -23,11 +25,11 @@
             </Grid.RowDefinitions>
             <Button
                 Grid.Row="0"
-                Click="NavigateTo_HomePage"
+                Command="{Binding GoToHomePageCommand}"
                 Content="Home" />
             <Button
                 Grid.Row="1"
-                Click="NavigateTo_BrowsePage"
+                Command="{Binding GoToBrowsePageCommand}"
                 Content="Browse" />
             <TextBox
                 x:Name="SearchBox"
@@ -35,7 +37,7 @@
                 VerticalContentAlignment="Center"
                 Cursor="IBeam"
                 PreviewKeyUp="SearchBox_KeyUp"
-                Text="Search" />
+                Text="{Binding SearchBoxText}" />
 
             <TreeView Grid.Row="3" Background="{DynamicResource Gray}">
                 <TreeViewItem Header="测试用数据">
@@ -49,10 +51,12 @@
             </TreeView>
             <Button
                 Grid.Row="4"
-                Click="NavigateTo_SettingsPage"
+                Command="{Binding GoToSettingsPageCommand}"
                 Content="Settings" />
-            <Button Grid.Row="5" Content="Username" />
-
+            <Button
+                Grid.Row="5"
+                Command="{Binding GoToUserPageCommand}"
+                Content="Username" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>
