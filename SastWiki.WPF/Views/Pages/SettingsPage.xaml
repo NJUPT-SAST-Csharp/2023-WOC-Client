@@ -11,37 +11,43 @@
     mc:Ignorable="d">
 
 
-    <Border  Background="{DynamicResource Gray}">
+    <Border Background="Transparent">
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <!-- 侧边栏-->
-            <Border Background="{DynamicResource Gray}">
+            <Frame x:Name="SettingsFrame" Grid.Column="1" />
+            <!--  侧边栏  -->
+            <Border Background="Transparent">
 
                 <Grid>
                     <StackPanel>
 
-                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_ThemeChangePage">
-                            <TextBlock Text="个性化"/>
+                        <Button
+                            Height="30"
+                            Margin="10,10,10,10"
+                            Click="NavigateTo_ThemeChangePage">
+                            <TextBlock Text="个性化" />
                         </Button>
 
                         <Button Height="30" Margin="10,10,10,10">
-                            <TextBlock Text="系统设置"/>
+                            <TextBlock Text="系统设置" />
                         </Button>
 
-                        <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_AboutMorePage">
-                            <TextBlock Text="关于更多"/>
+                        <Button
+                            Height="30"
+                            Margin="10,10,10,10"
+                            Click="NavigateTo_AboutMorePage">
+                            <TextBlock Text="关于更多" />
                         </Button>
 
                     </StackPanel>
                 </Grid>
             </Border>
-        </Grid> 
+        </Grid>
 
     </Border>
- 
+
 </Page>

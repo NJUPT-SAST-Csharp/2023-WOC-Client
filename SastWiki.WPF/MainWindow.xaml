@@ -11,10 +11,10 @@
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowVM}"
-    Background="{DynamicResource Gray}"
+    Background="Transparent"
     Loaded="OnLoaded"
     mc:Ignorable="d">
-    <DockPanel Background="{DynamicResource Gray}">
+    <DockPanel Background="Transparent">
         <Grid Width="130" DockPanel.Dock="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
@@ -40,7 +40,7 @@
                 PreviewKeyUp="SearchBox_KeyUp"
                 Text="{Binding SearchBoxText}" />
 
-            <TreeView Grid.Row="3" Background="{DynamicResource Gray}">
+            <TreeView Grid.Row="3" Background="Transparent">
                 <TreeViewItem Header="测试用数据">
                     <TreeViewItem Header="测试层级" />
                     <TreeViewItem Header="测试层级" />
