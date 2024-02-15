@@ -34,9 +34,9 @@ namespace SastWiki.WPF.Views.Pages
         }
 
         private void NavigateTo_ThemeChangePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<ThemeChangePage>());
+            SettingsFrame.Navigate(App.GetService<ThemeChangePage>());
 
         private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
-            _navigationService.NavigateTo(App.GetService<AboutMorePage>());
+            SettingsFrame.Navigate(App.GetService<AboutMorePage>());
     }
 }

@@ -27,7 +27,7 @@ namespace SastWiki.WPF
             InitializeComponent();
         }
 
-        public bool IsDark { get; private set; } = false;
+        public bool IsDark { get; set; } = false;
 
         public int CurrentPage { get; private set; } = 0;
 
@@ -56,7 +56,7 @@ namespace SastWiki.WPF
             RefreshDarkMode();
         }
 
-        private void RefreshDarkMode()
+        public void RefreshDarkMode()
         {
             int flag = IsDark ? 1 : 0;
             SetWindowAttribute(
