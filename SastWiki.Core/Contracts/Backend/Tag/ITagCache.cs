@@ -7,7 +7,7 @@ using SastWiki.Core.Contracts.Infrastructure.CacheService;
 
 namespace SastWiki.Core.Contracts.Backend.Tag
 {
-    internal interface ITagCache
+    public interface ITagCache
         : ICache<string> // 并不一定是string
     { }
 }

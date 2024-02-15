@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace SastWiki.Core.Contracts.Backend.Image
 {
-    internal interface IImageProvider { }
+    public interface IImageProvider { }
 }

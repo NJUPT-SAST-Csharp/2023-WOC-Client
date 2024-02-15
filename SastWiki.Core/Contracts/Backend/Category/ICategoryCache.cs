@@ -7,7 +7,7 @@ using SastWiki.Core.Contracts.Infrastructure.CacheService;
 
 namespace SastWiki.Core.Contracts.Backend.Category
 {
-    internal interface ICategoryCache
+    public interface ICategoryCache
         : ICache<string> // 并不一定是string
     { }
 }

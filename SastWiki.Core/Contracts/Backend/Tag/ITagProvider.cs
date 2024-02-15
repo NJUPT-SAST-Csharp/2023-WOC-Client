@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SastWiki.Core.Contracts.Backend.Tag
 {
-    internal interface ITagProvider
+    public interface ITagProvider
     {
         /// <summary>
         /// （从后端获取到的）所有的Tags

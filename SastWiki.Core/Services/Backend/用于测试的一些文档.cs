@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace SastWiki.Core.Services.Backend
 {
-    public class 用于测试的一些文档 // : IEntryProvider
+    public class 用于测试的一些文档 : IEntryProvider
     {
-        public Models.Entry GetEntry(int id) =>
+        public Task<int> AddEntryAsync(Models.Entry entry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Models.Entry> GetEntryByIdAsync(int id) =>
             id switch
             {
                 114514
@@ -70,5 +75,15 @@ This is a numbered list:
                         Content = "Entry not found."
                     },
             };
+
+        public Task<bool> IsEntryExistsAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateEntryAsync(Models.Entry entry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

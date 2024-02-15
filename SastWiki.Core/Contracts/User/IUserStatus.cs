@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SastWiki.Core.Contracts.User
 {
     /// <summary>
-    /// 供前端获取用户登录状态的接口
+    /// 获取用户登录状态的接口
     /// </summary>
     public interface IUserStatus
     {

@@ -7,5 +7,5 @@ using SastWiki.Core.Contracts.Infrastructure.CacheService;
 
 namespace SastWiki.Core.Contracts.Backend.Image
 {
-    internal interface IImageCache : ICache<byte[]> { }
+    public interface IImageCache : ICache<byte[]> { }
 }

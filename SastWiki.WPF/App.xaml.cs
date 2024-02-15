@@ -11,6 +11,7 @@ using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.Core.Services.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.Backend.Category;
 
 namespace SastWiki.WPF
 {
@@ -44,6 +45,59 @@ namespace SastWiki.WPF
                 .ConfigureServices(
                     (context, services) =>
                     {
+                        // Core.Contracts.Backend
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Entry.IEntryProvider,
+                            用于测试的一些文档
+                        >(); // 仅仅用于测试，实际应用中应该使用真实的数据源
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Category.ICategoryProvider,
+                            Core.Services.Backend.Category.CategoryProvider
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Tag.ITagProvider,
+                            Core.Services.Backend.Tag.TagProvider
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Image.IImageProvider,
+                            Core.Services.Backend.Image.ImageProvider
+                        >();
+
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Entry.IEntryCache,
+                            Core.Services.Backend.Entry.EntryCache
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Category.ICategoryCache,
+                            Core.Services.Backend.Category.CategoryCache
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Tag.ITagCache,
+                            Core.Services.Backend.Tag.TagCache
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Backend.Image.IImageCache,
+                            Core.Services.Backend.Image.ImageCache
+                        >();
+
+                        // Core.Contracts.Infrastructure
+                        services.AddSingleton<
+                            Core.Contracts.Infrastructure.CacheService.ICacheStorage,
+                            Core.Services.Infrastructure.CacheService.CacheStorage
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Infrastructure.SettingsService.ISettingsProvider,
+                            Core.Services.Infrastructure.SettingsService.SettingsProvider
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Infrastructure.SettingsService.ISettingsStorage,
+                            Core.Services.Infrastructure.SettingsService.SettingsStorage
+                        >();
+                        services.AddSingleton<
+                            Core.Contracts.Infrastructure.ILocalStorage,
+                            Core.Services.Infrastructure.LocalStorage
+                        >();
+
                         // Register Services
                         services.AddSingleton<INavigationService, NavigationService>();
                         services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
@@ -67,9 +121,6 @@ namespace SastWiki.WPF
                         services.AddSingleton<SettingsPage>();
                         services.AddTransient<SearchResultPage>();
                         services.AddTransient<EntryViewPage>();
-
-                        // 仅仅用于测试，实际应用中应该使用真实的数据源
-                        services.AddSingleton<IEntryProvider, 用于测试的一些文档>();
                     }
                 )
                 .Build();

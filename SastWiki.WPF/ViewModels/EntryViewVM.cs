@@ -107,7 +107,9 @@ namespace SastWiki.WPF.ViewModels
         {
             if (parameters is int id)
             {
-                Markdown_text = App.GetService<IEntryProvider>().GetEntry(id).Content;
+                Markdown_text = (
+                    await App.GetService<IEntryProvider>().GetEntryByIdAsync(id)
+                ).Content;
                 return true;
             }
             return false;

@@ -9,6 +9,11 @@ namespace SastWiki.Core.Contracts.Backend.Entry
 {
     public interface IEntryProvider
     {
+        /// <summary>
+        /// 获取指定ID的词条
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<Models.Entry> GetEntryByIdAsync(int id);
 
         /// <summary>
