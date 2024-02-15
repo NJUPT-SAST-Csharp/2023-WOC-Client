@@ -6,11 +6,12 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:SastWiki.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:SastWiki.WPF.ViewModels"
     Title="SAST Wiki"
     Width="800"
     Height="450"
-    Background="{DynamicResource Gray}"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowVM}"
+    Background="{DynamicResource Gray}"
     Loaded="OnLoaded"
     mc:Ignorable="d">
     <DockPanel Background="{DynamicResource Gray}">
