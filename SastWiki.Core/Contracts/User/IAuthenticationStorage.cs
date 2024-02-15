@@ -9,7 +9,7 @@ namespace SastWiki.Core.Contracts.User
     /// <summary>
     /// 存储凭据，借助ISettingsProvider存储在本地以供未来使用
     /// </summary>
-    internal interface IAuthenticationStorage
+    public interface IAuthenticationStorage
     {
         /// <summary>
         /// 用户登录的Token，若未登录则为null

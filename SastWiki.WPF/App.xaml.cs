@@ -5,13 +5,11 @@ using SastWiki.WPF.Views.Pages;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
-using SastWiki.Core.Contracts;
-using SastWiki.Core.Services;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.Core.Services.Backend;
-using SastWiki.Core.Contracts.Backend.Entry;
-using SastWiki.Core.Contracts.Backend.Category;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.User;
 
 namespace SastWiki.WPF
 {
@@ -98,13 +96,21 @@ namespace SastWiki.WPF
                             Core.Services.Infrastructure.LocalStorage
                         >();
 
-                        // Register Services
-                        services.AddSingleton<INavigationService, NavigationService>();
-                        services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
+                        // Core.Contracts.InternalLink
                         services.AddSingleton<IInternalLinkService, InternalLinkService>();
                         services.AddSingleton<IInternalLinkHandler, InternalLinkHandler>();
                         services.AddSingleton<IInternalLinkValidator, InternalLinkValidator>();
                         services.AddSingleton<IInternalLinkCreator, InternalLinkCreator>();
+
+                        // Core.Contracts.User
+                        services.AddSingleton<IAuthenticationStorage, AuthenticationStorage>();
+                        services.AddSingleton<IUserLogin, UserLogin>();
+                        services.AddSingleton<IUserRegister, UserRegister>();
+                        services.AddSingleton<IUserStatus, UserStatus>();
+
+                        // WPF.Contracts
+                        services.AddSingleton<INavigationService, NavigationService>();
+                        services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
 
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
