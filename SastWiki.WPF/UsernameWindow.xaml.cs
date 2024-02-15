@@ -1,8 +1,9 @@
 ﻿using SastWiki.WPF.Contracts;
-using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,14 +18,19 @@ using System.Windows.Shapes;
 namespace SastWiki.WPF
 {
     /// <summary>
-    /// UsernameWindow.xaml 的交互逻辑
+    /// UsernameWIndow.xaml 的交互逻辑
     /// </summary>
     public partial class UsernameWindow : Window
     {
         public UsernameWindow()
         {
             InitializeComponent();
-            this.DataContext = new UsernameWindowVM();
+        }
+        private void NavigateTo_LoginPage(object sender, RoutedEventArgs e)
+        {
+            LoginPage loginPage = new LoginPage();
+            ContentFrame.Navigate(loginPage);
+            Login.Visibility = Visibility.Collapsed;
         }
     }
 }
