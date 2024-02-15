@@ -6,5 +6,33 @@ using System.Threading.Tasks;
 
 namespace SastWiki.Core.Contracts.Infrastructure
 {
-    internal interface ILocalStorage { }
+    /// <summary>
+    /// 对本地文件进行操作的接口
+    /// </summary>
+    public interface ILocalStorage
+    {
+        /// <summary>
+        /// 获取指定文件的文件流，没有则新建一个文件
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName);
+
+        /// <summary>
+        /// 删除指定文件，删不掉就报错
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public Task DeleteAsync(string absolutePath, string fileName);
+
+        /// <summary>
+        /// 创建指定文件
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public Task CreateAsync(string absolutePath, string fileName);
+    }
 }
