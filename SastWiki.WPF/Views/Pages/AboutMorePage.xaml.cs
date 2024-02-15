@@ -1,6 +1,4 @@
-﻿using Jamesnet.Wpf.Controls;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Services;
+﻿using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,23 +9,21 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 
 namespace SastWiki.WPF.Views.Pages
 {
     /// <summary>
-    /// SettingsPage.xaml 的交互逻辑
+    /// AboutMorePage.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsPage : Page
+    public partial class AboutMorePage : Page
     {
         private INavigationService _navigationService;
 
-        public SettingsPage(INavigationService navigationService)
+        public AboutMorePage(INavigationService navigationService)
         {
             _navigationService = navigationService;
             InitializeComponent();

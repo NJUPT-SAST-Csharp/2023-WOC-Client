@@ -66,6 +66,8 @@ namespace SastWiki.WPF
                         services.AddSingleton<HomePage>();
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
+                        services.AddSingleton<ThemeChangePage>();
+                        services.AddSingleton<AboutMorePage>();
                         services.AddTransient<SearchResultPage>();
                         services.AddTransient<EntryViewPage>();
 
