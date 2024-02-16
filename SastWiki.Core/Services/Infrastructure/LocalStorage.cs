@@ -41,7 +41,7 @@ namespace SastWiki.Core.Services.Infrastructure
                     }
                     else
                     {
-                        throw new FileNotFoundException("File not found.");
+                        throw new FileNotFoundException($"File not found. {filePath}");
                     }
                 }
                 catch (Exception ex)
@@ -66,7 +66,7 @@ namespace SastWiki.Core.Services.Infrastructure
                     }
                     else
                     {
-                        throw new FileNotFoundException("File not found.");
+                        throw new FileNotFoundException($"File not found. {filePath}");
                     }
                 }
                 catch (Exception ex)

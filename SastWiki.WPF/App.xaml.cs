@@ -1,15 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Windows;
-using SastWiki.WPF.Views.Pages;
-using SastWiki.WPF.ViewModels;
+using Refit;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.Backend;
+using SastWiki.Core.Services.InternalLink;
+using SastWiki.Core.Services.User;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
-using SastWiki.Core.Contracts.InternalLink;
-using SastWiki.Core.Services.InternalLink;
-using SastWiki.Core.Services.Backend;
-using SastWiki.Core.Contracts.User;
-using SastWiki.Core.Services.User;
+using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF
 {
@@ -37,12 +38,18 @@ namespace SastWiki.WPF
         {
             InitializeComponent();
 
-            Host = Microsoft.Extensions.Hosting.Host
-                .CreateDefaultBuilder()
+            Host = Microsoft
+                .Extensions.Hosting.Host.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices(
                     (context, services) =>
                     {
+                        services
+                            .AddRefitClient<Core.Contracts.Backend.ISastWikiAPI>()
+                            .ConfigureHttpClient(c =>
+                                c.BaseAddress = new Uri("https://jsonplaceholder.typicode.com/")
+                            );
+
                         // Core.Contracts.Backend
                         services.AddSingleton<
                             Core.Contracts.Backend.Entry.IEntryProvider,
@@ -119,7 +126,6 @@ namespace SastWiki.WPF
                         services.AddSingleton<SettingsVM>();
                         services.AddTransient<SearchResultVM>();
                         services.AddTransient<EntryViewVM>();
-                        
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
