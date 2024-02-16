@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF
 {
@@ -25,12 +26,7 @@ namespace SastWiki.WPF
         public UsernameWindow()
         {
             InitializeComponent();
-        }
-        private void NavigateTo_LoginPage(object sender, RoutedEventArgs e)
-        {
-            LoginPage loginPage = new LoginPage();
-            ContentFrame.Navigate(loginPage);
-            Login.Visibility = Visibility.Collapsed;
+            DataContext = new UsernameWindowVM();
         }
     }
 }

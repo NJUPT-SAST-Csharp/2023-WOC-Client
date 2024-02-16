@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SastWiki.WPF"
+        xmlns:local="clr-namespace:SastWiki.WPF" 
+        xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:UsernameWindowVM}"
         mc:Ignorable="d"
         Title="UsernameWIndow" Height="500" Width="400" WindowStartupLocation = "CenterScreen">
     <Grid>
@@ -13,9 +15,10 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Top" 
             Height="45" Width="240"
-            Click="NavigateTo_LoginPage" 
-            Margin="0,385,0,0"/>
-        <Frame x:Name="ContentFrame"/>
+            Margin="0,385,0,0"
+            Command="{Binding NavigateTo_LoginPage}"
+            Visibility="{Binding LoginVisibility}"/>
+        <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden" Content="{Binding CurrentPage}"/>
     </Grid>
 
 </Window>

@@ -3,23 +3,28 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
+      xmlns:local="clr-namespace:SastWiki.WPF.ViewModels"
+      xmlns:vm="clr-namespace:SastWiki.WPF.ViewModels" 
+      d:DataContext="{d:DesignInstance Type=vm:LoginPageVM}"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="400"
       Title="LoginPage">
-
-    <Grid>
+      
+    <Grid Background="Gray">
+        
         <TextBox x:Name="usernameTextBox"
-         HorizontalAlignment="Left"
-         Margin="106,115,0,0"
-         TextWrapping="Wrap"
-         VerticalAlignment="Top"
-         Width="200" Height="20"/>
+                 HorizontalAlignment="Left"
+                 Margin="106,115,0,0"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="200" Height="20"
+                 Text="{Binding Username}"/>
         <PasswordBox x:Name="NewPasswordBox"
-             HorizontalAlignment="Left"
-             Margin="106,160,0,0"
-             VerticalAlignment="Top"
-             Width="200" Height="20"/>
+                    HorizontalAlignment="Left"
+                    Margin="106,160,0,0"
+                    VerticalAlignment="Top"
+                    Width="200" Height="20"
+                    vm:PasswordBoxHelper.Password="{Binding NewPassword, Mode=TwoWay}"/>
         <Label x:Name="username1"
                Content="Username" 
                HorizontalAlignment="Left" 
@@ -35,20 +40,23 @@
                 HorizontalAlignment="Left" 
                 Margin="106,268,0,0" 
                 VerticalAlignment="Top" 
-                Height="30" Width="60"/>
+                Height="30" Width="60"
+                Command="{Binding LoginCommand}"/>
 
         <CheckBox x:Name ="rememberPasswordCheckBox" 
                   Content="Remember Password" 
                   HorizontalAlignment="Left" 
                   Margin="106,216,0,0" 
-                  VerticalAlignment="Top"/>
-        <Frame x:Name="Frame"/>
+                  VerticalAlignment="Top"
+                  IsChecked="{Binding RememberPassword}"/>
+        <Frame x:Name="Frame" NavigationUIVisibility="Hidden" Content="{Binding Current_Page}"/>
         <Button x:Name="register"
                 Content="Register" 
                 HorizontalAlignment="Left"
                 Margin="246,268,0,0" 
                 VerticalAlignment="Top"
                 Height="30" Width="60"
-                Click="NavigateTo_RegisterPage"/>
+                Command="{Binding RegisterCommand}"
+                Visibility="{Binding RegisterVisibility}"/>
     </Grid>
 </Page>

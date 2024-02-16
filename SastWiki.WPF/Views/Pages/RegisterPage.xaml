@@ -4,33 +4,38 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SastWiki.WPF"
+      xmlns:vm="clr-namespace:SastWiki.WPF.ViewModels" 
+      d:DataContext="{d:DesignInstance Type=vm:RegisterPageVM}"
       mc:Ignorable="d" 
       Title="RegisterPage" Height="500" Width="400">
-    <Grid>
+    <Grid Background="Gray">
         <TextBox x:Name="NewUsernameTextBox"
-         HorizontalAlignment="Left" 
-         Margin="139,115,0,0" 
-         TextWrapping="Wrap"  
-         VerticalAlignment="Top" 
-         Width="200" Height="20"/>
+                 HorizontalAlignment="Left" 
+                 Margin="139,115,0,0" 
+                 TextWrapping="Wrap"  
+                 VerticalAlignment="Top" 
+                 Width="200" Height="20"
+                 Text="{Binding NewUsername}"/>
         <PasswordBox x:Name="NewPasswordBox"
-             HorizontalAlignment="Left" 
-             Margin="139,165,0,0" 
-             VerticalAlignment="Top" 
-             Width="200" Height="20"/>
+                    HorizontalAlignment="Left" 
+                     Margin="139,165,0,0" 
+                    VerticalAlignment="Top" 
+                     Width="200" Height="20"
+                     vm:CustomPasswordBoxHelper.CustomPassword ="{Binding NewPassword, Mode=TwoWay}"/>
         <Label Content="New Username" 
-       HorizontalAlignment="Left" 
-       Margin="36,110,0,0" 
-       VerticalAlignment="Top"/>
-        <Label Content="New Password" 
-       HorizontalAlignment="Left" 
-       Margin="40,162,0,0" 
-       VerticalAlignment="Top"/>
+                 HorizontalAlignment="Left" 
+                Margin="36,110,0,0" 
+                 VerticalAlignment="Top"/>
+        <Label  Content="New Password" 
+                HorizontalAlignment="Left" 
+                Margin="40,162,0,0" 
+                VerticalAlignment="Top"/>
         <Button Content="Register Now" 
                 HorizontalAlignment="Center" 
                 Margin="0,307,0,0" 
                 VerticalAlignment="Top"
-                Height="30" Width="154" />
+                Height="30" Width="154" 
+                Command="{Binding RegisterButton}"/>
         <Label Content="Confirm Password" 
                 HorizontalAlignment="Left" 
                 Margin="21,212,0,0" 
@@ -40,6 +45,7 @@
                      HorizontalAlignment="Left" 
                      Margin="139,217,0,0" 
                      VerticalAlignment="Top" 
-                     Width="200" Height="20"/>
+                     Width="200" Height="20"
+                     vm:CustomPasswordBoxHelper.CustomPassword="{Binding ConfirmPassword, Mode=TwoWay}"/>
     </Grid>
 </Page>
