@@ -1,5 +1,5 @@
 ﻿using Refit;
-using SastWiki.Core.Models.Api;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Contracts.Backend
 {

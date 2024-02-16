@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SastWiki.Core.Models.Api
+namespace SastWiki.Core.Models.Dto
 {
     public record EntryDto
     {
-        public required string Title { get; set; }
-        public required string Content { get; set; }
-        public required string CategoryName { get; set; }
-        public required List<string> TagNames { get; set; } = [];
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
+        public string? CategoryName { get; set; }
+        public List<string> TagNames { get; set; } = [];
     }
 }
