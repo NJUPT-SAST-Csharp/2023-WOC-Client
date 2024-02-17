@@ -1,30 +1,85 @@
-﻿using SastWiki.Core.Contracts.Infrastructure.CacheService;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Infrastructure;
+using SastWiki.Core.Contracts.Infrastructure.CacheService;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.Core.Models;
 
 namespace SastWiki.Core.Services.Infrastructure.CacheService
 {
     public class CacheStorage : ICacheStorage
     {
-        public CacheStorage() { }
+        public CacheStorage(ISettingsProvider settings, ILocalStorage storage)
+        {
+            _settings = settings;
+            _storage = storage;
+            InitializeTask = InitializeAsync();
+        }
+
+        Task InitializeTask;
+        readonly string _cachePath = "D:\\cache";
+        readonly ILocalStorage _storage;
+        readonly ISettingsProvider _settings;
+        List<CacheFile> _cacheList = [];
+
+        async Task InitializeAsync()
+        {
+            try
+            {
+                var cachefilelist = await _settings.GetItem<List<CacheFile>>("CacheList");
+                if (cachefilelist is not null)
+                {
+                    _cacheList = cachefilelist;
+                }
+                else
+                {
+                    _cacheList = [];
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Cache Storage Init Fail", e);
+            }
+        }
 
         public Task ClearExpiredCacheAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> CreateCacheFileAsync(TimeSpan ExpireTime)
+        public async Task<bool> ContainsAsync(string ID)
         {
-            throw new NotImplementedException();
+            await InitializeAsync();
+            return _cacheList.Exists(x => x.FileName == ID);
         }
 
-        public Task<string> CreateCacheFileAsync()
+        public async Task<string> CreateCacheFileAsync(TimeSpan expireTime)
         {
-            throw new NotImplementedException();
+            await InitializeAsync();
+
+            // Create a random cache file
+            var randomName = Guid.NewGuid().ToString();
+            await _storage.CreateAsync(_cachePath, randomName);
+            lock (_cacheList)
+            {
+                _cacheList.Add(
+                    new CacheFile()
+                    {
+                        FileName = randomName,
+                        ExpireTime = expireTime,
+                        UpdatedTime = DateTime.Now
+                    }
+                );
+            }
+            _ = _settings.SetItem("CacheList", _cacheList);
+            return randomName;
         }
+
+        public Task<string> CreateCacheFileAsync() =>
+            this.CreateCacheFileAsync(new TimeSpan(0, 10, 0));
 
         public Task DeleteCacheFileAsync(string ID)
         {
@@ -36,14 +91,42 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             throw new NotImplementedException();
         }
 
-        public Task<FileStream> GetCacheFileStreamAsync(string ID)
+        public async Task<FileStream> GetCacheFileStreamAsync(string ID)
         {
-            throw new NotImplementedException();
+            await InitializeAsync();
+
+            if (await ContainsAsync(ID))
+            {
+                try
+                {
+                    return await _storage.GetFileStreamAsync(_cachePath, ID);
+                }
+                catch (Exception)
+                {
+                    _cacheList.RemoveAll(x => x.FileName == ID);
+                    throw new FileNotFoundException($"Can't open Cache File {ID}");
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException($"Cache File ID {ID} Not Found");
+            }
         }
 
-        public Task UpdateCacheFileAsync(string ID)
+        public async Task UpdateCacheFileAsync(string ID)
         {
-            throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                lock (_cacheList)
+                {
+                    var cache = _cacheList.Find(x => x.FileName == ID);
+                    if (cache is not null)
+                    {
+                        cache.UpdatedTime = DateTime.Now;
+                    }
+                }
+                _ = _settings.SetItem("CacheList", _cacheList);
+            });
         }
     }
 }

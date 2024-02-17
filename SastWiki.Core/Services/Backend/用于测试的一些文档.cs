@@ -1,26 +1,27 @@
-﻿using SastWiki.Core.Contracts.Backend.Entry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.Backend
 {
     public class 用于测试的一些文档 : IEntryProvider
     {
-        public Task<int> AddEntryAsync(Models.Entry entry)
+        public Task<int> AddEntryAsync(EntryDto entry)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Models.Entry> GetEntryByIdAsync(int id) =>
+        public async Task<EntryDto> GetEntryByIdAsync(int id) =>
             id switch
             {
                 114514
-                    => new Models.Entry()
+                    => new EntryDto()
                     {
-                        // Id = 114514,
+                        Id = 114514,
                         Title = "Markdown Renderer Test",
                         Content =
                             @"
@@ -61,27 +62,32 @@ This is a numbered list:
 "
                     },
                 1919810
-                    => new Models.Entry()
+                    => new EntryDto()
                     {
-                        // Id = 1919810,
+                        Id = 1919810,
                         Title = "This is a test entry.",
                         Content = @"# This is a test entry."
                     },
                 _
-                    => new Models.Entry()
+                    => new EntryDto()
                     {
-                        // Id = 0,
+                        Id = 0,
                         Title = "Not Found",
                         Content = "Entry not found."
                     },
             };
+
+        public Task<List<int>> GetEntryIDListAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<bool> IsEntryExistsAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateEntryAsync(Models.Entry entry)
+        public Task<bool> UpdateEntryAsync(EntryDto entry)
         {
             throw new NotImplementedException();
         }

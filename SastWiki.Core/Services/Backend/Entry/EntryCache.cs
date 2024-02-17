@@ -1,29 +1,60 @@
-﻿using SastWiki.Core.Contracts.Backend.Entry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.Infrastructure.CacheService;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
-    public class EntryCache : IEntryCache
+    public class EntryCache(ICacheStorage _storage, ISettingsProvider _settings) : IEntryCache
     {
-        public EntryCache() { }
+        TimeSpan _expireTime = new TimeSpan(0, 10, 0);
+        Dictionary<string, string> _cahceFileID = [];
 
-        public Task AddAsync(string key, string value)
+        public async Task AddAsync(string key, EntryDto value)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var createTask = _storage.CreateCacheFileAsync(_expireTime);
+                var cacheFileStream = await _storage.GetCacheFileStreamAsync(await createTask);
+
+                var writer = new StreamWriter(cacheFileStream);
+                await writer.WriteAsync(JsonSerializer.Serialize(value));
+
+                _cahceFileID.Add(key, await createTask);
+
+                await writer.DisposeAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to add cache", e);
+            }
         }
 
-        public Task<bool> ContainsAsync(string key)
+        public async Task<bool> ContainsAsync(string key)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => _cahceFileID.TryGetValue(key, out _));
         }
 
-        public Task<string?> GetAsync(string key)
+        public async Task<EntryDto?> GetAsync(string key)
         {
-            throw new NotImplementedException();
+            if (await ContainsAsync(key))
+            {
+                return JsonSerializer.Deserialize<EntryDto>(
+                    await (
+                        new StreamReader(await _storage.GetCacheFileStreamAsync(_cahceFileID[key]))
+                    ).ReadToEndAsync()
+                );
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public Task<bool> RemoveAsync(string key)

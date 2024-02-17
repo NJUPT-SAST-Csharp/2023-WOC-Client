@@ -1,14 +1,33 @@
-﻿using SastWiki.Core.Contracts.Infrastructure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Infrastructure;
 
 namespace SastWiki.Core.Services.Infrastructure
 {
     public class LocalStorage : ILocalStorage
     {
+        public async Task<bool> Contains(string absolutePath, string fileName)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    string filePath = System.IO.Path.Combine(absolutePath, fileName);
+                    return System.IO.File.Exists(filePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"An error occurred while checking if the file exists: {ex.Message}"
+                    );
+                    throw;
+                }
+            });
+        }
+
         public async Task CreateAsync(string absolutePath, string fileName)
         {
             await Task.Run(() =>

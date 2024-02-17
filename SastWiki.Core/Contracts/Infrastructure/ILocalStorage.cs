@@ -17,7 +17,7 @@ namespace SastWiki.Core.Contracts.Infrastructure
         /// <param name="absolutePath"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName);
+        public Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName); // TODO: 检查一下有没有地方忘了关闭文件流
 
         /// <summary>
         /// 删除指定文件，删不掉就报错
@@ -34,5 +34,7 @@ namespace SastWiki.Core.Contracts.Infrastructure
         /// <param name="fileName"></param>
         /// <returns></returns>
         public Task CreateAsync(string absolutePath, string fileName);
+
+        public Task<bool> Contains(string absolutePath, string fileName);
     }
 }
