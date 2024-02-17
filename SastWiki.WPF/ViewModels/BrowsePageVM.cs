@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using SastWiki.Core.Contracts.Backend.Tag;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -20,6 +21,18 @@ namespace SastWiki.WPF.ViewModels
         {
             MessageBox.Show("OnNavigatedTo");
             return Task.FromResult(true);
+        }
+    }
+
+    public class TagEntry
+    {
+        public string TagName
+        {
+            get; set;
+        }
+        public IEnumerable<int> Ids
+        {
+            get; set;
         }
     }
 }

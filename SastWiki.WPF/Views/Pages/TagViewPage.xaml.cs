@@ -24,5 +24,6 @@ namespace SastWiki.WPF.Views.Pages
         {
             InitializeComponent();
         }
+
     }
 }

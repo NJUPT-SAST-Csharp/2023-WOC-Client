@@ -119,7 +119,6 @@ namespace SastWiki.WPF
                         services.AddSingleton<SettingsVM>();
                         services.AddTransient<SearchResultVM>();
                         services.AddTransient<EntryViewVM>();
-                        
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
