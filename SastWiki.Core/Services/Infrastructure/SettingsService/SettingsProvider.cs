@@ -39,7 +39,7 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
             }
             catch (Exception e)
             {
-                throw new Exception("读取设置失败", e);
+                throw new Exception($"读取设置{label}失败", e);
             }
         }
 

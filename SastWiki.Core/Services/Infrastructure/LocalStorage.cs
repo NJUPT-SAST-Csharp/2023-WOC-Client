@@ -20,10 +20,7 @@ namespace SastWiki.Core.Services.Infrastructure
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(
-                        $"An error occurred while checking if the file exists: {ex.Message}"
-                    );
-                    throw;
+                    throw new Exception("An error occurred while checking if the file exists", ex);
                 }
             });
         }
@@ -40,8 +37,7 @@ namespace SastWiki.Core.Services.Infrastructure
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred while creating the file: {ex.Message}");
-                    throw;
+                    throw new Exception("An error occurred while creating the file", ex);
                 }
             });
         }
@@ -65,8 +61,7 @@ namespace SastWiki.Core.Services.Infrastructure
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred while deleting the file: {ex.Message}");
-                    throw;
+                    throw new Exception("An error occurred while deleting the file", ex);
                 }
             });
         }
@@ -95,10 +90,7 @@ namespace SastWiki.Core.Services.Infrastructure
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(
-                        $"An error occurred while getting the file stream: {ex.Message}"
-                    );
-                    throw;
+                    throw new Exception("An error occurred while getting the file stream", ex);
                 }
             });
         }

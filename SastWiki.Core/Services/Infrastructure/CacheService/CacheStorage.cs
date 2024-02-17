@@ -29,7 +29,16 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         {
             try
             {
-                var cachefilelist = await _settings.GetItem<List<CacheFile>>("CacheList");
+                List<CacheFile> cachefilelist;
+                try
+                {
+                    cachefilelist = await _settings.GetItem<List<CacheFile>>("CacheList") ?? [];
+                }
+                catch (Exception)
+                {
+                    cachefilelist = [];
+                    await _settings.SetItem("CacheList", cachefilelist);
+                }
                 if (cachefilelist is not null)
                 {
                     _cacheList = cachefilelist;
@@ -74,7 +83,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                     }
                 );
             }
-            _ = _settings.SetItem("CacheList", _cacheList);
+            await _settings.SetItem("CacheList", _cacheList);
             return randomName;
         }
 

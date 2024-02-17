@@ -11,24 +11,53 @@ using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
-    public class EntryCache(ICacheStorage _storage, ISettingsProvider _settings) : IEntryCache
+    public class EntryCache : IEntryCache
     {
         TimeSpan _expireTime = new TimeSpan(0, 10, 0);
         Dictionary<string, string> _cahceFileID = [];
+        ICacheStorage _storage;
+        ISettingsProvider _settings;
+
+        public EntryCache(ICacheStorage storage, ISettingsProvider settings)
+        {
+            _storage = storage;
+            _settings = settings;
+            try
+            {
+                _cahceFileID =
+                    _settings.GetItem<Dictionary<string, string>>("EntryCacheList").Result ?? [];
+            }
+            catch (Exception)
+            {
+                _cahceFileID = [];
+                _settings.SetItem("EntryCacheList", _cahceFileID);
+            }
+        }
 
         public async Task AddAsync(string key, EntryDto value)
         {
             try
             {
-                var createTask = _storage.CreateCacheFileAsync(_expireTime);
-                var cacheFileStream = await _storage.GetCacheFileStreamAsync(await createTask);
+                if (_cahceFileID.ContainsKey(key))
+                {
+                    using var cacheFileStream = await _storage.GetCacheFileStreamAsync(
+                        _cahceFileID[key]
+                    );
+                    using var writer = new StreamWriter(cacheFileStream);
+                    await writer.WriteAsync(JsonSerializer.Serialize(value));
+                    await _storage.UpdateCacheFileAsync(_cahceFileID[key]);
+                }
+                else
+                {
+                    var ID = await _storage.CreateCacheFileAsync(_expireTime);
 
-                var writer = new StreamWriter(cacheFileStream);
-                await writer.WriteAsync(JsonSerializer.Serialize(value));
+                    using var cacheFileStream = await _storage.GetCacheFileStreamAsync(ID);
+                    using var writer = new StreamWriter(cacheFileStream);
+                    await writer.WriteAsync(JsonSerializer.Serialize(value));
 
-                _cahceFileID.Add(key, await createTask);
-
-                await writer.DisposeAsync();
+                    _cahceFileID.Add(key, ID);
+                    await _settings.SetItem("EntryCacheList", _cahceFileID);
+                }
             }
             catch (Exception e)
             {
@@ -38,7 +67,7 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task<bool> ContainsAsync(string key)
         {
-            return await Task.Run(() => _cahceFileID.TryGetValue(key, out _));
+            return await Task.Run(() => _cahceFileID.ContainsKey(key));
         }
 
         public async Task<EntryDto?> GetAsync(string key)
