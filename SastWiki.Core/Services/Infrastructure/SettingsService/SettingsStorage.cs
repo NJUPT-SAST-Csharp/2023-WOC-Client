@@ -14,27 +14,28 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
         string _settingsFilePath = "D:\\settings";
         string _settingsFileName = "settings.json";
 
+        object SettingsFileLock = new object();
+
         public async Task<string> GetSettingsJSON()
         {
-            if (await _localStorage.Contains(_settingsFilePath, _settingsFileName))
+            if (!await _localStorage.Contains(_settingsFilePath, _settingsFileName))
+                await _localStorage.CreateAsync(_settingsFilePath, _settingsFileName);
+
+            try
             {
-                try
+                using var stream = await _localStorage.GetFileStreamAsync(
+                    _settingsFilePath,
+                    _settingsFileName
+                );
+                lock (SettingsFileLock)
                 {
-                    using var stream = await _localStorage.GetFileStreamAsync(
-                        _settingsFilePath,
-                        _settingsFileName
-                    );
-                    var json = await new StreamReader(stream).ReadToEndAsync();
+                    var json = new StreamReader(stream).ReadToEnd();
                     return json;
                 }
-                catch (Exception e)
-                {
-                    throw new Exception("读取设置文件失败", e);
-                }
             }
-            else
+            catch (Exception e)
             {
-                throw new FileNotFoundException();
+                throw new Exception("读取设置文件失败", e);
             }
         }
 
@@ -45,24 +46,30 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
                 throw new ArgumentNullException(nameof(json));
             }
 
-            if (await _localStorage.Contains(_settingsFilePath, _settingsFileName))
+            if (!await _localStorage.Contains(_settingsFilePath, _settingsFileName))
+                await _localStorage.CreateAsync(_settingsFilePath, _settingsFileName);
+
+            try
             {
-                try
+                using var stream = await _localStorage.GetFileStreamAsync(
+                    _settingsFilePath,
+                    _settingsFileName
+                );
+                lock (SettingsFileLock)
                 {
-                    using var stream = await _localStorage.GetFileStreamAsync(
-                        _settingsFilePath,
-                        _settingsFileName
-                    );
-                    await new StreamWriter(stream).WriteAsync(json);
-                }
-                catch (Exception e)
-                {
-                    throw new Exception("写入设置文件失败", e);
+                    using (StreamWriter sw = new StreamWriter(stream))
+                    {
+                        // discard the contents of the file by setting the length to 0
+                        stream.SetLength(0);
+
+                        // write the new content
+                        sw.Write(json);
+                    }
                 }
             }
-            else
+            catch (Exception e)
             {
-                throw new FileNotFoundException();
+                throw new Exception("写入设置文件失败", e);
             }
         }
     }

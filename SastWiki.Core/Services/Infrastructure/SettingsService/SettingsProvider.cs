@@ -9,30 +9,37 @@ using SastWiki.Core.Contracts.Infrastructure.SettingsService;
 
 namespace SastWiki.Core.Services.Infrastructure.SettingsService
 {
-    public class SettingsProvider(ISettingsStorage _storage) : ISettingsProvider
+    public class SettingsProvider : ISettingsProvider
     {
+        ISettingsStorage _storage;
+
+        public SettingsProvider(ISettingsStorage storage)
+        {
+            _storage = storage;
+            LoadAsync().Wait();
+        }
+
         Dictionary<string, string> _settings = [];
 
         public async Task<T?> GetItem<T>(string label)
         {
             string? categorySettings;
-
-            lock (_settings)
-            {
-                if (!_settings.TryGetValue(label, out categorySettings))
-                    throw new ArgumentNullException(nameof(T));
-                if (categorySettings is null)
-                    throw new ArgumentNullException(nameof(T));
-            }
-
             try
             {
+                lock (_settings)
+                {
+                    if (!_settings.TryGetValue(label, out categorySettings))
+                        throw new ArgumentNullException(nameof(T));
+                    if (categorySettings is null)
+                        throw new ArgumentNullException(nameof(T));
+                }
+
                 var result = await Task.Run(() => JsonSerializer.Deserialize<T>(categorySettings));
                 return result;
             }
             catch (Exception e)
             {
-                throw new Exception("Error getting settings", e);
+                throw new Exception("读取设置失败", e);
             }
         }
 
@@ -58,20 +65,33 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
                     _settings[label] = JsonSerializer.Serialize<T>(item);
                 }
             }
+            await Save();
         }
 
         public async Task Save()
         {
+            // await Console.Out.WriteLineAsync(JsonSerializer.Serialize(_settings));
             await _storage.SetSettingsJSON(JsonSerializer.Serialize(_settings));
         }
 
-        public async Task Load()
+        public async Task LoadAsync()
         {
             try
             {
-                var settingsJsonList = JsonSerializer.Deserialize<Dictionary<string, string>>(
-                    await _storage.GetSettingsJSON()
-                );
+                Dictionary<string, string>? settingsJsonList;
+                // await Console.Out.WriteLineAsync(await _storage.GetSettingsJSON());
+                try
+                {
+                    settingsJsonList = JsonSerializer.Deserialize<Dictionary<string, string>>(
+                        await _storage.GetSettingsJSON()
+                    );
+                }
+                catch (Exception)
+                {
+                    settingsJsonList = [];
+                    _settings = [];
+                    await Save();
+                }
 
                 if (settingsJsonList is not null)
                 {
@@ -84,6 +104,8 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
             }
             catch (Exception e)
             {
+                _settings = [];
+                await Save();
                 throw new Exception("Error loading settings", e);
             }
         }

@@ -81,7 +81,12 @@ namespace SastWiki.Core.Services.Infrastructure
 
                     if (System.IO.File.Exists(filePath))
                     {
-                        return new FileStream(filePath, FileMode.Open);
+                        return new FileStream(
+                            filePath,
+                            FileMode.Open,
+                            FileAccess.ReadWrite,
+                            FileShare.None
+                        );
                     }
                     else
                     {
