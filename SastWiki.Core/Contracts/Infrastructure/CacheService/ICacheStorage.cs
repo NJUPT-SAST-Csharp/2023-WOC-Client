@@ -56,5 +56,7 @@ namespace SastWiki.Core.Contracts.Infrastructure.CacheService
         /// <param name="ID">指定的缓存文件的ID</param>
         /// <returns></returns>
         public Task UpdateCacheFileAsync(string ID);
+
+        public Task<bool> ContainsAsync(string ID);
     }
 }

@@ -1,34 +1,96 @@
-﻿using SastWiki.Core.Contracts.Backend.Entry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
-    public class EntryProvider : IEntryProvider
+    public class EntryProvider(ISastWikiAPI _api, IEntryCache _cache) : IEntryProvider
     {
-        public EntryProvider() { }
+        private List<int> _entryIdList = [];
 
-        public Task<int> AddEntryAsync(Models.Entry entry)
+        public async Task<int> AddEntryAsync(EntryDto entry)
         {
-            throw new NotImplementedException();
+            entry.Id = -1;
+            var postTask = _api.PostEntry(entry);
+            try
+            {
+                return (await postTask).Id;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
-        public Task<Models.Entry> GetEntryByIdAsync(int id)
+        public async Task<EntryDto> GetEntryByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var getTask = _api.GetEntryById(id);
+            _ = getTask.ContinueWith(
+                async (task) =>
+                {
+                    try
+                    {
+                        var entry = await task;
+                        _ = _cache.AddAsync(id.ToString(), entry);
+                    }
+                    catch (Exception)
+                    {
+                        await _cache.RemoveAsync(id.ToString());
+                    }
+                }
+            );
+
+            if (await _cache.ContainsAsync(id.ToString()))
+            {
+                var cachedVer = await _cache.GetAsync(id.ToString());
+                if (cachedVer is not null)
+                {
+                    return cachedVer as EntryDto;
+                }
+            }
+
+            return await getTask;
         }
 
-        public Task<bool> IsEntryExistsAsync(int id)
+        public async Task<bool> IsEntryExistsAsync(int id)
         {
-            throw new NotImplementedException();
+            var a = GetEntryIDListAsync();
+            return (await a).Contains(id);
         }
 
-        public Task<bool> UpdateEntryAsync(Models.Entry entry)
+        public async Task<bool> UpdateEntryAsync(EntryDto entry)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _api.PostEntry(entry);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<int>> GetEntryIDListAsync()
+        {
+            var getTask = _api.GetEntries();
+            _ = getTask.ContinueWith(
+                async (task) =>
+                {
+                    var id = (await task).Select((EntryDto) => EntryDto.Id).ToList();
+                    lock (_entryIdList)
+                    {
+                        _entryIdList = id;
+                    }
+                }
+            );
+
+            return (await getTask).Select((EntryDto) => EntryDto.Id).ToList();
         }
     }
 }

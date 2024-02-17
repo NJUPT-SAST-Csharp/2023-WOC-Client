@@ -1,10 +1,10 @@
-﻿using SastWiki.Core.Contracts.Backend.Category;
-using SastWiki.Core.Models.Result;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend.Category;
+using SastWiki.Core.Models.Result;
 
 namespace SastWiki.Core.Services.Backend.Category
 {
@@ -17,22 +17,17 @@ namespace SastWiki.Core.Services.Backend.Category
             throw new NotImplementedException();
         }
 
-        public Task<CreateCategoryResult> CreateCategoryAsync(Models.Category category)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<List<string>> GetAllCategoryList()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Models.Category> GetCategoryByFullNameAsync(string fullName)
+        public Task<string> GetCategoryByFullNameAsync(string fullName)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Models.Category> GetCategoryByIDAsync(int id)
+        public Task<string> GetCategoryByIDAsync(int id)
         {
             throw new NotImplementedException();
         }
