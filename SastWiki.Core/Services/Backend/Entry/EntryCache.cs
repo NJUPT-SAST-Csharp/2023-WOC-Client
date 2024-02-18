@@ -13,8 +13,12 @@ namespace SastWiki.Core.Services.Backend.Entry
 {
     public class EntryCache : IEntryCache
     {
-        TimeSpan _expireTime = new TimeSpan(0, 10, 0);
+        readonly TimeSpan _expireTime = new TimeSpan(0, 10, 0);
+
         Dictionary<string, string> _cahceFileID = [];
+
+        public List<EntryDto>? EntryMetadataList { get; set; }
+
         ICacheStorage _storage;
         ISettingsProvider _settings;
 
@@ -29,6 +33,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             catch (Exception)
             {
+                // 如果 没有缓存文件与ID的映射关系 或 读取失败 则初始化并保存到设置文件中
                 _cahceFileID = [];
                 _settings.SetItem("EntryCacheList", _cahceFileID);
             }
@@ -38,25 +43,25 @@ namespace SastWiki.Core.Services.Backend.Entry
         {
             try
             {
-                if (_cahceFileID.ContainsKey(key))
+                if (_cahceFileID.ContainsKey(key)) // 如果已经有了对应的缓存文件……
                 {
                     using var cacheFileStream = await _storage.GetCacheFileStreamAsync(
                         _cahceFileID[key]
                     );
                     using var writer = new StreamWriter(cacheFileStream);
-                    await writer.WriteAsync(JsonSerializer.Serialize(value));
-                    await _storage.UpdateCacheFileAsync(_cahceFileID[key]);
+                    await writer.WriteAsync(JsonSerializer.Serialize(value)); // 就直接覆盖写入
+                    await _storage.UpdateCacheFileAsync(_cahceFileID[key]); // 并且刷新缓存文件的更新时间
                 }
                 else
                 {
-                    var ID = await _storage.CreateCacheFileAsync(_expireTime);
+                    var ID = await _storage.CreateCacheFileAsync(_expireTime); // 否则创建一个新的缓存文件
 
                     using var cacheFileStream = await _storage.GetCacheFileStreamAsync(ID);
                     using var writer = new StreamWriter(cacheFileStream);
-                    await writer.WriteAsync(JsonSerializer.Serialize(value));
+                    await writer.WriteAsync(JsonSerializer.Serialize(value)); //写入缓存数据
 
                     _cahceFileID.Add(key, ID);
-                    await _settings.SetItem("EntryCacheList", _cahceFileID);
+                    await _settings.SetItem("EntryCacheList", _cahceFileID); // 并且将新的缓存文件的ID与Key的映射关系保存到设置文件中
                 }
             }
             catch (Exception e)

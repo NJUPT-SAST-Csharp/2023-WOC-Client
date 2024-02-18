@@ -19,11 +19,15 @@ namespace SastWiki.Core.Services.Backend.Entry
             var postTask = _api.PostEntry(entry);
             try
             {
+                _cache.EntryMetadataList = null; // 清空词条列表缓存
                 return (await postTask).Id;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return -1;
+                throw new Exception(
+                    $"Failed to add a entry. Title is {entry.Title ?? "[null]"}",
+                    e
+                );
             }
         }
 
@@ -76,21 +80,35 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
         }
 
-        public async Task<List<int>> GetEntryIDListAsync()
+        public async Task<List<EntryDto>> GetEntryMetadataList()
         {
-            var getTask = _api.GetEntries();
-            _ = getTask.ContinueWith(
-                async (task) =>
-                {
-                    var id = (await task).Select((EntryDto) => EntryDto.Id).ToList();
-                    lock (_entryIdList)
-                    {
-                        _entryIdList = id;
-                    }
-                }
-            );
+            if (_cache.EntryMetadataList is not null)
+            {
+                return _cache.EntryMetadataList;
+            }
 
-            return (await getTask).Select((EntryDto) => EntryDto.Id).ToList();
+            // 从api获取词条列表
+            try
+            {
+                var entries = await _api.GetEntries();
+                var metadataList = entries
+                    .Select(entry =>
+                    {
+                        entry.Content = null;
+                        return entry;
+                    })
+                    .ToList();
+                _ = Task.Run(() =>
+                {
+                    _cache.EntryMetadataList = metadataList;
+                });
+
+                return metadataList;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Get Entry Metadata Error, and no cached ver available.", e);
+            }
         }
     }
 }
