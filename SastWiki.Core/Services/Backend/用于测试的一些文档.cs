@@ -92,7 +92,7 @@ This is a numbered list:
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateEntryAsync(EntryDto entry)
+        public Task UpdateEntryAsync(EntryDto entry)
         {
             throw new NotImplementedException();
         }

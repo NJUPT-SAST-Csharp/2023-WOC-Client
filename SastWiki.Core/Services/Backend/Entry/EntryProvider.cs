@@ -80,11 +80,12 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             else if (entryResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new NotFoundException($"Entry not found. Id is {id}");
+                throw new NotFoundException($"Entry not found. Id is {id}", entryResponse.Error!);
             }
             else
             {
-                throw entryResponse.Error ?? new Exception($"Failed to get a entry. Id is {id}");
+                throw new Exception($"Failed to get a entry. Id is {id}", entryResponse.Error)
+                    ?? new Exception($"Failed to get a entry. Id is {id}");
             }
         }
 
@@ -102,17 +103,23 @@ namespace SastWiki.Core.Services.Backend.Entry
                 if ((await postTask).StatusCode == HttpStatusCode.BadRequest)
                 {
                     throw new NoPermissionException(
-                        $"No permission to update the entry. Id is {entry.Id}"
+                        $"No permission to update the entry. Id is {entry.Id}",
+                        (await postTask).Error!
                     );
                 }
                 else if ((await postTask).StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new NotFoundException($"Entry not found. Id is {entry.Id}");
+                    throw new NotFoundException(
+                        $"Entry not found. Id is {entry.Id}",
+                        (await postTask).Error!
+                    );
                 }
                 else
                 {
-                    throw (await postTask).Error
-                        ?? new Exception($"Failed to update a entry. Id is {entry.Id}");
+                    throw new Exception(
+                        $"Failed to update a entry. Id is {entry.Id}",
+                        (await postTask).Error
+                    ) ?? new Exception($"Failed to update a entry. Id is {entry.Id}");
                 }
             }
         }
@@ -145,11 +152,11 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             else if (entriesRequest.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new NotFoundException("Entry not found.");
+                throw new NotFoundException("Entry not found.", inner: entriesRequest.Error!);
             }
             else
             {
-                throw entriesRequest.Error
+                throw new Exception("Failed to retrieve entry metadata list.", entriesRequest.Error)
                     ?? new Exception("Failed to retrieve entry metadata list.");
             }
         }
