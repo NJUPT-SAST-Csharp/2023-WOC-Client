@@ -82,6 +82,11 @@ This is a numbered list:
             throw new NotImplementedException();
         }
 
+        public Task<List<EntryDto>> GetEntryMetadataList()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> IsEntryExistsAsync(int id)
         {
             throw new NotImplementedException();

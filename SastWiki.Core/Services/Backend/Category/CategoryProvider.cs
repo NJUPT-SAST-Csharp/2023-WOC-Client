@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SastWiki.Core.Contracts.Backend.Category;
-using SastWiki.Core.Models.Result;
 
 namespace SastWiki.Core.Services.Backend.Category
 {
@@ -12,7 +11,7 @@ namespace SastWiki.Core.Services.Backend.Category
     {
         public CategoryProvider() { }
 
-        public Task<CreateCategoryResult> CreateCategoryAsync(string categoryName)
+        public Task CreateCategoryAsync(string categoryName)
         {
             throw new NotImplementedException();
         }

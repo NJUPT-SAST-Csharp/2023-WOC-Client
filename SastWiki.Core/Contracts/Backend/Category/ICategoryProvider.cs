@@ -14,6 +14,6 @@ namespace SastWiki.Core.Contracts.Backend.Category
 
         public Task<List<string>> GetAllCategoryList();
 
-        public Task<Models.Result.CreateCategoryResult> CreateCategoryAsync(string categoryName);
+        public Task CreateCategoryAsync(string categoryName);
     }
 }

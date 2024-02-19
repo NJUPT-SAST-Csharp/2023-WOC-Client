@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Refit;
 using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Models.Exceptions;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
@@ -17,17 +20,33 @@ namespace SastWiki.Core.Services.Backend.Entry
         {
             entry.Id = -1;
             var postTask = _api.PostEntry(entry);
-            try
+
+            _cache.EntryMetadataList = null; // 清空词条列表缓存
+            var postResponse = await postTask;
+            if (postResponse.IsSuccessStatusCode)
             {
-                _cache.EntryMetadataList = null; // 清空词条列表缓存
-                return (await postTask).Id;
+                if (postResponse.Content is not null)
+                    return postResponse.Content.Id;
+                else
+                    throw new Exception(
+                        $"Failed to add a entry. Title is {entry.Title ?? "[null]"}"
+                    );
             }
-            catch (Exception e)
+            else
             {
-                throw new Exception(
-                    $"Failed to add a entry. Title is {entry.Title ?? "[null]"}",
-                    e
-                );
+                if (postResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new NoPermissionException(
+                        $"No permission to add the entry. Title is {entry.Title ?? "[null]"}"
+                    );
+                }
+                else
+                {
+                    throw postResponse.Error
+                        ?? new Exception(
+                            $"Failed to add a entry. Title is {entry.Title ?? "[null]"}"
+                        );
+                }
             }
         }
 
@@ -37,14 +56,10 @@ namespace SastWiki.Core.Services.Backend.Entry
             _ = getTask.ContinueWith(
                 async (task) =>
                 {
-                    try
+                    var entryResponse = await task;
+                    if (entryResponse.IsSuccessStatusCode && entryResponse.Content is not null)
                     {
-                        var entry = await task;
-                        _ = _cache.AddAsync(id.ToString(), entry);
-                    }
-                    catch (Exception)
-                    {
-                        await _cache.RemoveAsync(id.ToString());
+                        await _cache.AddAsync(id.ToString(), entryResponse.Content);
                     }
                 }
             );
@@ -58,25 +73,47 @@ namespace SastWiki.Core.Services.Backend.Entry
                 }
             }
 
-            return await getTask;
+            var entryResponse = await getTask;
+            if (entryResponse.IsSuccessStatusCode && entryResponse.Content is not null)
+            {
+                return entryResponse.Content;
+            }
+            else if (entryResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new NotFoundException($"Entry not found. Id is {id}");
+            }
+            else
+            {
+                throw entryResponse.Error ?? new Exception($"Failed to get a entry. Id is {id}");
+            }
         }
 
         public async Task<bool> IsEntryExistsAsync(int id)
         {
-            var a = GetEntryIDListAsync();
-            return (await a).Contains(id);
+            var a = GetEntryMetadataList();
+            return (await a).Select(entry => entry.Id).Contains(id);
         }
 
-        public async Task<bool> UpdateEntryAsync(EntryDto entry)
+        public async Task UpdateEntryAsync(EntryDto entry)
         {
-            try
+            var postTask = _api.PostEntry(entry);
+            if (!(await postTask).IsSuccessStatusCode)
             {
-                await _api.PostEntry(entry);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
+                if ((await postTask).StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new NoPermissionException(
+                        $"No permission to update the entry. Id is {entry.Id}"
+                    );
+                }
+                else if ((await postTask).StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException($"Entry not found. Id is {entry.Id}");
+                }
+                else
+                {
+                    throw (await postTask).Error
+                        ?? new Exception($"Failed to update a entry. Id is {entry.Id}");
+                }
             }
         }
 
@@ -88,26 +125,32 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
 
             // 从api获取词条列表
-            try
+            var entriesRequest = await _api.GetEntries();
+
+            if (entriesRequest.IsSuccessStatusCode && entriesRequest.Content is not null)
             {
-                var entries = await _api.GetEntries();
-                var metadataList = entries
-                    .Select(entry =>
+                var metadataList = entriesRequest
+                    .Content.Select(entry =>
                     {
                         entry.Content = null;
                         return entry;
                     })
                     .ToList();
-                _ = Task.Run(() =>
+
+                await Task.Run(() =>
                 {
                     _cache.EntryMetadataList = metadataList;
                 });
-
                 return metadataList;
             }
-            catch (Exception e)
+            else if (entriesRequest.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new Exception("Get Entry Metadata Error, and no cached ver available.", e);
+                throw new NotFoundException("Entry not found.");
+            }
+            else
+            {
+                throw entriesRequest.Error
+                    ?? new Exception("Failed to retrieve entry metadata list.");
             }
         }
     }
