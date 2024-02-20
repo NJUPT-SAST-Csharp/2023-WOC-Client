@@ -17,7 +17,25 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         Dictionary<string, string> _cahceFileID = [];
 
-        public List<EntryDto>? EntryMetadataList { get; set; }
+        object _entryMetadataListlock = new object();
+        private List<EntryDto>? _entryMetadataList;
+        public List<EntryDto>? EntryMetadataList
+        {
+            get
+            {
+                lock (_entryMetadataListlock)
+                {
+                    return _entryMetadataList;
+                }
+            }
+            set
+            {
+                lock (_entryMetadataListlock)
+                {
+                    _entryMetadataList = value;
+                }
+            }
+        }
 
         ICacheStorage _storage;
         ISettingsProvider _settings;

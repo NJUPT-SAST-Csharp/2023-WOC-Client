@@ -21,6 +21,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             var postTask = _api.PostEntry(entry);
 
             _cache.EntryMetadataList = null; // 清空词条列表缓存
+            _ = GetEntryMetadataList();
             var postResponse = await postTask;
             if (postResponse.IsSuccessStatusCode)
             {
