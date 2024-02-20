@@ -8,7 +8,6 @@ using Refit;
 using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Models.Dto;
-using SastWiki.Core.Models.Exceptions;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
@@ -18,15 +17,15 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task<int> AddEntryAsync(EntryDto entry)
         {
-            entry.Id = -1;
+            entry.Id = null;
             var postTask = _api.PostEntry(entry);
 
             _cache.EntryMetadataList = null; // 清空词条列表缓存
             var postResponse = await postTask;
             if (postResponse.IsSuccessStatusCode)
             {
-                if (postResponse.Content is not null)
-                    return postResponse.Content.Id;
+                if (postResponse.Content is not null && postResponse.Content.Id is int id)
+                    return id;
                 else
                     throw new Exception(
                         $"Failed to add a entry. Title is {entry.Title ?? "[null]"}"
@@ -34,7 +33,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             else
             {
-                throw postResponse.Error!;
+                throw postResponse.Error!; // ApiException.Response == "The entry has already exist!" 即标题重复
             }
         }
 

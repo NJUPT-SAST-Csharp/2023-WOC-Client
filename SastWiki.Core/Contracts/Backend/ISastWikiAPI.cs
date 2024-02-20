@@ -23,6 +23,8 @@ namespace SastWiki.Core.Contracts.Backend
         public Task<IApiResponse<List<EntryDto>>> GetEntryByCategory(string categoryName);
 
         [Post("/api/Entry/PostEntry")]
-        public Task<IApiResponse<EntryDto>> PostEntry([Body] EntryDto entry);
+        public Task<IApiResponse<EntryDto>> PostEntry(
+            [Refit.Body(BodySerializationMethod.UrlEncoded)] EntryDto entry
+        );
     }
 }
