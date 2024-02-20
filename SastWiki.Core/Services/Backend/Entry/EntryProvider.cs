@@ -53,11 +53,15 @@ namespace SastWiki.Core.Services.Backend.Entry
 
             if (await _cache.ContainsAsync(id.ToString()))
             {
-                var cachedVer = await _cache.GetAsync(id.ToString());
-                if (cachedVer is not null)
+                try
                 {
-                    return cachedVer as EntryDto;
+                    var cachedVer = await _cache.GetAsync(id.ToString());
+                    if (cachedVer is not null)
+                    {
+                        return cachedVer as EntryDto;
+                    }
                 }
+                catch (Exception) { }
             }
 
             var entryResponse = await getTask;
