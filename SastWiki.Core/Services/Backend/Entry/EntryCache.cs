@@ -43,7 +43,9 @@ namespace SastWiki.Core.Services.Backend.Entry
         {
             try
             {
-                if (_cahceFileID.ContainsKey(key)) // 如果已经有了对应的缓存文件……
+                if (
+                    _cahceFileID.ContainsKey(key) && await _storage.ContainsAsync(_cahceFileID[key])
+                ) // 如果已经有了对应的缓存文件……
                 {
                     using var cacheFileStream = await _storage.GetCacheFileStreamAsync(
                         _cahceFileID[key]

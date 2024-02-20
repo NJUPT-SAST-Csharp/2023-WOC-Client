@@ -62,7 +62,8 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         public async Task<bool> ContainsAsync(string ID)
         {
             await InitializeAsync();
-            return _cacheList.Exists(x => x.FileName == ID);
+            return _cacheList.Exists(x => x.FileName == ID)
+                && await _storage.Contains(_cachePath, ID);
         }
 
         public async Task<string> CreateCacheFileAsync(TimeSpan expireTime)
