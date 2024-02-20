@@ -62,7 +62,11 @@ namespace SastWiki.Core.Services.Backend.Entry
                     using var writer = new StreamWriter(cacheFileStream);
                     await writer.WriteAsync(JsonSerializer.Serialize(value)); //写入缓存数据
 
-                    _cahceFileID.Add(key, ID);
+                    if (_cahceFileID.ContainsKey(key))
+                        _cahceFileID[key] = ID;
+                    else
+                        _cahceFileID.Add(key, ID);
+
                     await _settings.SetItem("EntryCacheList", _cahceFileID); // 并且将新的缓存文件的ID与Key的映射关系保存到设置文件中
                 }
             }
