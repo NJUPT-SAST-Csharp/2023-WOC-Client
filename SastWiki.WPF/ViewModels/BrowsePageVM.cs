@@ -26,13 +26,7 @@ namespace SastWiki.WPF.ViewModels
 
     public class TagEntry
     {
-        public string TagName
-        {
-            get; set;
-        }
-        public IEnumerable<int> Ids
-        {
-            get; set;
-        }
+        public string TagName { get; set; }
+        public IEnumerable<int> Ids { get; set; }
     }
 }

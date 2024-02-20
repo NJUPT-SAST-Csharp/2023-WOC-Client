@@ -116,6 +116,7 @@ namespace SastWiki.WPF
                         services.AddSingleton<MainWindowVM>();
                         services.AddSingleton<HomePageVM>();
                         services.AddSingleton<BrowsePageVM>();
+                        services.AddSingleton<EditPageVM>();
                         services.AddSingleton<SettingsVM>();
                         services.AddTransient<SearchResultVM>();
                         services.AddTransient<EntryViewVM>();
@@ -123,6 +124,7 @@ namespace SastWiki.WPF
                         // Register Views
                         services.AddSingleton<MainWindow>();
                         services.AddSingleton<HomePage>();
+                        services.AddSingleton<EditPage>();
                         services.AddSingleton<BrowsePage>();
                         services.AddSingleton<SettingsPage>();
                         services.AddSingleton<ThemeChangePage>();

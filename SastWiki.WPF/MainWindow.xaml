@@ -19,6 +19,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="30" />
                 <RowDefinition />
                 <RowDefinition Height="30" />
@@ -32,15 +33,19 @@
                 Grid.Row="1"
                 Command="{Binding GoToBrowsePageCommand}"
                 Content="Browse" />
+            <Button
+                Grid.Row="2"
+                Command="{Binding GotoEditPageCommand}"
+                Content="Edit" />
             <TextBox
                 x:Name="SearchBox"
-                Grid.Row="2"
+                Grid.Row="3"
                 VerticalContentAlignment="Center"
                 Cursor="IBeam"
                 PreviewKeyUp="SearchBox_KeyUp"
                 Text="{Binding SearchBoxText}" />
 
-            <TreeView Grid.Row="3" Background="Transparent">
+            <TreeView Grid.Row="4" Background="Transparent">
                 <TreeViewItem Header="测试用数据">
                     <TreeViewItem Header="测试层级" />
                     <TreeViewItem Header="测试层级" />
@@ -51,11 +56,11 @@
                 </TreeViewItem>
             </TreeView>
             <Button
-                Grid.Row="4"
+                Grid.Row="5"
                 Command="{Binding GoToSettingsPageCommand}"
                 Content="Settings" />
             <Button
-                Grid.Row="5"
+                Grid.Row="6"
                 Command="{Binding GoToUserPageCommand}"
                 Content="Username" />
         </Grid>

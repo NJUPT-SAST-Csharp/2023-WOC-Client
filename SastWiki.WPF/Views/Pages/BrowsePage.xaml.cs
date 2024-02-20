@@ -1,5 +1,7 @@
 ﻿using SastWiki.Core.Contracts.Backend.Tag;
+using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.Backend.Tag;
+using SastWiki.Core.Services.InternalLink;
 using SastWiki.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class BrowsePage : Page
     {
+        private readonly InternalLinkService _internalLinkService;
         private ITagProvider _tagProvider;
 
         public BrowsePage(ITagProvider tagProvider)
@@ -33,10 +36,8 @@ namespace SastWiki.WPF.Views.Pages
 
         public async void LoadData()
         {
-            // 获取所有标签
             var allTags = await _tagProvider.GetAllTagsList();
 
-            // 创建数据模型列表
             var tagEntries = new List<TagEntry>();
             foreach (var tag in allTags)
             {
@@ -44,17 +45,13 @@ namespace SastWiki.WPF.Views.Pages
                 tagEntries.Add(new TagEntry { TagName = tag, Ids = entryIds });
             }
 
-            // 绑定到 ListView
             lv.ItemsSource = tagEntries;
         }
 
         private void ListViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var item = sender as ListViewItem;
-            if (item != null)
-            {
-                // 处理点击事件
-            }
+            if (item != null) { }
         }
     }
 }
