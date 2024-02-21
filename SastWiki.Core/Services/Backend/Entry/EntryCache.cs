@@ -68,15 +68,17 @@ namespace SastWiki.Core.Services.Backend.Entry
         public async Task AddAsync(string key, EntryDto value)
         {
             await InitializeTask;
+            await _storage.LockCacheFile(_cahceFileID[key]);
             try
             {
                 if (
                     _cahceFileID.ContainsKey(key) && await _storage.ContainsAsync(_cahceFileID[key])
                 ) // 如果已经有了对应的缓存文件……
                 {
-                    using var cacheFileStream = await _storage.GetCacheFileStreamAsync(
+                    FileStream fileStream = await _storage.GetCacheFileStreamAsync(
                         _cahceFileID[key]
                     );
+                    using var cacheFileStream = fileStream;
                     using var writer = new StreamWriter(cacheFileStream);
                     await writer.WriteAsync(JsonSerializer.Serialize(value)); // 就直接覆盖写入
                     await _storage.UpdateCacheFileAsync(_cahceFileID[key]); // 并且刷新缓存文件的更新时间
@@ -103,7 +105,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             finally
             {
-                await _storage.ReleaseCacheFile(_cahceFileID[key]); // 释放缓存文件
+                _storage.ReleaseCacheFile(_cahceFileID[key]); // 释放缓存文件
             }
         }
 
@@ -118,6 +120,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             await InitializeTask;
             if (await ContainsAsync(key))
             {
+                await _storage.LockCacheFile(_cahceFileID[key]);
                 try
                 {
                     using var fs = await _storage.GetCacheFileStreamAsync(_cahceFileID[key]);
@@ -130,7 +133,7 @@ namespace SastWiki.Core.Services.Backend.Entry
                 }
                 finally
                 {
-                    await _storage.ReleaseCacheFile(_cahceFileID[key]);
+                    _storage.ReleaseCacheFile(_cahceFileID[key]);
                 }
             }
             else

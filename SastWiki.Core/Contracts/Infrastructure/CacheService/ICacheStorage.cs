@@ -59,6 +59,8 @@ namespace SastWiki.Core.Contracts.Infrastructure.CacheService
 
         public Task<bool> ContainsAsync(string ID);
 
-        public Task ReleaseCacheFile(string ID);
+        public void ReleaseCacheFile(string ID);
+
+        public Task LockCacheFile(string ID);
     }
 }
