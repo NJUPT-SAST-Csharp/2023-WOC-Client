@@ -44,76 +44,8 @@ namespace SastWiki.WPF
                 .ConfigureServices(
                     (context, services) =>
                     {
-                        services
-                            .AddRefitClient<Core.Contracts.Backend.ISastWikiAPI>()
-                            .ConfigureHttpClient(c =>
-                                c.BaseAddress = new Uri("https://jsonplaceholder.typicode.com/")
-                            );
-
-                        // Core.Contracts.Backend
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Entry.IEntryProvider,
-                            用于测试的一些文档
-                        >(); // 仅仅用于测试，实际应用中应该使用真实的数据源
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Category.ICategoryProvider,
-                            Core.Services.Backend.Category.CategoryProvider
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Tag.ITagProvider,
-                            Core.Services.Backend.Tag.TagProvider
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Image.IImageProvider,
-                            Core.Services.Backend.Image.ImageProvider
-                        >();
-
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Entry.IEntryCache,
-                            Core.Services.Backend.Entry.EntryCache
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Category.ICategoryCache,
-                            Core.Services.Backend.Category.CategoryCache
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Tag.ITagCache,
-                            Core.Services.Backend.Tag.TagCache
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Backend.Image.IImageCache,
-                            Core.Services.Backend.Image.ImageCache
-                        >();
-
-                        // Core.Contracts.Infrastructure
-                        services.AddSingleton<
-                            Core.Contracts.Infrastructure.CacheService.ICacheStorage,
-                            Core.Services.Infrastructure.CacheService.CacheStorage
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Infrastructure.SettingsService.ISettingsProvider,
-                            Core.Services.Infrastructure.SettingsService.SettingsProvider
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Infrastructure.SettingsService.ISettingsStorage,
-                            Core.Services.Infrastructure.SettingsService.SettingsStorage
-                        >();
-                        services.AddSingleton<
-                            Core.Contracts.Infrastructure.ILocalStorage,
-                            Core.Services.Infrastructure.LocalStorage
-                        >();
-
-                        // Core.Contracts.InternalLink
-                        services.AddSingleton<IInternalLinkService, InternalLinkService>();
-                        services.AddSingleton<IInternalLinkHandler, InternalLinkHandler>();
-                        services.AddSingleton<IInternalLinkValidator, InternalLinkValidator>();
-                        services.AddSingleton<IInternalLinkCreator, InternalLinkCreator>();
-
-                        // Core.Contracts.User
-                        services.AddSingleton<IAuthenticationStorage, AuthenticationStorage>();
-                        services.AddSingleton<IUserLogin, UserLogin>();
-                        services.AddSingleton<IUserRegister, UserRegister>();
-                        services.AddSingleton<IUserStatus, UserStatus>();
+                        // Core Services
+                        Core.Helper.ServicesHelper.SetServices(services);
 
                         // WPF.Contracts
                         services.AddSingleton<INavigationService, NavigationService>();
@@ -139,6 +71,11 @@ namespace SastWiki.WPF
                     }
                 )
                 .Build();
+
+            // Register Refit Authentication Handler
+            Core.Helper.ServicesHelper.SetRefitBearerTokenGetter(
+                GetService<IAuthenticationStorage>()
+            );
 
             // Register Internal Links
             var internalLinkService = GetService<IInternalLinkService>();
