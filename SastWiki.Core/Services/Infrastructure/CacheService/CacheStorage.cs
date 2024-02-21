@@ -61,14 +61,14 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
 
         public async Task<bool> ContainsAsync(string ID)
         {
-            await InitializeAsync();
+            await InitializeTask;
             return _cacheList.Exists(x => x.FileName == ID)
                 && await _storage.Contains(_cachePath, ID);
         }
 
         public async Task<string> CreateCacheFileAsync(TimeSpan expireTime)
         {
-            await InitializeAsync();
+            await InitializeTask;
 
             // Create a random cache file
             var randomName = Guid.NewGuid().ToString();
@@ -103,7 +103,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
 
         public async Task<FileStream> GetCacheFileStreamAsync(string ID)
         {
-            await InitializeAsync();
+            await InitializeTask;
 
             if (await ContainsAsync(ID))
             {

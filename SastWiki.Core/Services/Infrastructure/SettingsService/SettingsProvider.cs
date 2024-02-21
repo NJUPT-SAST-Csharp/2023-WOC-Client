@@ -16,13 +16,21 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
         public SettingsProvider(ISettingsStorage storage)
         {
             _storage = storage;
-            LoadAsync().Wait();
+            InitializeTask = LoadAsync();
+        }
+
+        public Task InitializeTask;
+
+        public async Task InitializeAsync()
+        {
+            await LoadAsync();
         }
 
         Dictionary<string, string> _settings = [];
 
         public async Task<T?> GetItem<T>(string label)
         {
+            await InitializeTask;
             string? categorySettings;
             try
             {
@@ -45,6 +53,7 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
 
         public async Task SetItem<T>(string label, T item)
         {
+            await InitializeTask;
             if (item is null)
             {
                 throw new ArgumentNullException(nameof(item));
@@ -65,11 +74,12 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
                     _settings[label] = JsonSerializer.Serialize<T>(item);
                 }
             }
-            await Save();
+            // await Save();
         }
 
         public async Task Save()
         {
+            await InitializeTask;
             // await Console.Out.WriteLineAsync(JsonSerializer.Serialize(_settings));
             await _storage.SetSettingsJSON(JsonSerializer.Serialize(_settings));
         }

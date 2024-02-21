@@ -44,21 +44,30 @@ namespace SastWiki.Core.Services.Backend.Entry
         {
             _storage = storage;
             _settings = settings;
+            InitializeTask = InitializeAsync();
+        }
+
+        public Task InitializeTask;
+
+        public async Task InitializeAsync()
+        {
             try
             {
-                _cahceFileID =
-                    _settings.GetItem<Dictionary<string, string>>("EntryCacheList").Result ?? [];
+                var task = _settings.GetItem<Dictionary<string, string>>("EntryCacheList");
+
+                _cahceFileID = await task ?? [];
             }
             catch (Exception)
             {
                 // 如果 没有缓存文件与ID的映射关系 或 读取失败 则初始化并保存到设置文件中
                 _cahceFileID = [];
-                _settings.SetItem("EntryCacheList", _cahceFileID);
+                await _settings.SetItem("EntryCacheList", _cahceFileID);
             }
         }
 
         public async Task AddAsync(string key, EntryDto value)
         {
+            await InitializeTask;
             try
             {
                 if (
@@ -96,11 +105,13 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task<bool> ContainsAsync(string key)
         {
+            await InitializeTask;
             return await Task.Run(() => _cahceFileID.ContainsKey(key));
         }
 
         public async Task<EntryDto?> GetAsync(string key)
         {
+            await InitializeTask;
             if (await ContainsAsync(key))
             {
                 return JsonSerializer.Deserialize<EntryDto>(
@@ -115,8 +126,9 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
         }
 
-        public Task<bool> RemoveAsync(string key)
+        public async Task<bool> RemoveAsync(string key)
         {
+            await InitializeTask;
             throw new NotImplementedException();
         }
     }

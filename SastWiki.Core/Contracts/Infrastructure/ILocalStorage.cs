@@ -36,5 +36,7 @@ namespace SastWiki.Core.Contracts.Infrastructure
         public Task CreateAsync(string absolutePath, string fileName);
 
         public Task<bool> Contains(string absolutePath, string fileName);
+
+        public FileStream GetFileStream(string absolutePath, string fileName);
     }
 }
