@@ -23,12 +23,13 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
 
             try
             {
-                using var stream = await _localStorage.GetFileStreamAsync(
-                    _settingsFilePath,
-                    _settingsFileName
-                );
                 lock (SettingsFileLock)
                 {
+                    using var stream = _localStorage.GetFileStream(
+                        _settingsFilePath,
+                        _settingsFileName
+                    );
+
                     var json = new StreamReader(stream).ReadToEnd();
                     return json;
                 }
@@ -51,12 +52,13 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
 
             try
             {
-                using var stream = await _localStorage.GetFileStreamAsync(
-                    _settingsFilePath,
-                    _settingsFileName
-                );
                 lock (SettingsFileLock)
                 {
+                    using var stream = _localStorage.GetFileStream(
+                        _settingsFilePath,
+                        _settingsFileName
+                    );
+
                     using (StreamWriter sw = new StreamWriter(stream))
                     {
                         // discard the contents of the file by setting the length to 0

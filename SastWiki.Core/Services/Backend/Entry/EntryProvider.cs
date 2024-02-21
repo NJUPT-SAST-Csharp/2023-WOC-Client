@@ -1,29 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Refit;
 using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Services.User;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
-    public class EntryProvider(ISastWikiAPI _api, IEntryCache _cache) : IEntryProvider
+    public class EntryProvider(
+        ISastWikiAPI _api,
+        IEntryCache _cache,
+        IAuthenticationStorage _authentication
+    ) : IEntryProvider
     {
         private List<int> _entryIdList = [];
 
         public async Task<int> AddEntryAsync(EntryDto entry)
         {
-            entry.Id = -1;
+            entry.Id = null;
             var postTask = _api.PostEntry(entry);
-            try
+
+            _cache.EntryMetadataList = null; // 清空词条列表缓存
+            _ = GetEntryMetadataList();
+            var postResponse = await postTask;
+            if (postResponse.IsSuccessStatusCode)
             {
-                return (await postTask).Id;
+                if (postResponse.Content is not null && postResponse.Content.Id is int id)
+                    return id;
+                else
+                    throw new Exception(
+                        $"Failed to add a entry. Title is {entry.Title ?? "[null]"}"
+                    );
             }
-            catch (Exception)
+            else
             {
-                return -1;
+                throw postResponse.Error!; // ApiException.Content == "The entry has already exist!" 即标题重复
             }
         }
 
@@ -33,64 +50,83 @@ namespace SastWiki.Core.Services.Backend.Entry
             _ = getTask.ContinueWith(
                 async (task) =>
                 {
-                    try
+                    var entryResponse = await task;
+                    if (entryResponse.IsSuccessStatusCode && entryResponse.Content is not null)
                     {
-                        var entry = await task;
-                        _ = _cache.AddAsync(id.ToString(), entry);
-                    }
-                    catch (Exception)
-                    {
-                        await _cache.RemoveAsync(id.ToString());
+                        await _cache.AddAsync(id.ToString(), entryResponse.Content);
                     }
                 }
             );
 
             if (await _cache.ContainsAsync(id.ToString()))
             {
-                var cachedVer = await _cache.GetAsync(id.ToString());
-                if (cachedVer is not null)
+                try
                 {
-                    return cachedVer as EntryDto;
+                    var cachedVer = await _cache.GetAsync(id.ToString());
+                    if (cachedVer is not null)
+                    {
+                        return cachedVer as EntryDto;
+                    }
                 }
+                catch (Exception) { }
             }
 
-            return await getTask;
+            var entryResponse = await getTask;
+            if (entryResponse.IsSuccessStatusCode && entryResponse.Content is not null)
+            {
+                return entryResponse.Content;
+            }
+            else
+            {
+                throw entryResponse.Error!;
+            }
         }
 
         public async Task<bool> IsEntryExistsAsync(int id)
         {
-            var a = GetEntryIDListAsync();
-            return (await a).Contains(id);
+            var a = GetEntryMetadataList();
+            return (await a).Select(entry => entry.Id).Contains(id);
         }
 
-        public async Task<bool> UpdateEntryAsync(EntryDto entry)
+        public async Task UpdateEntryAsync(EntryDto entry)
         {
-            try
+            var postTask = _api.PostEntry(entry);
+            if (!(await postTask).IsSuccessStatusCode)
             {
-                await _api.PostEntry(entry);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
+                throw (await postTask).Error!;
             }
         }
 
-        public async Task<List<int>> GetEntryIDListAsync()
+        public async Task<List<EntryDto>> GetEntryMetadataList()
         {
-            var getTask = _api.GetEntries();
-            _ = getTask.ContinueWith(
-                async (task) =>
-                {
-                    var id = (await task).Select((EntryDto) => EntryDto.Id).ToList();
-                    lock (_entryIdList)
+            if (_cache.EntryMetadataList is not null)
+            {
+                return _cache.EntryMetadataList;
+            }
+
+            // 从api获取词条列表
+            var entriesRequest = await _api.GetEntries();
+
+            if (entriesRequest.IsSuccessStatusCode && entriesRequest.Content is not null)
+            {
+                var metadataList = entriesRequest
+                    .Content.Select(entry =>
                     {
-                        _entryIdList = id;
-                    }
-                }
-            );
+                        entry.Content = null;
+                        return entry;
+                    })
+                    .ToList();
 
-            return (await getTask).Select((EntryDto) => EntryDto.Id).ToList();
+                await Task.Run(() =>
+                {
+                    _cache.EntryMetadataList = metadataList;
+                });
+                return metadataList;
+            }
+            else
+            {
+                throw entriesRequest.Error!;
+            }
         }
     }
 }

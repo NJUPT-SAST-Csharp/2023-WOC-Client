@@ -1,7 +1,3 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.Infrastructure.CacheService;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -21,9 +24,13 @@ namespace SastWiki.WPF.ViewModels
             _navigationService = navigationSevice;
         }
 
-        private void TestWebview2()
+        private async void TestWebview2()
         {
-            _navigationService.NavigateTo(App.GetService<EntryViewPage>(), 114514);
+            var settings = App.GetService<IEntryCache>();
+            MessageBox.Show("Initialized finished.");
+            var entryprovider = App.GetService<IEntryProvider>();
+            var entry = await entryprovider.GetEntryByIdAsync(1);
+            MessageBox.Show($"Entry ID 1: Title {entry.Title}");
         }
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);

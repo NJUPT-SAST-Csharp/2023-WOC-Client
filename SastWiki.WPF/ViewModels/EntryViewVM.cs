@@ -1,20 +1,20 @@
 #pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Web;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Web;
-using SastWiki.Core.Contracts.InternalLink;
+using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Web;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Utils;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -107,9 +107,15 @@ namespace SastWiki.WPF.ViewModels
         {
             if (parameters is int id)
             {
-                Markdown_text = (
-                    await App.GetService<IEntryProvider>().GetEntryByIdAsync(id)
-                ).Content;
+                try
+                {
+                    Markdown_text = "Not Found";
+                }
+                catch (Exception)
+                {
+                    Markdown_text = "Not Found";
+                    throw;
+                }
                 return true;
             }
             return false;

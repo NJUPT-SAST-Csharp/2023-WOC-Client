@@ -28,8 +28,7 @@ namespace SastWiki.Core.Contracts.Backend.Entry
         /// 请求修改一个词条，与AddEntryAsync的区别在于会使用传入Entry的id
         /// </summary>
         /// <param name="entry"></param>
-        /// <returns>Return true if successful</returns>
-        public Task<bool> UpdateEntryAsync(EntryDto entry);
+        public Task UpdateEntryAsync(EntryDto entry);
 
         /// <summary>
         /// 返回是否存在某个词条
@@ -38,6 +37,10 @@ namespace SastWiki.Core.Contracts.Backend.Entry
         /// <returns></returns>
         public Task<bool> IsEntryExistsAsync(int id);
 
-        public Task<List<int>> GetEntryIDListAsync();
+        /// <summary>
+        /// 获取词条的元数据列表，即不包含内容，只包含所有词条的id,标题，tag，分类等的词条
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<EntryDto>> GetEntryMetadataList();
     }
 }

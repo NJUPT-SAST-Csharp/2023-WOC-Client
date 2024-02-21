@@ -24,6 +24,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         readonly ILocalStorage _storage;
         readonly ISettingsProvider _settings;
         List<CacheFile> _cacheList = [];
+        Dictionary<string, ReaderWriterLockSlim> _locks = [];
 
         async Task InitializeAsync()
         {
@@ -42,6 +43,11 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                 if (cachefilelist is not null)
                 {
                     _cacheList = cachefilelist;
+                    lock (_locks)
+                        foreach (var cache in cachefilelist)
+                        {
+                            _locks.Add(cache.FileName, new());
+                        }
                 }
                 else
                 {
@@ -61,13 +67,15 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
 
         public async Task<bool> ContainsAsync(string ID)
         {
-            await InitializeAsync();
-            return _cacheList.Exists(x => x.FileName == ID);
+            await InitializeTask;
+            return _cacheList.Exists(x => x.FileName == ID)
+                && _locks.ContainsKey(ID)
+                && await _storage.Contains(_cachePath, ID);
         }
 
         public async Task<string> CreateCacheFileAsync(TimeSpan expireTime)
         {
-            await InitializeAsync();
+            await InitializeTask;
 
             // Create a random cache file
             var randomName = Guid.NewGuid().ToString();
@@ -82,6 +90,8 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                         UpdatedTime = DateTime.Now
                     }
                 );
+                lock (_locks)
+                    _locks.Add(randomName, new());
             }
             await _settings.SetItem("CacheList", _cacheList);
             return randomName;
@@ -102,12 +112,17 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
 
         public async Task<FileStream> GetCacheFileStreamAsync(string ID)
         {
-            await InitializeAsync();
+            await InitializeTask;
 
             if (await ContainsAsync(ID))
             {
                 try
                 {
+                    lock (_locks)
+                    {
+                        _locks.TryGetValue(ID, out var locker);
+                        locker!.EnterWriteLock();
+                    } // ContainsAsync() 已经确保不为null
                     return await _storage.GetFileStreamAsync(_cachePath, ID);
                 }
                 catch (Exception)
@@ -136,6 +151,15 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                 }
                 _ = _settings.SetItem("CacheList", _cacheList);
             });
+        }
+
+        public async Task ReleaseCacheFile(string ID)
+        {
+            lock (_locks)
+            {
+                _locks.TryGetValue(ID, out var locker);
+                locker!.ExitWriteLock();
+            }
         }
     }
 }
