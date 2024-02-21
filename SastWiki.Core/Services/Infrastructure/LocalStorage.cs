@@ -66,34 +66,8 @@ namespace SastWiki.Core.Services.Infrastructure
             });
         }
 
-        public async Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName)
-        {
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    string filePath = System.IO.Path.Combine(absolutePath, fileName);
-
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        return new FileStream(
-                            filePath,
-                            FileMode.Open,
-                            FileAccess.ReadWrite,
-                            FileShare.None
-                        );
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException($"File not found. {filePath}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occurred while getting the file stream", ex);
-                }
-            });
-        }
+        public async Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName) =>
+            await Task.Run(() => GetFileStream(absolutePath, fileName));
 
         public FileStream GetFileStream(string absolutePath, string fileName)
         {
