@@ -23,7 +23,7 @@ namespace SastWiki.Core.Services.Backend.Tag
         public async Task<List<EntryDto>> GetEntryByTags(List<string> tags) =>
             [
                 .. (await entryProvider.GetEntryMetadataList()).Where(x =>
-                    x.TagNames.Intersect(tags).Any()
+                    x.TagNames.Distinct().Intersect(tags).Count() == tags.Count
                 )
             ];
     }
