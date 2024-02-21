@@ -58,5 +58,7 @@ namespace SastWiki.Core.Contracts.Infrastructure.CacheService
         public Task UpdateCacheFileAsync(string ID);
 
         public Task<bool> ContainsAsync(string ID);
+
+        public Task ReleaseCacheFile(string ID);
     }
 }

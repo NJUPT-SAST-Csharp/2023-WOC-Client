@@ -101,6 +101,10 @@ namespace SastWiki.Core.Services.Backend.Entry
             {
                 throw new Exception("Failed to add cache", e);
             }
+            finally
+            {
+                await _storage.ReleaseCacheFile(_cahceFileID[key]); // 释放缓存文件
+            }
         }
 
         public async Task<bool> ContainsAsync(string key)
@@ -114,11 +118,20 @@ namespace SastWiki.Core.Services.Backend.Entry
             await InitializeTask;
             if (await ContainsAsync(key))
             {
-                return JsonSerializer.Deserialize<EntryDto>(
-                    await (
-                        new StreamReader(await _storage.GetCacheFileStreamAsync(_cahceFileID[key]))
-                    ).ReadToEndAsync()
-                );
+                try
+                {
+                    using var fs = await _storage.GetCacheFileStreamAsync(_cahceFileID[key]);
+                    var data = await (new StreamReader(fs)).ReadToEndAsync();
+                    return JsonSerializer.Deserialize<EntryDto>(data);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+                finally
+                {
+                    await _storage.ReleaseCacheFile(_cahceFileID[key]);
+                }
             }
             else
             {

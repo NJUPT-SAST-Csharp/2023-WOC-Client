@@ -24,6 +24,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         readonly ILocalStorage _storage;
         readonly ISettingsProvider _settings;
         List<CacheFile> _cacheList = [];
+        Dictionary<string, ReaderWriterLockSlim> _locks = [];
 
         async Task InitializeAsync()
         {
@@ -42,6 +43,11 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                 if (cachefilelist is not null)
                 {
                     _cacheList = cachefilelist;
+                    lock (_locks)
+                        foreach (var cache in cachefilelist)
+                        {
+                            _locks.Add(cache.FileName, new());
+                        }
                 }
                 else
                 {
@@ -63,6 +69,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         {
             await InitializeTask;
             return _cacheList.Exists(x => x.FileName == ID)
+                && _locks.ContainsKey(ID)
                 && await _storage.Contains(_cachePath, ID);
         }
 
@@ -83,6 +90,8 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                         UpdatedTime = DateTime.Now
                     }
                 );
+                lock (_locks)
+                    _locks.Add(randomName, new());
             }
             await _settings.SetItem("CacheList", _cacheList);
             return randomName;
@@ -109,6 +118,11 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             {
                 try
                 {
+                    lock (_locks)
+                    {
+                        _locks.TryGetValue(ID, out var locker);
+                        locker!.EnterWriteLock();
+                    } // ContainsAsync() 已经确保不为null
                     return await _storage.GetFileStreamAsync(_cachePath, ID);
                 }
                 catch (Exception)
@@ -137,6 +151,15 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                 }
                 _ = _settings.SetItem("CacheList", _cacheList);
             });
+        }
+
+        public async Task ReleaseCacheFile(string ID)
+        {
+            lock (_locks)
+            {
+                _locks.TryGetValue(ID, out var locker);
+                locker!.ExitWriteLock();
+            }
         }
     }
 }
