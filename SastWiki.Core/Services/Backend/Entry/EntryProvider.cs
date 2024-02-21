@@ -40,7 +40,7 @@ namespace SastWiki.Core.Services.Backend.Entry
             }
             else
             {
-                throw postResponse.Error!; // ApiException.Response == "The entry has already exist!" 即标题重复
+                throw postResponse.Error!; // ApiException.Content == "The entry has already exist!" 即标题重复
             }
         }
 

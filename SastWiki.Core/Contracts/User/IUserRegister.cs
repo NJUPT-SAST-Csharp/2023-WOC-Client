@@ -17,6 +17,6 @@ namespace SastWiki.Core.Contracts.User
         /// </summary>
         /// <param name="Username">用户名</param>
         /// <param name="PasswordHash">密码</param>
-        public Task<UserDto> Register(string Username, string PasswordHash);
+        public Task RegisterAsync(string Username, string email, string PasswordHash);
     }
 }

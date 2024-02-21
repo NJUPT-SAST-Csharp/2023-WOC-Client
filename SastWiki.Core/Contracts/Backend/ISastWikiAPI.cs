@@ -25,7 +25,7 @@ namespace SastWiki.Core.Contracts.Backend
         [Headers("Authorization: Bearer")]
         [Post("/api/Entry/PostEntry")]
         public Task<IApiResponse<EntryDto>> PostEntry(
-            [Refit.Body(BodySerializationMethod.UrlEncoded)] EntryDto entry
+            [Refit.Body(BodySerializationMethod.Serialized)] EntryDto entry
         );
 
         [Headers("Authorization: Bearer")]

@@ -4,18 +4,17 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.User
 {
-    public class UserRegister : IUserRegister
+    public class UserRegister(ISastWikiAPI api) : IUserRegister
     {
-        public UserRegister() { }
-
-        public Task<UserDto> Register(string Username, string PasswordHash)
+        public async Task RegisterAsync(string Username, string email, string PasswordHash)
         {
-            throw new NotImplementedException();
+            await api.Signup(Username, email, PasswordHash);
         }
     }
 }
