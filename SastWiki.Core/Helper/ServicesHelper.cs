@@ -43,18 +43,9 @@ namespace SastWiki.Core.Helper
                 SastWiki.Core.Contracts.Backend.Image.IImageProvider,
                 SastWiki.Core.Services.Backend.Image.ImageProvider
             >();
-
             services.AddSingleton<
                 SastWiki.Core.Contracts.Backend.Entry.IEntryCache,
                 SastWiki.Core.Services.Backend.Entry.EntryCache
-            >();
-            services.AddSingleton<
-                SastWiki.Core.Contracts.Backend.Category.ICategoryCache,
-                SastWiki.Core.Services.Backend.Category.CategoryCache
-            >();
-            services.AddSingleton<
-                SastWiki.Core.Contracts.Backend.Tag.ITagCache,
-                SastWiki.Core.Services.Backend.Tag.TagCache
             >();
             services.AddSingleton<
                 SastWiki.Core.Contracts.Backend.Image.IImageCache,
