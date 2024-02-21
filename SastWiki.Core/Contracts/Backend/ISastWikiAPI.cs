@@ -22,9 +22,56 @@ namespace SastWiki.Core.Contracts.Backend
         [Get("/api/Entry/GetEntryByCategory/{categoryName}")]
         public Task<IApiResponse<List<EntryDto>>> GetEntryByCategory(string categoryName);
 
+        [Headers("Authorization: Bearer")]
         [Post("/api/Entry/PostEntry")]
         public Task<IApiResponse<EntryDto>> PostEntry(
             [Refit.Body(BodySerializationMethod.UrlEncoded)] EntryDto entry
         );
+
+        [Headers("Authorization: Bearer")]
+        [Put("/api/Entry/UpdateEntry")]
+        public Task<IApiResponse<EntryDto>> UpdateEntry(
+            [Refit.Body(BodySerializationMethod.Serialized)] EntryDto entry // 不要问我为什么上面那个是UrlEncoded而这个是Serialized
+        );
+
+        [Headers("Authorization: Bearer")]
+        [Delete("/api/Entry/DeleteEntry/{id}")]
+        public Task<IApiResponse<string>> DeleteEntry(int id);
+
+        // Picture
+
+        [Post("/api/Picture/UploadPicture")]
+        public Task<IApiResponse<int>> UploadPicture([Refit.Body] byte[] picture);
+
+        [Get("/api/Picture/GetPictureById")]
+        public Task<IApiResponse<byte[]>> GetPictureById([Refit.Query] int id);
+
+        // Role
+
+        [Post("/api/Role/ApplyAdmin")]
+        public Task<IApiResponse<string>> ApplyAdmin();
+
+        [Headers("Authorization: Bearer")]
+        [Post("/api/Role/SetAdmin")]
+        public Task<IApiResponse<string>> SetAdmin([Refit.Query] string targetUserToken);
+
+        // User
+
+        [Post("/api/User/Login")]
+        public Task<IApiResponse<string>> Login(
+            [Refit.Query] string email,
+            [Refit.Query] string password
+        );
+
+        [Put("/api/User/Signup")]
+        public Task<IApiResponse<string>> Signup(
+            [Refit.Query] string name,
+            [Refit.Query] string email,
+            [Refit.Query] string password
+        );
+
+        [Headers("Authorization: Bearer")]
+        [Post("/api/User/Quit")]
+        public Task<IApiResponse<string>> Quit();
     }
 }

@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 using Refit;
 using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Services.User;
 
 namespace SastWiki.Core.Services.Backend.Entry
 {
-    public class EntryProvider(ISastWikiAPI _api, IEntryCache _cache) : IEntryProvider
+    public class EntryProvider(
+        ISastWikiAPI _api,
+        IEntryCache _cache,
+        IAuthenticationStorage _authentication
+    ) : IEntryProvider
     {
         private List<int> _entryIdList = [];
 

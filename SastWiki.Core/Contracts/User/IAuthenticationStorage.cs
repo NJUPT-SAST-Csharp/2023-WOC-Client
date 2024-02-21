@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Contracts.User
 {
@@ -11,12 +12,6 @@ namespace SastWiki.Core.Contracts.User
     /// </summary>
     public interface IAuthenticationStorage
     {
-        /// <summary>
-        /// 用户登录的Token，若未登录则为null
-        /// </summary>
-        internal string? AuthenticationToken { get; set; }
-
-        internal string? Username { get; set; }
-        internal string? PasswordHash { get; set; }
+        internal UserDto CurrentUser { get; set; }
     }
 }
