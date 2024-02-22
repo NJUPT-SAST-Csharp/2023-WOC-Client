@@ -9,6 +9,7 @@ using SastWiki.Core.Services.InternalLink;
 using SastWiki.Core.Services.User;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
+using SastWiki.WPF.Utils;
 using SastWiki.WPF.ViewModels;
 using SastWiki.WPF.Views.Pages;
 
@@ -50,6 +51,7 @@ namespace SastWiki.WPF
                         // WPF.Contracts
                         services.AddSingleton<INavigationService, NavigationService>();
                         services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
+                        services.AddSingleton<MarkdownCSSProvider>();
 
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
