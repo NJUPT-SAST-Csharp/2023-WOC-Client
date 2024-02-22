@@ -1,4 +1,3 @@
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.WPF.Contracts;
@@ -23,8 +25,6 @@ namespace SastWiki.WPF.ViewModels
         IEntryProvider entryProvider
     ) : ObservableObject, INavigationAware
     {
-        private IMarkdownProcessor _markdownProcessor;
-
         private WebView2? _webview;
         public WebView2? WebView
         {
@@ -47,10 +47,40 @@ namespace SastWiki.WPF.ViewModels
                 }
             }
         }
+
         readonly TaskCompletionSource<bool> _ensureWebviewInitialized = new();
+
+        public ICommand RefreshCommand =>
+            new RelayCommand(
+                async () =>
+                {
+                    try
+                    {
+                        await LoadPage(Id);
+                    }
+                    catch (ApiException e)
+                    {
+                        MessageBox.Show(e.Message, e.Content);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                },
+                () => IsLoaded
+            );
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
+
+        [ObservableProperty]
+        private string _title = String.Empty;
+
+        [ObservableProperty]
+        private int _id = -1;
+
+        [ObservableProperty]
+        private bool isLoaded = false;
 
         private void WebView_NavigationStarting(
             object? sender,
@@ -96,6 +126,29 @@ namespace SastWiki.WPF.ViewModels
             }
         }
 
+        async Task LoadPage(int id)
+        {
+            Title = "Loading...";
+            Id = id;
+            try
+            {
+                var entry = await entryProvider.GetEntryByIdAsync(id);
+                Markdown_text = entry.Content ?? "# ERROR";
+            }
+            catch (Exception)
+            {
+                Markdown_text = "# ERROR";
+                IsLoaded = false;
+                throw;
+            }
+
+            IsLoaded = true;
+
+            Title = (await entryProvider.GetEntryByIdAsync(id)).Title ?? "No Title";
+
+            OnPropertyChanged(nameof(RefreshCommand));
+        }
+
         Task<bool> INavigationAware.OnNavigatedFrom()
         {
             return Task.FromResult(true);
@@ -107,18 +160,20 @@ namespace SastWiki.WPF.ViewModels
             {
                 try
                 {
-                    var entry = await entryProvider.GetEntryByIdAsync(id);
-                    Markdown_text = entry.Content ?? "# ERROR";
+                    await LoadPage(id);
                 }
-                catch (Exception)
+                catch (ApiException e)
                 {
-                    Markdown_text = "# Not Found";
+                    MessageBox.Show(e.Message, e.Content);
                 }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+
                 return true;
             }
             return false;
         }
     }
 }
-
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行

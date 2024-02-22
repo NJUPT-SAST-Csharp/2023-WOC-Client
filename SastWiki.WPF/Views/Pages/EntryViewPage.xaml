@@ -14,6 +14,41 @@
     mc:Ignorable="d">
 
     <Grid>
-        <wv2:WebView2 Name="WebView" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <wv2:WebView2 Name="WebView" Grid.Row="1" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button
+                x:Name="RefreshButton"
+                Grid.Column="0"
+                Width="49"
+                Height="21"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Command="{Binding RefreshCommand}"
+                Content="Refresh" />
+            <Button
+                x:Name="EditButton"
+                Grid.Column="1"
+                Width="49"
+                Height="21"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="Edit" />
+            <TextBlock
+                x:Name="TitleTextBlock"
+                Grid.Column="2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Text="{Binding Title}" />
+
+        </Grid>
     </Grid>
 </Page>
