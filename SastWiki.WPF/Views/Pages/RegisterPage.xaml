@@ -8,7 +8,7 @@
       d:DataContext="{d:DesignInstance Type=vm:RegisterPageVM}"
       mc:Ignorable="d" 
       Title="RegisterPage" Height="500" Width="400">
-    <Grid Background="Gray">
+    <Grid Background="White">
         <TextBox x:Name="NewUsernameTextBox"
                  HorizontalAlignment="Left" 
                  Margin="139,115,0,0" 
@@ -16,19 +16,19 @@
                  VerticalAlignment="Top" 
                  Width="200" Height="20"
                  Text="{Binding NewUsername}"/>
-        <PasswordBox x:Name="NewPasswordBox"
-                    HorizontalAlignment="Left" 
-                     Margin="139,165,0,0" 
-                    VerticalAlignment="Top" 
-                     Width="200" Height="20"
-                     vm:CustomPasswordBoxHelper.CustomPassword ="{Binding NewPassword, Mode=TwoWay}"/>
+        <TextBox x:Name="NewEmailBox"
+                 HorizontalAlignment="Left" 
+                 Margin="139,165,0,0" 
+                 VerticalAlignment="Top" 
+                 Width="200" Height="20"
+                 Text="{Binding NewEmail}"/>
         <Label Content="New Username" 
                  HorizontalAlignment="Left" 
                 Margin="36,110,0,0" 
                  VerticalAlignment="Top"/>
-        <Label  Content="New Password" 
+        <Label  Content="New Email" 
                 HorizontalAlignment="Left" 
-                Margin="40,162,0,0" 
+                Margin="36,162,0,0" 
                 VerticalAlignment="Top"/>
         <Button Content="Register Now" 
                 HorizontalAlignment="Center" 
@@ -36,9 +36,9 @@
                 VerticalAlignment="Top"
                 Height="30" Width="154" 
                 Command="{Binding RegisterButton}"/>
-        <Label Content="Confirm Password" 
+        <Label Content="New Password" 
                 HorizontalAlignment="Left" 
-                Margin="21,212,0,0" 
+                Margin="36,217,0,0" 
                 VerticalAlignment="Top" 
                 Height ="30" Width="113"/>
         <PasswordBox x:Name="ConfirmPasswordBox"

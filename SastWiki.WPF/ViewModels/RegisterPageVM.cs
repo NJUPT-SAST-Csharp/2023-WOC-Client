@@ -17,21 +17,17 @@ namespace SastWiki.WPF.ViewModels
     {
         private string? newUsername;
         public string? NewUsername { get => newUsername; set => SetProperty(ref newUsername, value); }
+
+        private string? newEmail;
+        public string? NewEmail { get => newEmail; set => SetProperty(ref newEmail, value); }
         private RelayCommand? registerButton;
         public ICommand RegisterButton => registerButton ??= new RelayCommand(PerformRegisterButton);
         private void PerformRegisterButton()
         {
-            //存储用户信息；
-        }
-        private string? _newPassword;
-        public string? NewPassword
-        {
-            get { return _newPassword; }
-            set
-            {
-                _newPassword = value;
-                OnPropertyChanged(nameof(NewPassword));
-            }
+            string username = NewUsername ?? string.Empty;
+            string email = NewEmail ?? string.Empty;
+            string password = ConfirmPassword ?? string.Empty;
+            //注册使用UserRegister中的方法，存储数据使用SettingProvider的接口；
         }
         private string? confirmPassword;
         public string? ConfirmPassword

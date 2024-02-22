@@ -10,7 +10,7 @@
       d:DesignHeight="500" d:DesignWidth="400"
       Title="LoginPage">
       
-    <Grid Background="Gray">
+    <Grid Background="white">
         
         <TextBox x:Name="usernameTextBox"
                  HorizontalAlignment="Left"
@@ -26,9 +26,9 @@
                     Width="200" Height="20"
                     vm:PasswordBoxHelper.Password="{Binding NewPassword, Mode=TwoWay}"/>
         <Label x:Name="username1"
-               Content="Username" 
+               Content="Email" 
                HorizontalAlignment="Left" 
-               Margin="33,110,0,0" 
+               Margin="37,110,0,0" 
                VerticalAlignment="Top"/>
         <Label x:Name="P1"
                Content="Password" 
@@ -36,7 +36,7 @@
                Margin="37,157,0,0" 
                VerticalAlignment="Top"/>
         <Button x:Name="enter"
-                Content="Enter" 
+                Content="Login" 
                 HorizontalAlignment="Left" 
                 Margin="106,268,0,0" 
                 VerticalAlignment="Top" 

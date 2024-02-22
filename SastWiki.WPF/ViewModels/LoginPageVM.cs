@@ -40,7 +40,6 @@ namespace SastWiki.WPF.ViewModels
             }
         }
         private bool? rememberPassword;
-
         public bool? RememberPassword { get => rememberPassword; set => SetProperty(ref rememberPassword, value); }
 
         public LoginPageVM()
@@ -48,8 +47,28 @@ namespace SastWiki.WPF.ViewModels
             RememberPassword = false;
             if (RememberPassword == true)
             {
-                //()；
+                string savedPassword = GetSavedPassword();
+
+                if (!string.IsNullOrEmpty(savedPassword))
+                {
+                    NewPassword = savedPassword;
+                }
             }
+        }
+        private string GetSavedPassword()
+        {
+            string savedPassword = string.Empty;
+
+            if (Application.Current.Properties.Contains("SavedPassword"))
+            {
+                savedPassword = Application.Current.Properties["SavedPassword"].ToString();
+            }
+
+            return savedPassword;
+        }
+        private void SavePassword(string password)
+        {
+            Application.Current.Properties["SavedPassword"] = password;
         }
         private object currentPage;
         public object Current_Page { get => currentPage; set => SetProperty(ref currentPage, value); }
@@ -58,7 +77,13 @@ namespace SastWiki.WPF.ViewModels
         public ICommand LoginCommand => loginCommand ??= new RelayCommand(Login);
         private void Login()
         {
-            //登录逻辑；
+            string username = Username;
+            string password = NewPassword;
+            if (RememberPassword == true)
+            {
+                SavePassword(NewPassword);
+            }
+            //使用UserLogin中的方法
         }
 
         private RelayCommand registerCommand;
