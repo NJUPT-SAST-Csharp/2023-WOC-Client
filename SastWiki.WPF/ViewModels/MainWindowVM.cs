@@ -104,5 +104,26 @@ namespace SastWiki.WPF.ViewModels
                 node.ChildNodes = getNodes(node.NodeID, otherNodes);
             return mainNodes;
         }
+
+        public ICommand SelectItemChangeCommand =>
+            new RelayCommand<TreeNode>(
+                (node) =>
+                {
+                    if (node is not null)
+                    {
+                        if (node.Type == NodeType.Category)
+                        {
+                            //    _navigationService.NavigateTo(App.GetService<BrowsePage>(), node.NodeName);
+                        }
+                        else
+                        {
+                            _navigationService.NavigateTo(
+                                App.GetService<EntryViewPage>(),
+                                int.Parse(node.NodeID)
+                            );
+                        }
+                    }
+                }
+            );
     }
 }

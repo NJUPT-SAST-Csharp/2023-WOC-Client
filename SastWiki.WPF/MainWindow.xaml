@@ -44,6 +44,7 @@
                 Text="{Binding SearchBoxText}" />
 
             <TreeView
+                x:Name="treeView"
                 Grid.Row="3"
                 Background="Transparent"
                 ItemsSource="{Binding TreeViewNodes}">
@@ -54,6 +55,11 @@
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectItemChangeCommand}" CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </TreeView>
             <Button
                 Grid.Row="4"
