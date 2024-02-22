@@ -90,7 +90,7 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task UpdateEntryAsync(EntryDto entry)
         {
-            var postTask = _api.PostEntry(entry);
+            var postTask = _api.UpdateEntry(entry);
             if (!(await postTask).IsSuccessStatusCode)
             {
                 throw (await postTask).Error!;

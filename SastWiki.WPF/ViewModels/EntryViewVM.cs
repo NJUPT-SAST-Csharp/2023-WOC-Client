@@ -18,6 +18,7 @@ using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -57,7 +58,7 @@ namespace SastWiki.WPF.ViewModels
                 {
                     try
                     {
-                        await LoadPage((int)CurrentEntry.Id);
+                        await LoadPage((int)CurrentEntry.Id!);
                     }
                     catch (ApiException e)
                     {
@@ -67,6 +68,16 @@ namespace SastWiki.WPF.ViewModels
                     {
                         MessageBox.Show(e.Message);
                     }
+                },
+                () => IsLoaded
+            );
+
+        public ICommand EditCommand =>
+            new RelayCommand(
+                () =>
+                {
+                    INavigationService navigationService = App.GetService<INavigationService>();
+                    navigationService.NavigateTo(App.GetService<EditPage>(), (int)CurrentEntry.Id!);
                 },
                 () => IsLoaded
             );
@@ -144,6 +155,7 @@ namespace SastWiki.WPF.ViewModels
             IsLoaded = true;
 
             OnPropertyChanged(nameof(RefreshCommand));
+            OnPropertyChanged(nameof(EditCommand));
         }
 
         Task<bool> INavigationAware.OnNavigatedFrom()

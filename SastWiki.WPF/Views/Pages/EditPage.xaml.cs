@@ -1,5 +1,4 @@
-﻿using SastWiki.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF.Views.Pages
 {
@@ -21,15 +21,10 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class EditPage : Page
     {
-        public EditPage()
+        public EditPage(EditPageVM vm)
         {
             InitializeComponent();
-            DataContext = new EditPageVM();
-        }
-
-        private void AddImage_Click(object sender, RoutedEventArgs e)
-        {
-            ((EditPageVM)DataContext).AddImage();
+            DataContext = vm;
         }
     }
 }
