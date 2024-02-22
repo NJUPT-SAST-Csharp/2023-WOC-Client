@@ -1,12 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
-using SastWiki.Core.Contracts.InternalLink;
-using SastWiki.Core.Models;
-using SastWiki.Core.Services.Backend.Entry;
-using SastWiki.Core.Services.InternalLink;
-using SastWiki.WPF.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -14,12 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models;
+using SastWiki.Core.Services.Backend.Entry;
+using SastWiki.Core.Services.InternalLink;
+using SastWiki.WPF.Contracts;
 
 namespace SastWiki.WPF.ViewModels
 {
     internal class EditPageVM : ObservableObject, INavigationAware
     {
-        private readonly InternalLinkService _internalLinkService;
         private EntryProvider _entryProvider;
 
         Task<bool> INavigationAware.OnNavigatedFrom()
@@ -27,26 +27,26 @@ namespace SastWiki.WPF.ViewModels
             return Task.FromResult(true);
         }
 
-        Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
+        async Task<bool> INavigationAware.OnNavigatedTo<T>(T parameters)
         {
-            return Task.FromResult(true);
+            if (parameters is int id)
+            {
+                CurrentEntry = await _entryProvider.GetEntryByIdAsync(id);
+                return true;
+            }
+            return false;
         }
 
-        public string Title { get; set; }
-        public string Content { get; set; }
+        [ObservableProperty]
+        private EntryDto _currentEntry;
 
-        public ICommand SubmitCommand { get; }
+        public ICommand SubmitCommand =>
+            new RelayCommand(() =>
+            {
+                _entryProvider.UpdateEntryAsync();
+            });
 
-        public EditPageVM()
-        {
-            _internalLinkService = new InternalLinkService();
-            SubmitCommand = new RelayCommand(Submit);
-        }
-
-        private void Submit() 
-        {
-            _entryProvider.UpdateEntryAsync();
-        }
+        public EditPageVM() { }
 
         public void AddImage()
         {

@@ -103,6 +103,18 @@ namespace SastWiki.WPF
                     }
                 }
             );
+
+            internalLinkService.Register(
+                "/Edit",
+                (sender, e) =>
+                {
+                    if (int.TryParse(e["id"], out var id))
+                    {
+                        var navigationService = GetService<INavigationService>();
+                        navigationService.NavigateTo(GetService<EditPage>(), id);
+                    }
+                }
+            );
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
