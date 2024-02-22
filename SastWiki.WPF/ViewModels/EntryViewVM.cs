@@ -15,6 +15,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 
@@ -56,7 +57,7 @@ namespace SastWiki.WPF.ViewModels
                 {
                     try
                     {
-                        await LoadPage(Id);
+                        await LoadPage((int)CurrentEntry.Id);
                     }
                     catch (ApiException e)
                     {
@@ -74,10 +75,7 @@ namespace SastWiki.WPF.ViewModels
         private string _markdown_text = String.Empty;
 
         [ObservableProperty]
-        private string _title = String.Empty;
-
-        [ObservableProperty]
-        private int _id = -1;
+        private EntryDto _currentEntry = new();
 
         [ObservableProperty]
         private bool isLoaded = false;
@@ -128,23 +126,22 @@ namespace SastWiki.WPF.ViewModels
 
         async Task LoadPage(int id)
         {
-            Title = "Loading...";
-            Id = id;
+            CurrentEntry = new EntryDto() { Title = "Loading¡­¡­" };
             try
             {
                 var entry = await entryProvider.GetEntryByIdAsync(id);
                 Markdown_text = entry.Content ?? "# ERROR";
+                CurrentEntry = entry;
             }
             catch (Exception)
             {
                 Markdown_text = "# ERROR";
                 IsLoaded = false;
+                CurrentEntry = new();
                 throw;
             }
 
             IsLoaded = true;
-
-            Title = (await entryProvider.GetEntryByIdAsync(id)).Title ?? "No Title";
 
             OnPropertyChanged(nameof(RefreshCommand));
         }
