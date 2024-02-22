@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resource/Theme/GrayColor.xaml" />
                 <ResourceDictionary Source="Resource/Theme/WhiteColor.xaml" />
+                <ResourceDictionary Source="Styles/TagsViewerStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

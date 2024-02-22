@@ -72,7 +72,7 @@
             <Button
                 Grid.Row="5"
                 Command="{Binding GoToUserPageCommand}"
-                Content="username" />
+                Content="Not Logged in" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>
