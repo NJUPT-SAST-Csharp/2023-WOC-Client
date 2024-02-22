@@ -74,7 +74,7 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
                     _settings[label] = JsonSerializer.Serialize<T>(item);
                 }
             }
-            // await Save();
+            await Save();
         }
 
         public async Task Save()
@@ -100,7 +100,7 @@ namespace SastWiki.Core.Services.Infrastructure.SettingsService
                 {
                     settingsJsonList = [];
                     _settings = [];
-                    await Save();
+                    await _storage.SetSettingsJSON(JsonSerializer.Serialize(_settings));
                 }
 
                 if (settingsJsonList is not null)
