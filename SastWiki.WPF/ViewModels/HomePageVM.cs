@@ -26,11 +26,7 @@ namespace SastWiki.WPF.ViewModels
 
         private async void TestWebview2()
         {
-            var settings = App.GetService<IEntryCache>();
-            MessageBox.Show("Initialized finished.");
-            var entryprovider = App.GetService<IEntryProvider>();
-            var entry = await entryprovider.GetEntryByIdAsync(1);
-            MessageBox.Show($"Entry ID 1: Title {entry.Title}");
+            await _navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), 1);
         }
 
         public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);

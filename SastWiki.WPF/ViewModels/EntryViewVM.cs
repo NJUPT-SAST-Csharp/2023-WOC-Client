@@ -18,7 +18,10 @@ using SastWiki.WPF.Utils;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class EntryViewVM : ObservableObject, INavigationAware
+    public partial class EntryViewVM(
+        IMarkdownProcessor markdownProcessor,
+        IEntryProvider entryProvider
+    ) : ObservableObject, INavigationAware
     {
         private IMarkdownProcessor _markdownProcessor;
 
@@ -49,11 +52,6 @@ namespace SastWiki.WPF.ViewModels
         [ObservableProperty]
         private string _markdown_text = String.Empty;
 
-        public EntryViewVM(IMarkdownProcessor markdownProcessor)
-        {
-            _markdownProcessor = markdownProcessor;
-        }
-
         private void WebView_NavigationStarting(
             object? sender,
             CoreWebView2NavigationStartingEventArgs e
@@ -83,7 +81,7 @@ namespace SastWiki.WPF.ViewModels
             if (e.PropertyName == nameof(Markdown_text))
             {
                 // string css_text;
-                _markdownProcessor.Output(
+                markdownProcessor.Output(
                     Markdown_text,
                     out string html_text,
                     out IEnumerable<int> images
@@ -109,12 +107,12 @@ namespace SastWiki.WPF.ViewModels
             {
                 try
                 {
-                    Markdown_text = "Not Found";
+                    var entry = await entryProvider.GetEntryByIdAsync(id);
+                    Markdown_text = entry.Content ?? "# ERROR";
                 }
                 catch (Exception)
                 {
-                    Markdown_text = "Not Found";
-                    throw;
+                    Markdown_text = "# Not Found";
                 }
                 return true;
             }

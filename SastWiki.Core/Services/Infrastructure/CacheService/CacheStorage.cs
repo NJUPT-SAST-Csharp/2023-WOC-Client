@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using SastWiki.Core.Contracts.Infrastructure;
@@ -24,7 +25,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
         readonly ILocalStorage _storage;
         readonly ISettingsProvider _settings;
         List<CacheFile> _cacheList = [];
-        Dictionary<string, ReaderWriterLockSlim> _locks = [];
+        Dictionary<string, SemaphoreSlim> _locks = [];
 
         async Task InitializeAsync()
         {
@@ -46,7 +47,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                     lock (_locks)
                         foreach (var cache in cachefilelist)
                         {
-                            _locks.Add(cache.FileName, new());
+                            _locks.Add(cache.FileName, new(1, 1));
                         }
                 }
                 else
@@ -91,7 +92,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
                     }
                 );
                 lock (_locks)
-                    _locks.Add(randomName, new());
+                    _locks.Add(randomName, new(1, 1));
             }
             await _settings.SetItem("CacheList", _cacheList);
             return randomName;
@@ -118,11 +119,6 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             {
                 try
                 {
-                    lock (_locks)
-                    {
-                        _locks.TryGetValue(ID, out var locker);
-                        locker!.EnterWriteLock();
-                    } // ContainsAsync() 已经确保不为null
                     return await _storage.GetFileStreamAsync(_cachePath, ID);
                 }
                 catch (Exception)
@@ -153,13 +149,30 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             });
         }
 
-        public async Task ReleaseCacheFile(string ID)
+        public async Task LockCacheFile(string ID)
         {
-            lock (_locks)
+            try
             {
                 _locks.TryGetValue(ID, out var locker);
-                locker!.ExitWriteLock();
+                await locker!.WaitAsync();
             }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ReleaseCacheFile(string ID)
+        {
+            try
+            {
+                _locks.TryGetValue(ID, out var locker);
+                locker!.Release();
+            }
+            catch (Exception)
+            {
+                throw;
+            } // I SHOULDN'T HAVE DONE THIS, but idk why the locker exits before I let it exit
         }
     }
 }
