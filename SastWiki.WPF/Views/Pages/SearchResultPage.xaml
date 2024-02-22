@@ -22,11 +22,33 @@
                 FontSize="20"
                 Text="{Binding SearchText, StringFormat='Search For {0}'}" />
             <ListBox
-                MinHeight="500"
+                MinHeight="100"
                 Margin="50,20"
                 HorizontalContentAlignment="Stretch"
+                Background="#11777777"
                 ItemsSource="{Binding SearchResult}"
                 SelectionMode="Single">
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <StackPanel>
+                                        <Separator x:Name="Separator" Margin="10,1,10,1" />
+                                        <ContentPresenter />
+                                    </StackPanel>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                            <Setter TargetName="Separator" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid
@@ -44,10 +66,13 @@
                             <TextBlock
                                 Grid.RowSpan="2"
                                 Grid.Column="0"
-                                Text="{Binding Title}" />
+                                FontSize="18"
+                                Margin="20,0,0,0"
+                                Text="{Binding Title}" VerticalAlignment="Center" />
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
+                                FontSize="15"
                                 Text="{Binding CategoryName}" />
                             <usercontrol:TagViewer
                                 Grid.Row="1"
