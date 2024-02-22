@@ -12,18 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF.Views.Pages
 {
     /// <summary>
-    /// TagViewPage.xaml 的交互逻辑
+    /// EditPage.xaml 的交互逻辑
     /// </summary>
-    public partial class TagViewPage : Page
+    public partial class EditPage : Page
     {
-        public TagViewPage()
+        public EditPage(EditPageVM vm)
         {
             InitializeComponent();
+            DataContext = vm;
         }
-
     }
 }
