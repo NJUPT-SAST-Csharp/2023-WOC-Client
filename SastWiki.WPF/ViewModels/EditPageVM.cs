@@ -62,7 +62,6 @@ namespace SastWiki.WPF.ViewModels
         public ICommand SubmitCommand =>
             new RelayCommand(async () =>
             {
-                await userLogin.LoginAsync("123456@xyz.com", "123456");
                 var entry = new EntryDto
                 {
                     Id = Id,
@@ -73,10 +72,11 @@ namespace SastWiki.WPF.ViewModels
                 };
                 try
                 {
-                    MessageBox.Show($"Update Entry :{entry}");
-                    await entryProvider.UpdateEntryAsync(entry);
-                    MessageBox.Show($"Entry id {Id} edited successfully", "Success");
-                    await navigationService.NavigateTo(App.GetService<EntryViewPage>(), Id);
+                    var newentry = await entryProvider.UpdateEntryAsync(entry);
+                    await navigationService.NavigateTo(
+                        App.GetService<EntryViewPage>(),
+                        newentry.Id
+                    );
                 }
                 catch (ApiException e)
                 {

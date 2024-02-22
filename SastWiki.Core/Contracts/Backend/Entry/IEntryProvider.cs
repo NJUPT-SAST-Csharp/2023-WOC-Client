@@ -28,7 +28,7 @@ namespace SastWiki.Core.Contracts.Backend.Entry
         /// 请求修改一个词条，与AddEntryAsync的区别在于会使用传入Entry的id
         /// </summary>
         /// <param name="entry"></param>
-        public Task UpdateEntryAsync(EntryDto entry);
+        public Task<EntryDto> UpdateEntryAsync(EntryDto entry);
 
         /// <summary>
         /// 返回是否存在某个词条
