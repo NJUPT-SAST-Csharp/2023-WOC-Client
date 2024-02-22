@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:EditPageVM}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels"
     Title="EditPage"
+    d:DataContext="{d:DesignInstance Type=viewmodels:EditPageVM}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     DataContext="EditPageVM"
@@ -23,14 +25,15 @@
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Title:" />
             <TextBox
-                
                 xmlns:local="clr-namespace:SastWiki.WPF.Services"
                 Grid.Row="1"
                 Height="40"
                 Margin="10"
                 local:WatermarkService.IsWatermarkEnabled="True"
                 local:WatermarkService.Watermark="请输入标题"
-                Text="{Binding Title}" />
+                AcceptsReturn="True"
+                Text="{Binding Title}"
+                TextWrapping="Wrap" />
 
             <TextBlock Grid.Row="2" Text="Content:" />
             <TextBox
@@ -39,7 +42,9 @@
                 Margin="10"
                 local:WatermarkService.IsWatermarkEnabled="True"
                 local:WatermarkService.Watermark="请输入内容"
-                Text="{Binding Content}" />
+                AcceptsReturn="True"
+                Text="{Binding Content}"
+                TextWrapping="Wrap" />
 
             <Button
                 Grid.Row="4"
