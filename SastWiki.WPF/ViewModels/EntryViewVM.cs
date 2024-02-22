@@ -15,6 +15,7 @@ using Microsoft.Web.WebView2.Wpf;
 using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 
@@ -80,6 +81,9 @@ namespace SastWiki.WPF.ViewModels
         private int _id = -1;
 
         [ObservableProperty]
+        private EntryDto _currentEntry = new();
+
+        [ObservableProperty]
         private bool isLoaded = false;
 
         private void WebView_NavigationStarting(
@@ -134,11 +138,13 @@ namespace SastWiki.WPF.ViewModels
             {
                 var entry = await entryProvider.GetEntryByIdAsync(id);
                 Markdown_text = entry.Content ?? "# ERROR";
+                CurrentEntry = entry;
             }
             catch (Exception)
             {
                 Markdown_text = "# ERROR";
                 IsLoaded = false;
+                CurrentEntry = new();
                 throw;
             }
 
