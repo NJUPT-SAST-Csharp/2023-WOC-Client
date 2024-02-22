@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SastWiki.WPF.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,19 @@ using System.Windows.Shapes;
 namespace SastWiki.WPF.Views.Pages
 {
     /// <summary>
-    /// TagViewPage.xaml 的交互逻辑
+    /// EditPage.xaml 的交互逻辑
     /// </summary>
-    public partial class TagViewPage : Page
+    public partial class EditPage : Page
     {
-        public TagViewPage()
+        public EditPage()
         {
             InitializeComponent();
+            DataContext = new EditPageVM();
         }
 
+        private void AddImage_Click(object sender, RoutedEventArgs e)
+        {
+            ((EditPageVM)DataContext).AddImage();
+        }
     }
 }

@@ -9,6 +9,6 @@
       Title="TagViewPage">
 
     <Grid>
-        <TextBlock Text="TagView Page" />
+        
     </Grid>
 </Page>

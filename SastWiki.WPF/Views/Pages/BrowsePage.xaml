@@ -11,6 +11,34 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Browse Page" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <ListView BorderBrush="#FFD5DDEA" Grid.Column="1" Name="lv" Background="Transparent">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" Width="80" DisplayMemberBinding="{Binding Ids}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" Width="160" DisplayMemberBinding="{Binding TagName}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListViewItem_PreviewMouseLeftButtonUp" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </Grid>
 </Page>
