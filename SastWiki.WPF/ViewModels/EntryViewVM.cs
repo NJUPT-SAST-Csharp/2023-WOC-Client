@@ -57,7 +57,7 @@ namespace SastWiki.WPF.ViewModels
                 {
                     try
                     {
-                        await LoadPage(Id);
+                        await LoadPage((int)CurrentEntry.Id);
                     }
                     catch (ApiException e)
                     {
@@ -73,12 +73,6 @@ namespace SastWiki.WPF.ViewModels
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
-
-        [ObservableProperty]
-        private string _title = String.Empty;
-
-        [ObservableProperty]
-        private int _id = -1;
 
         [ObservableProperty]
         private EntryDto _currentEntry = new();
@@ -132,8 +126,7 @@ namespace SastWiki.WPF.ViewModels
 
         async Task LoadPage(int id)
         {
-            Title = "Loading...";
-            Id = id;
+            CurrentEntry = new EntryDto() { Title = "Loading¡­¡­" };
             try
             {
                 var entry = await entryProvider.GetEntryByIdAsync(id);
@@ -149,8 +142,6 @@ namespace SastWiki.WPF.ViewModels
             }
 
             IsLoaded = true;
-
-            Title = (await entryProvider.GetEntryByIdAsync(id)).Title ?? "No Title";
 
             OnPropertyChanged(nameof(RefreshCommand));
         }
