@@ -1,4 +1,4 @@
-﻿using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

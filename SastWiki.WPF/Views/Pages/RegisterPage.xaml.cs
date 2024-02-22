@@ -1,9 +1,8 @@
 ﻿using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Views.Pages;
+using SastWiki.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,19 +13,18 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using SastWiki.WPF.ViewModels;
 
-namespace SastWiki.WPF
+namespace SastWiki.WPF.Views.Pages
 {
     /// <summary>
-    /// UsernameWIndow.xaml 的交互逻辑
+    /// RegisterPage.xaml 的交互逻辑
     /// </summary>
-    public partial class UsernameWindow : Window
+    public partial class RegisterPage : Page
     {
-        public UsernameWindow()
+        public RegisterPage()
         {
             InitializeComponent();
-            DataContext = new UsernameWindowVM();
+            DataContext = new RegisterPageVM();
         }
     }
 }
