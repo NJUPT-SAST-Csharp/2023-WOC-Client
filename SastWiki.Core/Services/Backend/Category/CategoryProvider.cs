@@ -1,40 +1,30 @@
-﻿using SastWiki.Core.Contracts.Backend.Category;
-using SastWiki.Core.Models.Result;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Backend;
+using SastWiki.Core.Contracts.Backend.Category;
+using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.Backend.Category
 {
-    public class CategoryProvider : ICategoryProvider
+    public class CategoryProvider(IEntryProvider entryProvider, ISastWikiAPI api)
+        : ICategoryProvider
     {
-        public CategoryProvider() { }
+        public async Task<List<string>> GetAllCategoryList() =>
+            [
+                .. (await entryProvider.GetEntryMetadataList())
+                    .Select(x => x.CategoryName ?? string.Empty)
+                    .Distinct()
+            ];
 
-        public Task<CreateCategoryResult> CreateCategoryAsync(string categoryName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CreateCategoryResult> CreateCategoryAsync(Models.Category category)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<string>> GetAllCategoryList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Models.Category> GetCategoryByFullNameAsync(string fullName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Models.Category> GetCategoryByIDAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<List<EntryDto>> GetCategoryByFullNameAsync(string fullName) =>
+            [
+                .. (await entryProvider.GetEntryMetadataList())
+                    .Where(x => x.CategoryName == fullName)
+                    .OrderBy(x => x.Id)
+            ];
     }
 }

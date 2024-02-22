@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Contracts.User
 {
@@ -11,10 +12,7 @@ namespace SastWiki.Core.Contracts.User
     /// </summary>
     public interface IUserStatus
     {
-        public bool IsLoggedIn { get; }
-        public string? Username { get; }
-        public DateTime? LoginTime { get; }
-        public DateTime? LoginExpirationTime { get; }
-        public string? Role { get; }
+        public Task<UserDto> GetUserStatus();
+        public Task<bool> IsUserLoggedin();
     }
 }

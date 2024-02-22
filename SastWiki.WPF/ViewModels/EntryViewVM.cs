@@ -1,27 +1,32 @@
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Web;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Web;
-using SastWiki.Core.Contracts.InternalLink;
+using System.Windows;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Web;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
+using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models.Dto;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Utils;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class EntryViewVM : ObservableObject, INavigationAware
+    public partial class EntryViewVM(
+        IMarkdownProcessor markdownProcessor,
+        IEntryProvider entryProvider
+    ) : ObservableObject, INavigationAware
     {
-        private IMarkdownProcessor _markdownProcessor;
-
         private WebView2? _webview;
         public WebView2? WebView
         {
@@ -44,15 +49,47 @@ namespace SastWiki.WPF.ViewModels
                 }
             }
         }
+
         readonly TaskCompletionSource<bool> _ensureWebviewInitialized = new();
+
+        public ICommand RefreshCommand =>
+            new RelayCommand(
+                async () =>
+                {
+                    try
+                    {
+                        await LoadPage((int)CurrentEntry.Id!);
+                    }
+                    catch (ApiException e)
+                    {
+                        MessageBox.Show(e.Message, e.Content);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                },
+                () => IsLoaded
+            );
+
+        public ICommand EditCommand =>
+            new RelayCommand(
+                () =>
+                {
+                    INavigationService navigationService = App.GetService<INavigationService>();
+                    navigationService.NavigateTo(App.GetService<EditPage>(), (int)CurrentEntry.Id!);
+                },
+                () => IsLoaded
+            );
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
 
-        public EntryViewVM(IMarkdownProcessor markdownProcessor)
-        {
-            _markdownProcessor = markdownProcessor;
-        }
+        [ObservableProperty]
+        private EntryDto _currentEntry = new();
+
+        [ObservableProperty]
+        private bool isLoaded = false;
 
         private void WebView_NavigationStarting(
             object? sender,
@@ -83,7 +120,7 @@ namespace SastWiki.WPF.ViewModels
             if (e.PropertyName == nameof(Markdown_text))
             {
                 // string css_text;
-                _markdownProcessor.Output(
+                markdownProcessor.Output(
                     Markdown_text,
                     out string html_text,
                     out IEnumerable<int> images
@@ -98,6 +135,29 @@ namespace SastWiki.WPF.ViewModels
             }
         }
 
+        async Task LoadPage(int id)
+        {
+            CurrentEntry = new EntryDto() { Title = "Loading……" };
+            try
+            {
+                var entry = await entryProvider.GetEntryByIdAsync(id);
+                Markdown_text = entry.Content ?? "# ERROR";
+                CurrentEntry = entry;
+            }
+            catch (Exception)
+            {
+                Markdown_text = "# ERROR";
+                IsLoaded = false;
+                CurrentEntry = new();
+                throw;
+            }
+
+            IsLoaded = true;
+
+            OnPropertyChanged(nameof(RefreshCommand));
+            OnPropertyChanged(nameof(EditCommand));
+        }
+
         Task<bool> INavigationAware.OnNavigatedFrom()
         {
             return Task.FromResult(true);
@@ -107,14 +167,22 @@ namespace SastWiki.WPF.ViewModels
         {
             if (parameters is int id)
             {
-                Markdown_text = (
-                    await App.GetService<IEntryProvider>().GetEntryByIdAsync(id)
-                ).Content;
+                try
+                {
+                    await LoadPage(id);
+                }
+                catch (ApiException e)
+                {
+                    MessageBox.Show(e.Message, e.Content);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+
                 return true;
             }
             return false;
         }
     }
 }
-
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行

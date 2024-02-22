@@ -1,30 +1,48 @@
-﻿using SastWiki.Core.Contracts.User;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Models.Dto;
 
 namespace SastWiki.Core.Services.User
 {
-    public class AuthenticationStorage : IAuthenticationStorage
+    public class AuthenticationStorage(ISettingsProvider _settings) : IAuthenticationStorage
     {
-        public AuthenticationStorage() { }
+        object currentUserLock = new object();
+        private UserDto _currentUser = new UserDto();
 
-        string? IAuthenticationStorage.AuthenticationToken
+        public UserDto CurrentUser
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-        string? IAuthenticationStorage.Username
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-        string? IAuthenticationStorage.PasswordHash
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get
+            {
+                _ = _settings
+                    .GetItem<UserDto>("CurrentUser")
+                    .ContinueWith(
+                        (task) =>
+                        {
+                            if (task.Result is not null)
+                                lock (currentUserLock)
+                                {
+                                    _currentUser = task.Result;
+                                }
+                        }
+                    );
+                lock (currentUserLock)
+                {
+                    return _currentUser;
+                }
+            }
+            set
+            {
+                lock (currentUserLock)
+                {
+                    _currentUser = value ?? new UserDto();
+                }
+                _settings.SetItem("CurrentUser", _currentUser);
+            }
         }
     }
 }

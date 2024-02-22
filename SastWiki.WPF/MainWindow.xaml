@@ -15,7 +15,10 @@
     Loaded="OnLoaded"
     mc:Ignorable="d">
     <DockPanel Background="Transparent">
-        <Grid Width="130" DockPanel.Dock="Left">
+        <Grid
+            Width="160"
+            Background="#11555555"
+            DockPanel.Dock="Left">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
@@ -40,15 +43,23 @@
                 PreviewKeyUp="SearchBox_KeyUp"
                 Text="{Binding SearchBoxText}" />
 
-            <TreeView Grid.Row="3" Background="Transparent">
-                <TreeViewItem Header="测试用数据">
-                    <TreeViewItem Header="测试层级" />
-                    <TreeViewItem Header="测试层级" />
-                </TreeViewItem>
-                <TreeViewItem Header="测试用数据">
-                    <TreeViewItem Header="测试层级" />
-                    <TreeViewItem Header="测试层级" />
-                </TreeViewItem>
+            <TreeView
+                x:Name="treeView"
+                Grid.Row="3"
+                Background="Transparent"
+                ItemsSource="{Binding TreeViewNodes}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path=ChildNodes}">
+                        <StackPanel>
+                            <Label Content="{Binding Path=NodeName}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectItemChangeCommand}" CommandParameter="{Binding ElementName=treeView, Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </TreeView>
             <Button
                 Grid.Row="4"
@@ -57,7 +68,7 @@
             <Button
                 Grid.Row="5"
                 Command="{Binding GoToUserPageCommand}"
-                Content="Username" />
+                Content="Not Logged in" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>

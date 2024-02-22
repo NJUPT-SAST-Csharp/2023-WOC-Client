@@ -1,10 +1,4 @@
-﻿using SastWiki.Core.Contracts.Backend.Tag;
-using SastWiki.Core.Contracts.InternalLink;
-using SastWiki.Core.Services.Backend.Tag;
-using SastWiki.Core.Services.InternalLink;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -19,6 +13,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SastWiki.Core.Contracts.Backend.Tag;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Services.Backend.Tag;
+using SastWiki.Core.Services.InternalLink;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF.Views.Pages
 {
@@ -44,8 +44,10 @@ namespace SastWiki.WPF.Views.Pages
             var tagEntries = new List<TagEntry>();
             foreach (var tag in allTags)
             {
-                var entryIds = await _tagProvider.GetEntryIdListByTag(tag);
-                tagEntries.Add(new TagEntry { TagName = tag, Ids = entryIds });
+                var entryIds = await _tagProvider.GetEntryByTags([tag]);
+                tagEntries.Add(
+                    new TagEntry { TagName = tag, Ids = entryIds.Select(x => x.Id ?? 0) }
+                );
             }
 
             lv.ItemsSource = tagEntries;

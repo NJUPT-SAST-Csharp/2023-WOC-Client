@@ -1,12 +1,12 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SastWiki.Core.Contracts.Backend.Tag;
+using SastWiki.WPF.Contracts;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -24,9 +24,9 @@ namespace SastWiki.WPF.ViewModels
         }
     }
 
-    public class TagEntry
+    public record TagEntry
     {
-        public string TagName { get; set; }
-        public IEnumerable<int> Ids { get; set; }
+        public required string TagName { get; set; }
+        public required IEnumerable<int> Ids { get; set; }
     }
 }

@@ -17,5 +17,7 @@ namespace SastWiki.Core.Models
         public string? CacheBasePath { get; set; }
 
         public string? SettingsFilePath { get; set; }
+
+        public string? ServerURI { get; set; }
     }
 }
