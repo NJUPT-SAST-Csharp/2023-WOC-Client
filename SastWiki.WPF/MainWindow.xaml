@@ -40,8 +40,11 @@
                 Grid.Row="2"
                 VerticalContentAlignment="Center"
                 Cursor="IBeam"
-                PreviewKeyUp="SearchBox_KeyUp"
-                Text="{Binding SearchBoxText}" />
+                PreviewKeyUp="SearchBox_KeyUp">
+                <TextBox.Text>
+                    <Binding Path="SearchBoxText" UpdateSourceTrigger="PropertyChanged" />
+                </TextBox.Text>
+            </TextBox>
 
             <TreeView
                 x:Name="treeView"
@@ -61,6 +64,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TreeView>
+
             <Button
                 Grid.Row="4"
                 Command="{Binding GoToSettingsPageCommand}"
@@ -68,7 +72,7 @@
             <Button
                 Grid.Row="5"
                 Command="{Binding GoToUserPageCommand}"
-                Content="Not Logged in" />
+                Content="username" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>

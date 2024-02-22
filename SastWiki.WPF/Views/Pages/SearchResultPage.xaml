@@ -12,7 +12,11 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <StackPanel>
-        <TextBlock Text="Search Result Page" />
-        <TextBlock Text="{Binding InquiryText}" />
+        <TextBlock Margin="60,30,60,0" FontSize="40">Search Result</TextBlock>
+        <TextBlock
+            Margin="60,10,60,0"
+            FontSize="20"
+            Text="{Binding SearchText, StringFormat='Search For {0}'}" />
     </StackPanel>
+
 </Page>

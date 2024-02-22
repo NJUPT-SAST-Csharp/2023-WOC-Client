@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="Styles\" />
+    <Folder Include="UserControl\" />
   </ItemGroup>
 
   <ItemGroup>
