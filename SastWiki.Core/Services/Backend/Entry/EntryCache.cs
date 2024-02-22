@@ -68,13 +68,13 @@ namespace SastWiki.Core.Services.Backend.Entry
         public async Task AddAsync(string key, EntryDto value)
         {
             await InitializeTask;
-            await _storage.LockCacheFile(_cahceFileID[key]);
             try
             {
                 if (
                     _cahceFileID.ContainsKey(key) && await _storage.ContainsAsync(_cahceFileID[key])
                 ) // 如果已经有了对应的缓存文件……
                 {
+                    await _storage.LockCacheFile(_cahceFileID[key]);
                     FileStream fileStream = await _storage.GetCacheFileStreamAsync(
                         _cahceFileID[key]
                     );
@@ -89,12 +89,12 @@ namespace SastWiki.Core.Services.Backend.Entry
 
                     using var cacheFileStream = await _storage.GetCacheFileStreamAsync(ID);
                     using var writer = new StreamWriter(cacheFileStream);
-                    await writer.WriteAsync(JsonSerializer.Serialize(value)); //写入缓存数据
-
                     if (_cahceFileID.ContainsKey(key))
                         _cahceFileID[key] = ID;
                     else
                         _cahceFileID.Add(key, ID);
+                    await _storage.LockCacheFile(_cahceFileID[key]);
+                    await writer.WriteAsync(JsonSerializer.Serialize(value)); //写入缓存数据
 
                     await _settings.SetItem("EntryCacheList", _cahceFileID); // 并且将新的缓存文件的ID与Key的映射关系保存到设置文件中
                 }
