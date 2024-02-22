@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models;
+using SastWiki.Core.Services.Backend.Entry;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.WPF.Contracts;
 using System;
@@ -18,6 +20,7 @@ namespace SastWiki.WPF.ViewModels
     internal class EditPageVM : ObservableObject, INavigationAware
     {
         private readonly InternalLinkService _internalLinkService;
+        private EntryProvider _entryProvider;
 
         Task<bool> INavigationAware.OnNavigatedFrom()
         {
@@ -40,7 +43,10 @@ namespace SastWiki.WPF.ViewModels
             SubmitCommand = new RelayCommand(Submit);
         }
 
-        private void Submit() { }
+        private void Submit() 
+        {
+            _entryProvider.UpdateEntryAsync();
+        }
 
         public void AddImage()
         {

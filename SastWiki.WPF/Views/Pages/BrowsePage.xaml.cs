@@ -2,10 +2,12 @@
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Services.Backend.Tag;
 using SastWiki.Core.Services.InternalLink;
+using SastWiki.WPF.Contracts;
 using SastWiki.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +29,7 @@ namespace SastWiki.WPF.Views.Pages
     {
         private readonly InternalLinkService _internalLinkService;
         private ITagProvider _tagProvider;
+        private INavigationService _navigationService;
 
         public BrowsePage(ITagProvider tagProvider)
         {
@@ -51,7 +54,15 @@ namespace SastWiki.WPF.Views.Pages
         private void ListViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var item = sender as ListViewItem;
-            if (item != null) { }
+            if (item != null)
+            {
+                var tagEntry = item.Content as TagEntry;
+                if (tagEntry != null)
+                {
+                    int Id = tagEntry.Ids.FirstOrDefault(); // 获取词条的 ID
+                    _navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), Id);
+                }
+            }
         }
     }
 }

@@ -42,9 +42,6 @@ namespace SastWiki.WPF.ViewModels
         private async void NavigateTo_SearchResultPage() =>
             await _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBoxText);
 
-        private async void NavigateTo_EditPage() =>
-            await _navigationService.NavigateTo(App.GetService<EditPage>(), SearchBoxText);
-
         private async void NavigateTo_UserPage()
         {
             UsernameWindow usernameWindow = new UsernameWindow();
@@ -57,6 +54,5 @@ namespace SastWiki.WPF.ViewModels
         public ICommand GoToSearchResultPageCommand =>
             new RelayCommand(NavigateTo_SearchResultPage);
         public ICommand GoToUserPageCommand => new RelayCommand(NavigateTo_UserPage);
-        public ICommand GotoEditPageCommand => new RelayCommand(NavigateTo_EditPage);
     }
 }
