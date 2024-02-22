@@ -19,7 +19,6 @@ using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 using SastWiki.WPF.Views.Pages;
-
 namespace SastWiki.WPF.ViewModels
 {
     public partial class EntryViewVM(
@@ -72,6 +71,7 @@ namespace SastWiki.WPF.ViewModels
                 () => IsLoaded
             );
 
+
         public ICommand EditCommand =>
             new RelayCommand(
                 () =>
@@ -81,6 +81,7 @@ namespace SastWiki.WPF.ViewModels
                 },
                 () => IsLoaded
             );
+
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
@@ -96,7 +97,7 @@ namespace SastWiki.WPF.ViewModels
             CoreWebView2NavigationStartingEventArgs e
         )
         {
-            if (e.IsUserInitiated) // ÅĞ¶ÏÊÇ·ñÎªÓÃ»§µã»÷£¬ÒÔÅÅ³ıµôÍ¼Æ¬ÇëÇó
+            if (e.IsUserInitiated) // åˆ¤æ–­æ˜¯å¦ä¸ºç”¨æˆ·ç‚¹å‡»ï¼Œä»¥æ’é™¤æ‰å›¾ç‰‡è¯·æ±‚
             {
                 IInternalLinkValidator validator = App.GetService<IInternalLinkValidator>();
                 if (Uri.TryCreate(e.Uri, UriKind.Absolute, out Uri? result))
@@ -108,7 +109,7 @@ namespace SastWiki.WPF.ViewModels
                     }
                     else
                     {
-                        // ´ÓÄ¬ÈÏä¯ÀÀÆ÷´ò¿ªÁ´½Ó
+                        // ä»é»˜è®¤æµè§ˆå™¨æ‰“å¼€é“¾æ¥
                         System.Diagnostics.Process.Start("explorer.exe", e.Uri);
                         e.Cancel = true;
                     }
@@ -126,7 +127,7 @@ namespace SastWiki.WPF.ViewModels
                     out IEnumerable<int> images
                 );
 
-                // ÕâÁ½ĞĞ´ó¸ÅÖ®ºó»áÓÃµ½£¬ÏÈÁô×ÅÔÙËµ
+                // è¿™ä¸¤è¡Œå¤§æ¦‚ä¹‹åä¼šç”¨åˆ°ï¼Œå…ˆç•™ç€å†è¯´
                 // MessageBox.Show(html_text);
                 // MessageBox.Show(Markdown_text);
 
@@ -137,7 +138,7 @@ namespace SastWiki.WPF.ViewModels
 
         async Task LoadPage(int id)
         {
-            CurrentEntry = new EntryDto() { Title = "Loading¡­¡­" };
+            CurrentEntry = new EntryDto() { Title = "Loadingâ€¦â€¦" };
             try
             {
                 var entry = await entryProvider.GetEntryByIdAsync(id);
@@ -156,6 +157,7 @@ namespace SastWiki.WPF.ViewModels
 
             OnPropertyChanged(nameof(RefreshCommand));
             OnPropertyChanged(nameof(EditCommand));
+
         }
 
         Task<bool> INavigationAware.OnNavigatedFrom()

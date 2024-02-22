@@ -14,6 +14,7 @@ using SastWiki.Core.Services.User;
 namespace SastWiki.Core.Services.Backend.Entry
 {
     public class EntryProvider(ISastWikiAPI _api, IEntryCache _cache) : IEntryProvider
+
     {
         private List<int> _entryIdList = [];
 
@@ -54,6 +55,7 @@ namespace SastWiki.Core.Services.Backend.Entry
                 }
             );
 
+
             if (
                 await _cache.ContainsAsync(id.ToString())
                 && (await GetEntryMetadataList()).Where(x => x.Id == id).Any()
@@ -87,13 +89,16 @@ namespace SastWiki.Core.Services.Backend.Entry
             return (await a).Select(entry => entry.Id).Contains(id);
         }
 
+
         public async Task<EntryDto> UpdateEntryAsync(EntryDto entry)
         {
             var postTask = _api.UpdateEntry(entry);
+
             if (!(await postTask).IsSuccessStatusCode)
             {
                 throw (await postTask).Error!;
             }
+
             _cache.EntryMetadataList = null; // 清空词条列表缓存
             _ = GetEntryMetadataList();
             return (await postTask).Content;
