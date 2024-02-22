@@ -1,4 +1,4 @@
-﻿using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,27 +21,29 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class ThemeChangePage : Page
     {
-        private INavigationService _navigationService;
-
-        public ThemeChangePage(INavigationService navigationService)
+        public ThemeChangePage()
         {
-            _navigationService = navigationService;
             InitializeComponent();
         }
 
         private void ThemeSwitch_Checked(object sender, RoutedEventArgs e)
         {
             ResourceDictionary resource = new ResourceDictionary();
+            var mw = App.GetService<MainWindow>();
             if (
                 Application.Current.Resources.MergedDictionaries[0].Source.ToString()
                 == ThemeDefault
             )
             {
                 resource.Source = new Uri(ThemeDark);
+                mw.IsDark = false;
+                mw.RefreshDarkMode();
             }
             else
             {
                 resource.Source = new Uri(ThemeDefault);
+                mw.IsDark = true;
+                mw.RefreshDarkMode();
             }
             Application.Current.Resources.MergedDictionaries[0] = resource;
         }
@@ -51,7 +53,7 @@ namespace SastWiki.WPF.Views.Pages
 
         private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
             _navigationService.NavigateTo(App.GetService<AboutMorePage>());
-
+            
         private const string ThemeDark = "pack://application:,,,/Resource/Theme/GrayColor.xaml";
         private const string ThemeDefault = "pack://application:,,,/Resource/Theme/WhiteColor.xaml";
     }

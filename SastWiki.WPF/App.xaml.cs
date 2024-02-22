@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Windows;
-using SastWiki.WPF.Views.Pages;
-using SastWiki.WPF.ViewModels;
+using Refit;
+using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.Backend;
+using SastWiki.Core.Services.InternalLink;
+using SastWiki.Core.Services.User;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Services;
-using SastWiki.Core.Contracts;
-using SastWiki.Core.Services;
-using SastWiki.Core.Contracts.InternalLink;
-using SastWiki.Core.Services.InternalLink;
-using SastWiki.Core.Contracts.Backend;
-using SastWiki.Core.Services.Backend;
+using SastWiki.WPF.Utils;
+using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF
 {
@@ -38,19 +39,19 @@ namespace SastWiki.WPF
         {
             InitializeComponent();
 
-            Host = Microsoft.Extensions.Hosting.Host
-                .CreateDefaultBuilder()
+            Host = Microsoft
+                .Extensions.Hosting.Host.CreateDefaultBuilder()
                 .UseContentRoot(AppContext.BaseDirectory)
                 .ConfigureServices(
                     (context, services) =>
                     {
-                        // Register Services
+                        // Core Services
+                        Core.Helper.ServicesHelper.SetServices(services);
+
+                        // WPF.Contracts
                         services.AddSingleton<INavigationService, NavigationService>();
                         services.AddSingleton<IMarkdownProcessor, MarkdownProcessor>();
-                        services.AddSingleton<IInternalLinkService, InternalLinkService>();
-                        services.AddSingleton<IInternalLinkHandler, InternalLinkHandler>();
-                        services.AddSingleton<IInternalLinkValidator, InternalLinkValidator>();
-                        services.AddSingleton<IInternalLinkCreator, InternalLinkCreator>();
+                        services.AddSingleton<MarkdownCSSProvider>();
 
                         // Register ViewModels
                         services.AddSingleton<MainWindowVM>();
@@ -59,7 +60,6 @@ namespace SastWiki.WPF
                         services.AddSingleton<SettingsVM>();
                         services.AddTransient<SearchResultVM>();
                         services.AddTransient<EntryViewVM>();
-                        
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
@@ -70,12 +70,14 @@ namespace SastWiki.WPF
                         services.AddSingleton<AboutMorePage>();
                         services.AddTransient<SearchResultPage>();
                         services.AddTransient<EntryViewPage>();
-
-                        // 仅仅用于测试，实际应用中应该使用真实的数据源
-                        services.AddSingleton<IEntryProvider, 用于测试的一些文档>();
                     }
                 )
                 .Build();
+
+            // Register Refit Authentication Handler
+            Core.Helper.ServicesHelper.SetRefitBearerTokenGetter(
+                GetService<IAuthenticationStorage>()
+            );
 
             // Register Internal Links
             var internalLinkService = GetService<IInternalLinkService>();

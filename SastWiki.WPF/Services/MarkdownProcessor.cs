@@ -1,11 +1,12 @@
-﻿using Markdig;
-using Markdig.Syntax;
-using SastWiki.WPF.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Markdig;
+using Markdig.Syntax;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Utils;
 
 namespace SastWiki.WPF.Services
 {
@@ -13,14 +14,14 @@ namespace SastWiki.WPF.Services
     {
         private MarkdownPipeline _pipeline;
         private string HTMLTemplate =
-            "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>{0}</style></head><body>{1}</body></html>";
+            "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>{0}</style></head><body class=\"markdown-body\" margin=\"20\">{1}</body></html>";
 
         public string CSSStyle { get; set; }
 
-        public MarkdownProcessor()
+        public MarkdownProcessor(MarkdownCSSProvider cssProvider)
         {
             _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            CSSStyle = "";
+            CSSStyle = cssProvider.CSS;
         }
 
         public void Output(string input, out string html, out IEnumerable<int> images)

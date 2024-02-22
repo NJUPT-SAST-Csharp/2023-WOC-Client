@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SastWiki.Core.Contracts.Infrastructure
+namespace SastWiki.Core.Contracts.Backend.Image
 {
-    internal interface IHttpClient { }
+    public interface IImageProvider { }
 }
