@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
@@ -13,7 +14,9 @@ using Microsoft.Win32;
 using Microsoft.Xaml.Behaviors;
 using Prism.Commands;
 using Refit;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
 using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.Infrastructure.SettingsService;
 using SastWiki.WPF;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Views.Pages;
@@ -22,7 +25,8 @@ namespace SastWiki.WPF.ViewModels
 {
     public class LoginPageVM : ObservableObject
     {
-        IUserLogin userLogin;
+        readonly IUserLogin userLogin;
+        readonly ISettingsProvider settingsProvider;
 
         private string? _username;
         public string? Username
@@ -50,37 +54,44 @@ namespace SastWiki.WPF.ViewModels
             set => SetProperty(ref rememberPassword, value);
         }
 
-        public LoginPageVM(IUserLogin _userLogin)
+        public LoginPageVM(IUserLogin _userLogin, ISettingsProvider _settingsProvider)
         {
             userLogin = _userLogin;
+            settingsProvider = _settingsProvider;
             RememberPassword = false;
             NewPassword = ""; // 这是一个fix，用来激活OnPasswordPropertyChanged()方法，以绑定Password的更新事件
-            if (RememberPassword == true)
-            {
-                string savedPassword = GetSavedPassword();
-
-                if (!string.IsNullOrEmpty(savedPassword))
-                {
-                    NewPassword = savedPassword;
-                }
-            }
+            _ = GetSavedPassword();
         }
 
-        private string GetSavedPassword()
+        private async Task GetSavedPassword()
         {
             string savedPassword = string.Empty;
+            string savedUsername = string.Empty;
 
-            if (Application.Current.Properties.Contains("SavedPassword"))
+            try
             {
-                savedPassword = Application.Current.Properties["SavedPassword"].ToString();
+                savedPassword =
+                    await settingsProvider.GetItem<string>("SavedPassword") ?? string.Empty;
+                savedUsername =
+                    await settingsProvider.GetItem<string>("SavedUsername") ?? string.Empty;
+                RememberPassword = true;
+            }
+            catch (Exception)
+            {
+                savedPassword = string.Empty;
+                savedUsername = string.Empty;
             }
 
-            return savedPassword;
+            // MessageBox.Show(savedPassword);
+            // MessageBox.Show(savedUsername);
+            Username = savedUsername;
+            NewPassword = savedPassword;
         }
 
-        private void SavePassword(string password)
+        private async Task SavePassword(string username, string password)
         {
-            Application.Current.Properties["SavedPassword"] = password;
+            await settingsProvider.SetItem("SavedPassword", password);
+            await settingsProvider.SetItem("SavedUsername", username);
         }
 
         private object currentPage;
@@ -100,7 +111,7 @@ namespace SastWiki.WPF.ViewModels
                 {
                     if (RememberPassword == true)
                     {
-                        SavePassword(password);
+                        await SavePassword(username, password);
                     }
                     //使用UserLogin中的方法
                     try
