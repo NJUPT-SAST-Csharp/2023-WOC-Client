@@ -31,7 +31,7 @@ namespace SastWiki.Core.Contracts.Backend
         [Headers("Authorization: Bearer")]
         [Put("/api/Entry/UpdateEntry")]
         public Task<IApiResponse<EntryDto>> UpdateEntry(
-            [Refit.Body(BodySerializationMethod.Serialized)] EntryDto entry // 不要问我为什么上面那个是UrlEncoded而这个是Serialized
+            [Refit.Body(BodySerializationMethod.Serialized)] EntryDto entry
         );
 
         [Headers("Authorization: Bearer")]
@@ -39,9 +39,10 @@ namespace SastWiki.Core.Contracts.Backend
         public Task<IApiResponse<string>> DeleteEntry(int id);
 
         // Picture
-
+        [Multipart]
+        [Headers("Authorization: Bearer")]
         [Post("/api/Picture/UploadPicture")]
-        public Task<IApiResponse<int>> UploadPicture([Refit.Body] byte[] picture);
+        public Task<IApiResponse<PictureDto>> UploadPicture(ByteArrayPart pic);
 
         [Get("/api/Picture/GetPictureById")]
         public Task<IApiResponse<byte[]>> GetPictureById([Refit.Query] int id);
