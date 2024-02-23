@@ -28,5 +28,6 @@ namespace SastWiki.WPF.Contracts
         public Task<bool> NavigateBackward();
 
         public Task<bool> NavigateForward();
+       
     }
 }
