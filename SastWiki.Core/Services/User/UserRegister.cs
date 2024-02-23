@@ -14,7 +14,16 @@ namespace SastWiki.Core.Services.User
     {
         public async Task RegisterAsync(string Username, string email, string PasswordHash)
         {
-            await api.Signup(Username, email, PasswordHash);
+            var a = await api.Signup(Username, email, PasswordHash);
+            if (a.IsSuccessStatusCode)
+            {
+                //注册成功
+            }
+            else
+            {
+                //注册失败
+                throw a.Error;
+            }
         }
     }
 }

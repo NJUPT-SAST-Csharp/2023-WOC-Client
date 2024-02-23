@@ -26,4 +26,8 @@
     <ProjectReference Include="..\SastWiki.Core\SastWiki.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Update\" />
+  </ItemGroup>
+
 </Project>

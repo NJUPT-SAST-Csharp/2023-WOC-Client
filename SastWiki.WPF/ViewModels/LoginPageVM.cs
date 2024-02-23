@@ -1,13 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
-using Microsoft.Xaml.Behaviors;
-using Prism.Commands;
-using SastWiki.WPF;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Views.Pages;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
@@ -15,11 +8,26 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using Microsoft.Xaml.Behaviors;
+using Prism.Commands;
+using Refit;
+using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.Infrastructure.SettingsService;
+using SastWiki.WPF;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
     public class LoginPageVM : ObservableObject
     {
+        readonly IUserLogin userLogin;
+        readonly ISettingsProvider settingsProvider;
+
         private string? _username;
         public string? Username
         {
@@ -40,71 +48,113 @@ namespace SastWiki.WPF.ViewModels
             }
         }
         private bool? rememberPassword;
-        public bool? RememberPassword { get => rememberPassword; set => SetProperty(ref rememberPassword, value); }
-
-        public LoginPageVM()
+        public bool? RememberPassword
         {
-            RememberPassword = false;
-            if (RememberPassword == true)
-            {
-                string savedPassword = GetSavedPassword();
-
-                if (!string.IsNullOrEmpty(savedPassword))
-                {
-                    NewPassword = savedPassword;
-                }
-            }
+            get => rememberPassword;
+            set => SetProperty(ref rememberPassword, value);
         }
-        private string GetSavedPassword()
+
+        public LoginPageVM(IUserLogin _userLogin, ISettingsProvider _settingsProvider)
+        {
+            userLogin = _userLogin;
+            settingsProvider = _settingsProvider;
+            RememberPassword = false;
+            NewPassword = ""; // 这是一个fix，用来激活OnPasswordPropertyChanged()方法，以绑定Password的更新事件
+            _ = GetSavedPassword();
+        }
+
+        private async Task GetSavedPassword()
         {
             string savedPassword = string.Empty;
+            string savedUsername = string.Empty;
 
-            if (Application.Current.Properties.Contains("SavedPassword"))
+            try
             {
-                savedPassword = Application.Current.Properties["SavedPassword"].ToString();
+                savedPassword =
+                    await settingsProvider.GetItem<string>("SavedPassword") ?? string.Empty;
+                savedUsername =
+                    await settingsProvider.GetItem<string>("SavedUsername") ?? string.Empty;
+                RememberPassword = true;
+            }
+            catch (Exception)
+            {
+                savedPassword = string.Empty;
+                savedUsername = string.Empty;
             }
 
-            return savedPassword;
+            // MessageBox.Show(savedPassword);
+            // MessageBox.Show(savedUsername);
+            Username = savedUsername;
+            NewPassword = savedPassword;
         }
-        private void SavePassword(string password)
+
+        private async Task SavePassword(string username, string password)
         {
-            Application.Current.Properties["SavedPassword"] = password;
+            await settingsProvider.SetItem("SavedPassword", password);
+            await settingsProvider.SetItem("SavedUsername", username);
         }
+
         private object currentPage;
-        public object Current_Page { get => currentPage; set => SetProperty(ref currentPage, value); }
-
-        private RelayCommand loginCommand;
-        public ICommand LoginCommand => loginCommand ??= new RelayCommand(Login);
-        private void Login()
+        public object Current_Page
         {
-            string username = Username;
-            string password = NewPassword;
-            if (RememberPassword == true)
+            get => currentPage;
+            set => SetProperty(ref currentPage, value);
+        }
+
+        public ICommand LoginCommand =>
+            new RelayCommand(async () =>
             {
-                SavePassword(NewPassword);
-            }
-            //使用UserLogin中的方法
-        }
+                // OnPropertyChanged(nameof(NewPassword));
+                string? username = Username;
+                string? password = NewPassword;
+                if (username is not null && password is not null)
+                {
+                    if (RememberPassword == true)
+                    {
+                        await SavePassword(username, password);
+                    }
+                    //使用UserLogin中的方法
+                    try
+                    {
+                        await userLogin.LoginAsync(username, password);
+                        MessageBox.Show("登录成功");
+                    }
+                    catch (ApiException e)
+                    {
+                        MessageBox.Show(e.Message, e.Content);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                }
+            });
 
-        private RelayCommand registerCommand;
-        public ICommand RegisterCommand => registerCommand ??= new RelayCommand(Register);
-        private void Register()
-        {
-            RegisterPage registerPage = new();
-            Current_Page = registerPage;
-            RegisterVisibility = Visibility.Collapsed;
-        }
-         private Visibility registerVisibility = Visibility.Visible;
+        public ICommand RegisterCommand =>
+            new RelayCommand(() =>
+            {
+                RegisterPage registerPage = App.GetService<RegisterPage>();
+                Current_Page = registerPage;
+                RegisterVisibility = Visibility.Collapsed;
+            });
+
+        private Visibility registerVisibility = Visibility.Visible;
         public Visibility RegisterVisibility
         {
             get => registerVisibility;
             set => SetProperty(ref registerVisibility, value);
         }
     }
+
     public static class PasswordBoxHelper
     {
         public static readonly DependencyProperty PasswordProperty =
-            DependencyProperty.RegisterAttached("Password", typeof(string), typeof(PasswordBoxHelper), new PropertyMetadata(null, OnPasswordPropertyChanged));
+            DependencyProperty.RegisterAttached(
+                "Password",
+                typeof(string),
+                typeof(PasswordBoxHelper),
+                new PropertyMetadata(null, OnPasswordPropertyChanged)
+            );
 
         public static string? GetPassword(DependencyObject obj)
         {
@@ -116,11 +166,18 @@ namespace SastWiki.WPF.ViewModels
             obj.SetValue(PasswordProperty, value);
         }
 
-        private static void OnPasswordPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnPasswordPropertyChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e
+        )
         {
             if (d is PasswordBox passwordBox)
             {
                 passwordBox.PasswordChanged -= PasswordBox_PasswordChanged;
+                if ((string)e.NewValue != passwordBox.Password)
+                {
+                    passwordBox.Password = (string)e.NewValue;
+                }
                 passwordBox.PasswordChanged += PasswordBox_PasswordChanged;
             }
         }
@@ -132,6 +189,5 @@ namespace SastWiki.WPF.ViewModels
                 SetPassword(passwordBox, passwordBox.Password);
             }
         }
-
     }
 }
