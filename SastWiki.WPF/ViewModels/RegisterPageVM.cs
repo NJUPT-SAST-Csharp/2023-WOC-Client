@@ -58,12 +58,12 @@ namespace SastWiki.WPF.ViewModels
                     try
                     {
                         await userRegister.RegisterAsync(username, email, password);
-                        MessageBox.Show($"注册成功 {username} {email} {password}");
+                        MessageBox.Show($"注册成功");
                         //使用UserLogin中的方法
                         try
                         {
                             await userLogin.LoginAsync(email, password);
-                            MessageBox.Show($"登录成功 {username} {email} {password}");
+                            MessageBox.Show($"登录成功");
                         }
                         catch (ApiException e)
                         {
