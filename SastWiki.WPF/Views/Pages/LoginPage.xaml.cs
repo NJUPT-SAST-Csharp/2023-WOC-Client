@@ -1,6 +1,4 @@
-﻿using SastWiki.WPF.Contracts;
-using SastWiki.WPF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.ViewModels;
 
 namespace SastWiki.WPF.Views.Pages
 {
@@ -22,10 +21,10 @@ namespace SastWiki.WPF.Views.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
-        public LoginPage()
+        public LoginPage(LoginPageVM vm)
         {
             InitializeComponent();
-            DataContext = new LoginPageVM();
+            DataContext = vm;
         }
     }
 }
