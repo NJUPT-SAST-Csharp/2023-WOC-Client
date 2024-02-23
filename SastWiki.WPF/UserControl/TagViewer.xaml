@@ -9,14 +9,17 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     x:Name="TagViewerControl"
     d:DataContext="{d:DesignInstance Type=local:TagViewer}"
-    d:DesignHeight="40"
+    d:DesignHeight="24"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:TagViewerItemConverter x:Key="TagViewerItemConverter" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Horizontal">
+    <StackPanel
+        Margin="0"
+        DataContext="{Binding Mode=OneWay}"
+        Orientation="Horizontal">
         <ItemsControl
             x:Name="TagsContainer"
             ItemTemplate="{StaticResource TagViewerItemTemplate}"

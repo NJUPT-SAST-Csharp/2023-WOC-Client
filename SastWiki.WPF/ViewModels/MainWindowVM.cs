@@ -55,7 +55,7 @@ namespace SastWiki.WPF.ViewModels
 
         private async void NavigateTo_SearchResultPage()
         {
-            MessageBox.Show(SearchBoxText);
+            // MessageBox.Show(SearchBoxText);
             await _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBoxText);
         }
 

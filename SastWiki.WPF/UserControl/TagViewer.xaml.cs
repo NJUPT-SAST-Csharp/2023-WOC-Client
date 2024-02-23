@@ -27,7 +27,6 @@ namespace SastWiki.WPF.UserControl
     {
         public TagViewer()
         {
-            DataContext = this;
             InitializeComponent();
         }
 
