@@ -10,12 +10,14 @@ using CommunityToolkit.Mvvm.Input;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class SearchResultVM(IEntryProvider entryProvider)
-        : ObservableObject,
-            INavigationAware
+    public partial class SearchResultVM(
+        IEntryProvider entryProvider,
+        INavigationService navigationService
+    ) : ObservableObject, INavigationAware
     {
         [ObservableProperty]
         private string _searchText = "";
@@ -27,8 +29,8 @@ namespace SastWiki.WPF.ViewModels
 
         private void TagClick(string? tag)
         {
-            MessageBox.Show($"Tag Clicked! {tag}");
-            // NavigationService.NavigateTo("SearchResult", tag);
+            //MessageBox.Show($"Tag Clicked! {tag}");
+            navigationService.NavigateTo(App.GetService<SearchResultPage>(), tag);
         }
 
         public async Task Search(string s)
@@ -37,10 +39,18 @@ namespace SastWiki.WPF.ViewModels
             var metadatalist = await entryProvider.GetEntryMetadataList();
             SearchResult = metadatalist
                 .Where(x =>
-                    (x.Title ?? "").Contains(s)
-                    || x.TagNames.Where(x => x.Contains(s)).Any()
-                    || (x.CategoryName ?? "").Contains(s)
+                    (x.Title ?? "") == (s)
+                    || x.TagNames.Where(x => x == (s)).Any()
+                    || (x.CategoryName ?? "") == (s)
                 )
+                .Concat(
+                    metadatalist.Where(x =>
+                        (x.Title ?? "").Contains(s)
+                        || x.TagNames.Where(x => x.Contains(s)).Any()
+                        || (x.CategoryName ?? "").Contains(s)
+                    )
+                )
+                .DistinctBy(x => x.Id)
                 .ToList();
         }
 

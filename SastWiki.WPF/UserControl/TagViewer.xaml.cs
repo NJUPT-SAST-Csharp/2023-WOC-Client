@@ -30,24 +30,10 @@ namespace SastWiki.WPF.UserControl
             InitializeComponent();
         }
 
-        [ObservableProperty]
-        public List<TagViewerTagItem> tagViewerTags;
-
         public List<string> Tags
         {
             get { return (List<string>)GetValue(TagsProperty); }
-            set
-            {
-                SetValue(TagsProperty, value);
-                SetProperty(
-                    ref tagViewerTags,
-                    value
-                        .Select(x => new TagViewerTagItem() { Name = x, ClickCommand = Click })
-                        .ToList(),
-                    "TagViewerTags"
-                );
-                OnPropertyChanged("TagViewerTags");
-            }
+            set { SetValue(TagsProperty, value); }
         }
 
         public static readonly DependencyProperty TagsProperty = DependencyProperty.Register(

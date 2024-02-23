@@ -53,8 +53,13 @@
                 Grid.Column="2"
                 Margin="10,0"
                 HorizontalAlignment="Left"
-                Text="{Binding CurrentEntry, Converter={StaticResource EntryInfoTitleConverter}}" VerticalAlignment="Center" FontSize="16" />
-            <usercontrol:TagViewer Grid.Column="3" Tags="{Binding CurrentEntry.TagNames}" />
+                VerticalAlignment="Center"
+                FontSize="16"
+                Text="{Binding CurrentEntry, Converter={StaticResource EntryInfoTitleConverter}}" />
+            <usercontrol:TagViewer
+                Grid.Column="3"
+                Click="{Binding TagClickCommand}"
+                Tags="{Binding CurrentEntry.TagNames}" />
         </Grid>
     </Grid>
 </Page>
