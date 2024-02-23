@@ -42,7 +42,7 @@ namespace SastWiki.WPF.ViewModels
         private int selectedPageIndex = 0;
 
         [ObservableProperty]
-        private string searchBoxText = String.Empty;
+        private string searchBoxText = "";
 
         private async void NavigateTo_HomePage() =>
             await _navigationService.NavigateTo(App.GetService<HomePage>());
@@ -53,8 +53,11 @@ namespace SastWiki.WPF.ViewModels
         private async void NavigateTo_SettingsPage() =>
             await _navigationService.NavigateTo(App.GetService<SettingsPage>());
 
-        private async void NavigateTo_SearchResultPage() =>
+        private async void NavigateTo_SearchResultPage()
+        {
+            // MessageBox.Show(SearchBoxText);
             await _navigationService.NavigateTo(App.GetService<SearchResultPage>(), SearchBoxText);
+        }
 
         private async void NavigateTo_UserPage()
         {

@@ -2,17 +2,143 @@
     x:Class="SastWiki.WPF.Views.Pages.SearchResultPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:SastWiki.WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modelcore="clr-namespace:SastWiki.Core.Models.Dto;assembly=SastWiki.Core"
+    xmlns:usercontrol="clr-namespace:SastWiki.WPF.UserControl"
     xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels"
+    x:Name="page"
     Title="SearchResultPage"
     d:DataContext="{d:DesignInstance Type=viewmodels:SearchResultVM}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="422.185"
+    d:DesignWidth="734.437"
     mc:Ignorable="d">
-    <StackPanel>
-        <TextBlock Text="Search Result Page" />
-        <TextBlock Text="{Binding InquiryText}" />
-    </StackPanel>
+    <Page.Resources>
+        <converters:IsListEmptyConverter x:Key="IsListEmptyConverter" />
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Margin="50,20,50,0" FontSize="35">Search Result</TextBlock>
+            <TextBlock
+                Margin="50,8,50,0"
+                FontSize="20"
+                Text="{Binding SearchText, StringFormat='Search For {0}'}" />
+            <ListBox
+                MinHeight="100"
+                Margin="50,20"
+                HorizontalContentAlignment="Stretch"
+                Background="#11777777"
+                ItemsSource="{Binding SearchResult}"
+                SelectionMode="Single">
+
+                <ListBox.Style>
+                    <Style TargetType="ListBox">
+                        <Style.Triggers>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Border
+                                                MinHeight="100"
+                                                Background="#11777777"
+                                                BorderBrush="#FFABADB3"
+                                                BorderThickness="1">
+                                                <StackPanel>
+                                                    <TextBlock
+                                                        Margin="0,30,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="24"
+                                                        Text="Result is Empty : (" />
+                                                </StackPanel>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <StackPanel>
+                                        <Separator x:Name="Separator" Margin="10,1,10,1" />
+                                        <ContentPresenter />
+                                    </StackPanel>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                            <Setter TargetName="Separator" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.RowSpan="2"
+                                Grid.Column="0"
+                                Margin="20,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                Text="{Binding Title}" />
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontSize="15"
+                                Text="{Binding CategoryName}" />
+
+                            <usercontrol:TagViewer
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Click="{Binding DataContext.TagClickCommand, ElementName=page}"
+                                Tags="{Binding TagNames}" />
+
+                            <TextBlock
+                                x:Name="IsTagsEmptyIndicator"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                FontSize="15"
+                                Text="No Tags">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TagNames, Converter={StaticResource IsListEmptyConverter}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </StackPanel>
+    </ScrollViewer>
+
 </Page>

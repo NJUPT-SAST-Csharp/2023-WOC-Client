@@ -19,11 +19,13 @@ using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 using SastWiki.WPF.Views.Pages;
+
 namespace SastWiki.WPF.ViewModels
 {
     public partial class EntryViewVM(
         IMarkdownProcessor markdownProcessor,
-        IEntryProvider entryProvider
+        IEntryProvider entryProvider,
+        INavigationService navigationService
     ) : ObservableObject, INavigationAware
     {
         private WebView2? _webview;
@@ -71,7 +73,6 @@ namespace SastWiki.WPF.ViewModels
                 () => IsLoaded
             );
 
-
         public ICommand EditCommand =>
             new RelayCommand(
                 () =>
@@ -81,7 +82,6 @@ namespace SastWiki.WPF.ViewModels
                 },
                 () => IsLoaded
             );
-
 
         [ObservableProperty]
         private string _markdown_text = String.Empty;
@@ -157,7 +157,15 @@ namespace SastWiki.WPF.ViewModels
 
             OnPropertyChanged(nameof(RefreshCommand));
             OnPropertyChanged(nameof(EditCommand));
+        }
 
+        // Tags
+        public ICommand TagClickCommand => new RelayCommand<string>(TagClick);
+
+        private void TagClick(string? tag)
+        {
+            //MessageBox.Show($"Tag Clicked! {tag}");
+            navigationService.NavigateTo(App.GetService<SearchResultPage>(), tag);
         }
 
         Task<bool> INavigationAware.OnNavigatedFrom()

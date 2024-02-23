@@ -1,0 +1,45 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:usercontrol="clr-namespace:SastWiki.WPF.UserControl">
+
+    <ItemsPanelTemplate x:Key="TagViewerItemsPanel">
+        <StackPanel Orientation="Horizontal" />
+    </ItemsPanelTemplate>
+
+    <Style x:Key="TagViewerStyle" TargetType="ItemsControl">
+        <Setter Property="ItemTemplate" Value="{StaticResource TagViewerItemTemplate}" />
+        <Setter Property="ItemsPanel" Value="{StaticResource TagViewerItemsPanel}" />
+    </Style>
+
+    <Style x:Key="PillButton" TargetType="Button">
+        <Setter Property="Background" Value="#5f9ea0" />
+        <Setter Property="BorderBrush" Value="#315253" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Padding="6,2"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="13">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="TagViewerItemTemplate">
+        <Button
+            Command="{Binding Click, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type usercontrol:TagViewer}}}"
+            CommandParameter="{Binding}"
+            Content="{Binding}"
+            Style="{StaticResource PillButton}" />
+    </DataTemplate>
+
+</ResourceDictionary>

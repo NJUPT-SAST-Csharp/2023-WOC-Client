@@ -21,14 +21,14 @@ namespace SastWiki.WPF.Converters
                     sb.Append($"[{entry.CategoryName}] - ");
                 }
                 sb.Append(entry.Title ?? "Untitled");
-                if (entry.TagNames.Count > 0)
-                {
-                    sb.Append($" - Tags:");
-                    foreach (var tag in entry.TagNames)
-                    {
-                        sb.Append($" {tag}");
-                    }
-                }
+                //if (entry.TagNames.Count > 0)
+                //{
+                //    sb.Append($" - Tags:");
+                //    foreach (var tag in entry.TagNames)
+                //    {
+                //        sb.Append($" {tag}");
+                //    }
+                //}
                 return sb.ToString();
             }
             return "Untitled";
