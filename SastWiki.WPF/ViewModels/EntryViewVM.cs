@@ -47,11 +47,25 @@ namespace SastWiki.WPF.ViewModels
                                 _ensureWebviewInitialized.SetResult(true);
                             }
                         );
+                    _ = SetRequestEventHandler();
                 }
             }
         }
 
         readonly TaskCompletionSource<bool> _ensureWebviewInitialized = new();
+
+        async Task SetRequestEventHandler()
+        {
+            await _ensureWebviewInitialized.Task;
+            if (_webview != null)
+            {
+                WebView!.CoreWebView2.AddWebResourceRequestedFilter(
+                    "http://sast-wiki/*",
+                    CoreWebView2WebResourceContext.All
+                );
+                WebView.CoreWebView2.WebResourceRequested += WebView_ResourceRequest;
+            }
+        }
 
         public ICommand RefreshCommand =>
             new RelayCommand(
@@ -114,6 +128,29 @@ namespace SastWiki.WPF.ViewModels
                         e.Cancel = true;
                     }
             }
+        }
+
+        private void WebView_ResourceRequest(
+            object? sender,
+            CoreWebView2WebResourceRequestedEventArgs e
+        )
+        {
+            CoreWebView2WebResourceContext resourceContext = e.ResourceContext;
+            if (resourceContext != CoreWebView2WebResourceContext.Image)
+            {
+                return;
+            }
+
+            // 将Uri更改为服务器地址
+            Uri uri = new(e.Request.Uri);
+            if (uri.Host == "sast-wiki")
+            {
+                e.Request.Uri = new Uri(
+                    new Uri("http://localhost:5281/"),
+                    uri.PathAndQuery
+                ).OriginalString;
+            }
+            return;
         }
 
         async void LoadMarkdownDoc(object? sender, PropertyChangedEventArgs e)

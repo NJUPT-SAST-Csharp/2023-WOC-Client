@@ -34,12 +34,4 @@ namespace SastWiki.Core.Services.Backend.Image
             return imageResponse.Content;
         }
     }
-
-    public class NonTimeoutMemoryStream : MemoryStream
-    {
-        public override bool CanTimeout => false;
-
-        public NonTimeoutMemoryStream(byte[] buffer)
-            : base(buffer) { }
-    }
 }
