@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using SastWiki.Core.Contracts.Infrastructure;
 using SastWiki.Core.Contracts.Infrastructure.CacheService;
 using SastWiki.Core.Contracts.Infrastructure.SettingsService;
@@ -13,17 +14,25 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
 {
     public class CacheStorage : ICacheStorage
     {
-        public CacheStorage(ISettingsProvider settings, ILocalStorage storage)
+        public CacheStorage(
+            ISettingsProvider settings,
+            ILocalStorage storage,
+            IOptions<AppOptions> options
+        )
         {
             _settings = settings;
             _storage = storage;
+            _options = options;
+            _cachePath = _options.Value.CacheBasePath;
             InitializeTask = InitializeAsync();
         }
 
         Task InitializeTask;
-        readonly string _cachePath = "D:\\cache";
         readonly ILocalStorage _storage;
         readonly ISettingsProvider _settings;
+        readonly IOptions<AppOptions> _options;
+
+        readonly string _cachePath;
         List<CacheFile> _cacheList = [];
         Dictionary<string, SemaphoreSlim> _locks = [];
 
@@ -106,9 +115,23 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             throw new NotImplementedException();
         }
 
-        public Task ForceClearCacheAsync()
+        public async Task ForceClearCacheAsync()
         {
-            throw new NotImplementedException();
+            // 删除全部缓存文件
+            await InitializeTask;
+
+            lock (_cacheList)
+            {
+                _cacheList = [];
+            }
+
+            await _settings.SetItem("CacheList", new List<CacheFile>());
+
+            // 递归删除_cachePath下全部文件
+            foreach (var file in Directory.GetFiles(_cachePath))
+            {
+                File.Delete(file);
+            }
         }
 
         public async Task<FileStream> GetCacheFileStreamAsync(string ID)
@@ -172,7 +195,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             catch (Exception)
             {
                 throw;
-            } // I SHOULDN'T HAVE DONE THIS, but idk why the locker exits before I let it exit
+            }
         }
     }
 }

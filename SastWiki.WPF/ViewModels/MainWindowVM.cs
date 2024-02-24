@@ -21,7 +21,10 @@ using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject, IRecipient<UserLoginStatusChangedMessage>
+    public partial class MainWindowVM
+        : ObservableObject,
+            IRecipient<UserLoginStatusChangedMessage>,
+            IRecipient<EntryMetadataChangedMessage>
     {
         private readonly INavigationService _navigationService;
         private readonly IEntryProvider _entryProvider;
@@ -40,7 +43,7 @@ namespace SastWiki.WPF.ViewModels
             _categoryProvider = categoryProvider;
             _userStatus = userStatus;
             _ = LoadTreeViewContentAsync();
-            WeakReferenceMessenger.Default.Register(this);
+            WeakReferenceMessenger.Default.RegisterAll(this);
         }
 
         [ObservableProperty]
@@ -109,6 +112,7 @@ namespace SastWiki.WPF.ViewModels
                 }
             );
             TreeViewNodes = getNodes("", mainNodes.Concat(EntryNodes).ToList());
+            OnPropertyChanged(nameof(TreeViewNodes));
         }
 
         private List<TreeNode> getNodes(string parentID, List<TreeNode> nodes)
@@ -141,6 +145,12 @@ namespace SastWiki.WPF.ViewModels
                 }
             );
 
+        public async void Receive(EntryMetadataChangedMessage message)
+        {
+            // MessageBox.Show($"Received Message! EntryMetadataChanged!");
+            await LoadTreeViewContentAsync();
+        }
+
         // User Status
 
         [ObservableProperty]
@@ -148,9 +158,9 @@ namespace SastWiki.WPF.ViewModels
 
         public void Receive(UserLoginStatusChangedMessage message)
         {
-            MessageBox.Show($"Received Message! {message.Value}");
+            // MessageBox.Show($"Received Message! {message.Value}");
             CurrentUser = message.Value;
-            OnPropertyChanged(nameof(CurrentUser));
+            // OnPropertyChanged(nameof(CurrentUser));
         }
     }
 }

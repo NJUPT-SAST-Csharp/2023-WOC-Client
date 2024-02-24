@@ -4,14 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using SastWiki.Core.Contracts.Infrastructure;
 using SastWiki.Core.Contracts.Infrastructure.SettingsService;
+using SastWiki.Core.Models;
 
 namespace SastWiki.Core.Services.Infrastructure.SettingsService
 {
-    public class SettingsStorage(ILocalStorage _localStorage) : ISettingsStorage
+    public class SettingsStorage(ILocalStorage _localStorage, IOptions<AppOptions> _options)
+        : ISettingsStorage
     {
-        string _settingsFilePath = "D:\\settings";
+        string _settingsFilePath = _options.Value.SettingsFilePath;
         string _settingsFileName = "settings.json";
 
         object SettingsFileLock = new object();

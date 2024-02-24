@@ -1,7 +1,4 @@
-﻿using Jamesnet.Wpf.Controls;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Jamesnet.Wpf.Controls;
+using SastWiki.WPF.Contracts;
+using SastWiki.WPF.Services;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 
 namespace SastWiki.WPF.Views.Pages
@@ -38,5 +38,8 @@ namespace SastWiki.WPF.Views.Pages
 
         private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
             SettingsFrame.Navigate(App.GetService<AboutMorePage>());
+
+        private void NavigateTo_SystemSettingsPage(object sender, RoutedEventArgs e) =>
+            SettingsFrame.Navigate(App.GetService<SystemSettingsPage>());
     }
 }

@@ -33,7 +33,10 @@
                             <TextBlock Text="个性化" />
                         </Button>
 
-                        <Button Height="30" Margin="10,10,10,10">
+                        <Button
+                            Height="30"
+                            Margin="10,10,10,10"
+                            Click="NavigateTo_SystemSettingsPage">
                             <TextBlock Text="系统设置" />
                         </Button>
 

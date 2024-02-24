@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using Refit;
 using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Models.Messages;
 using SastWiki.Core.Services.User;
 
 namespace SastWiki.Core.Services.Backend.Entry
@@ -128,6 +130,7 @@ namespace SastWiki.Core.Services.Backend.Entry
                 {
                     _cache.EntryMetadataList = metadataList;
                 });
+                WeakReferenceMessenger.Default.Send(new EntryMetadataChangedMessage(metadataList));
                 return metadataList;
             }
             else
