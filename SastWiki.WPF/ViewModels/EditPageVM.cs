@@ -22,6 +22,7 @@ using SastWiki.Core.Services.Backend.Entry;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Views.Pages;
+using static Unity.Storage.RegistrationSet;
 
 namespace SastWiki.WPF.ViewModels
 {
@@ -74,7 +75,10 @@ namespace SastWiki.WPF.ViewModels
                 };
                 try
                 {
-                    var newentry = await entryProvider.UpdateEntryAsync(entry);
+                    var newentry =
+                        (Id == 0)
+                            ? await entryProvider.AddEntryAsync(entry)
+                            : await entryProvider.UpdateEntryAsync(entry);
                     await navigationService.NavigateTo(
                         App.GetService<EntryViewPage>(),
                         newentry.Id
@@ -118,6 +122,15 @@ namespace SastWiki.WPF.ViewModels
 
         private async Task LoadEntry(int id)
         {
+            if (id == 0)
+            {
+                Id = 0;
+                Title = "";
+                Content = "";
+                Category = "";
+                Tags = [];
+                return;
+            }
             try
             {
                 var currentEntry = await entryProvider.GetEntryByIdAsync(id);

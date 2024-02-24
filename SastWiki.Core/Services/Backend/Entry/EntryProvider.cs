@@ -14,11 +14,10 @@ using SastWiki.Core.Services.User;
 namespace SastWiki.Core.Services.Backend.Entry
 {
     public class EntryProvider(ISastWikiAPI _api, IEntryCache _cache) : IEntryProvider
-
     {
         private List<int> _entryIdList = [];
 
-        public async Task<int> AddEntryAsync(EntryDto entry)
+        public async Task<EntryDto> AddEntryAsync(EntryDto entry)
         {
             entry.Id = null;
             var postTask = _api.PostEntry(entry);
@@ -29,7 +28,10 @@ namespace SastWiki.Core.Services.Backend.Entry
             if (postResponse.IsSuccessStatusCode)
             {
                 if (postResponse.Content is not null && postResponse.Content.Id is int id)
-                    return id;
+                {
+                    entry.Id = id;
+                    return entry;
+                }
                 else
                     throw new Exception(
                         $"Failed to add a entry. Title is {entry.Title ?? "[null]"}"
@@ -54,7 +56,6 @@ namespace SastWiki.Core.Services.Backend.Entry
                     }
                 }
             );
-
 
             if (
                 await _cache.ContainsAsync(id.ToString())
@@ -88,7 +89,6 @@ namespace SastWiki.Core.Services.Backend.Entry
             var a = GetEntryMetadataList();
             return (await a).Select(entry => entry.Id).Contains(id);
         }
-
 
         public async Task<EntryDto> UpdateEntryAsync(EntryDto entry)
         {
