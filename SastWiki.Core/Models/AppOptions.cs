@@ -8,16 +8,16 @@ namespace SastWiki.Core.Models
 {
     public class AppOptions
     {
-        public string? AppName { get; set; }
+        public string AppName { get; set; } = "SastWiki";
 
-        public string? AppVersion { get; set; }
+        public string AppVersion { get; set; } = "0.0.1";
 
-        public string? AppDataPath { get; set; }
+        public string CacheBasePath { get; set; } = "D:\\SastWiki\\Cache";
 
-        public string? CacheBasePath { get; set; }
+        public string SettingsFilePath { get; set; } = "D:\\SastWiki";
 
-        public string? SettingsFilePath { get; set; }
+        public string ServerURI { get; set; } = "http://localhost:5281/";
 
-        public string? ServerURI { get; set; }
+        public string HostName { get; set; } = "sast-wiki";
     }
 }

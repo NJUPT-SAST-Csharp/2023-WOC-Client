@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Refit;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Models;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.Core.Services.User;
 
@@ -16,16 +18,6 @@ namespace SastWiki.Core.Helper
     {
         public static void SetServices(IServiceCollection services)
         {
-            services
-                .AddRefitClient<SastWiki.Core.Contracts.Backend.ISastWikiAPI>(
-                    provider => new RefitSettings()
-                    {
-                        AuthorizationHeaderValueGetter = (_, ct) =>
-                            SastWiki.Core.Helper.RefitAuthBearerTokenFactory.GetBearerTokenAsync(ct)
-                    }
-                )
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://localhost:5281/"));
-
             // Core.Contracts.Backend
             services.AddSingleton<
                 SastWiki.Core.Contracts.Backend.Entry.IEntryProvider,

@@ -9,12 +9,14 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Options;
 using Microsoft.Web;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
 using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.InternalLink;
+using SastWiki.Core.Models;
 using SastWiki.Core.Models.Dto;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
@@ -25,6 +27,7 @@ namespace SastWiki.WPF.ViewModels
     public partial class EntryViewVM(
         IMarkdownProcessor markdownProcessor,
         IEntryProvider entryProvider,
+        IOptions<AppOptions> options,
         INavigationService navigationService
     ) : ObservableObject, INavigationAware
     {
@@ -60,7 +63,7 @@ namespace SastWiki.WPF.ViewModels
             if (_webview != null)
             {
                 WebView!.CoreWebView2.AddWebResourceRequestedFilter(
-                    "http://sast-wiki/*",
+                    $"http://{options.Value.HostName}/*",
                     CoreWebView2WebResourceContext.All
                 );
                 WebView.CoreWebView2.WebResourceRequested += WebView_ResourceRequest;
@@ -143,10 +146,10 @@ namespace SastWiki.WPF.ViewModels
 
             // 将Uri更改为服务器地址
             Uri uri = new(e.Request.Uri);
-            if (uri.Host == "sast-wiki")
+            if (uri.Host == options.Value.HostName)
             {
                 e.Request.Uri = new Uri(
-                    new Uri("http://localhost:5281/"),
+                    new Uri(options.Value.ServerURI),
                     uri.PathAndQuery
                 ).OriginalString;
             }

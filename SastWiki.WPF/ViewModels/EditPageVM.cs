@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
@@ -29,7 +30,8 @@ namespace SastWiki.WPF.ViewModels
     public partial class EditPageVM(
         IEntryProvider entryProvider,
         IImageProvider imageProvider,
-        INavigationService navigationService
+        INavigationService navigationService,
+        IOptions<AppOptions> options
     ) : ObservableObject, INavigationAware
     {
         Task<bool> INavigationAware.OnNavigatedFrom()
@@ -107,7 +109,7 @@ namespace SastWiki.WPF.ViewModels
                         var uploadedImg = await imageProvider.UploadImageAsync(imgBytes);
                         MessageBox.Show($"Upload success! Image Id is {uploadedImg.PictureId}");
                         Content +=
-                            $"\n\n![](http://sast-wiki/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
+                            $"\n\n![](http://{options.Value.HostName}/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
                     }
                     catch (ApiException e)
                     {
