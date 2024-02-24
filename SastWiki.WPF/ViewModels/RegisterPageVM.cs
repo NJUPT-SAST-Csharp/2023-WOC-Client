@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Services.User;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Views.Pages;
 using System;
@@ -27,7 +29,7 @@ namespace SastWiki.WPF.ViewModels
             string username = NewUsername ?? string.Empty;
             string email = NewEmail ?? string.Empty;
             string password = ConfirmPassword ?? string.Empty;
-            //注册使用UserRegister中的方法，存储数据使用SettingProvider的接口；
+            
         }
         private string? confirmPassword;
         public string? ConfirmPassword

@@ -8,7 +8,7 @@
       d:DataContext="{d:DesignInstance Type=vm:RegisterPageVM}"
       mc:Ignorable="d" 
       Title="RegisterPage" Height="500" Width="400">
-    <Grid Background="White">
+    <Grid Background="Gray">
         <TextBox x:Name="NewUsernameTextBox"
                  HorizontalAlignment="Left" 
                  Margin="139,115,0,0" 

@@ -10,7 +10,7 @@
       d:DesignHeight="500" d:DesignWidth="400"
       Title="LoginPage">
       
-    <Grid Background="white">
+    <Grid Background="Gray">
         
         <TextBox x:Name="usernameTextBox"
                  HorizontalAlignment="Left"

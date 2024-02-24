@@ -8,7 +8,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:UsernameWindowVM}"
         mc:Ignorable="d"
         Title="UsernameWIndow" Height="500" Width="400" WindowStartupLocation = "CenterScreen">
-    <Grid>
+    <Grid Background="Gray">
         <Button 
             x:Name="Login"
             Content="Login" 

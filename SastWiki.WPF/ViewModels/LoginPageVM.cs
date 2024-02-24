@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Microsoft.Xaml.Behaviors;
 using Prism.Commands;
+using SastWiki.Core.Services.User;
 using SastWiki.WPF;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Views.Pages;
@@ -75,7 +76,24 @@ namespace SastWiki.WPF.ViewModels
 
         private RelayCommand loginCommand;
         public ICommand LoginCommand => loginCommand ??= new RelayCommand(Login);
-        private void Login()
+        private UserLogin _userLogin;
+
+        public LoginPageVM(UserLogin userLogin)
+        {
+            _userLogin = userLogin;
+
+            RememberPassword = false;
+            if (RememberPassword == true)
+            {
+                string savedPassword = GetSavedPassword();
+
+                if (!string.IsNullOrEmpty(savedPassword))
+                {
+                    NewPassword = savedPassword;
+                }
+            }
+        }
+        private async void Login()
         {
             string username = Username;
             string password = NewPassword;
@@ -83,7 +101,19 @@ namespace SastWiki.WPF.ViewModels
             {
                 SavePassword(NewPassword);
             }
-            //使用UserLogin中的方法
+            try
+            {
+                var loggedInUser = await _userLogin.LoginAsync(username, password);
+
+                if (loggedInUser != null)
+                {
+                    MessageBox.Show($"User {loggedInUser.Email} logged in successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
 
         private RelayCommand registerCommand;
