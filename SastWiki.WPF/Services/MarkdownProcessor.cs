@@ -31,15 +31,7 @@ namespace SastWiki.WPF.Services
             // html output
             html = string.Format(HTMLTemplate, CSSStyle, document.ToHtml());
 
-            // image IDs, Unfinished
-            images = document
-                .Descendants()
-                .OfType<Markdig.Syntax.Inlines.LinkInline>()
-                .Where(link => link.IsImage)
-                .Select(link => link.Url?.Split('-')[1])
-                .Where(id => id != null)
-                .Select(id => int.Parse(id))
-                .ToList();
+            images = []; // No longer needed
         }
     }
 }
