@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,6 +13,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.Backend.Image;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models;
@@ -25,7 +27,7 @@ namespace SastWiki.WPF.ViewModels
 {
     public partial class EditPageVM(
         IEntryProvider entryProvider,
-        IUserLogin userLogin,
+        IImageProvider imageProvider,
         INavigationService navigationService
     ) : ObservableObject, INavigationAware
     {
@@ -89,14 +91,28 @@ namespace SastWiki.WPF.ViewModels
             });
 
         public ICommand AddImageCommand =>
-            new RelayCommand(() =>
+            new RelayCommand(async () =>
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string imagePath = openFileDialog.FileName;
-
-                    Content += $"!Image";
+                    try
+                    {
+                        var imgBytes = await File.ReadAllBytesAsync(imagePath);
+                        var uploadedImg = await imageProvider.UploadImageAsync(imgBytes);
+                        MessageBox.Show($"Upload success! Image Id is {uploadedImg.PictureId}");
+                        Content +=
+                            $"![](http://sast-wiki/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
+                    }
+                    catch (ApiException e)
+                    {
+                        MessageBox.Show(e.Message, e.Content);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
                 }
             });
 
