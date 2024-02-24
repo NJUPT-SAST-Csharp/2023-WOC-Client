@@ -26,11 +26,11 @@
             <Button
                 Grid.Row="0"
                 Command="{Binding GoToHomePageCommand}"
-                Content="Home" />
+                Content="Home"/>
             <Button
                 Grid.Row="1"
                 Command="{Binding GoToBrowsePageCommand}"
-                Content="Browse" />
+                Content="Browse"/>
             <TextBox
                 x:Name="SearchBox"
                 Grid.Row="2"
@@ -52,11 +52,15 @@
             <Button
                 Grid.Row="4"
                 Command="{Binding GoToSettingsPageCommand}"
-                Content="Settings" />
+                Content="Settings"/>
             <Button
                 Grid.Row="5"
                 Command="{Binding GoToUserPageCommand}"
+<<<<<<< Updated upstream
                 Content="Username" />
+=======
+                Content="Not Logged in"/>
+>>>>>>> Stashed changes
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>

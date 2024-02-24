@@ -24,6 +24,7 @@
 
                 <Grid>
                     <StackPanel>
+<<<<<<< Updated upstream
 
                         <Button Height="30" Margin="10,10,10,10" Click="NavigateTo_ThemeChangePage">
                             <TextBlock Text="个性化"/>
@@ -37,6 +38,24 @@
                             <TextBlock Text="关于更多"/>
                         </Button>
 
+=======
+                        <Button
+                            Height="50"
+                            Margin="0,0,0,0"
+                            Click="NavigateTo_ThemeChangePage"
+                            Content="个性化"/>
+
+
+                        <Button 
+                            Height="50"
+                            Margin="0,0,0,0"
+                            Content="系统设置"/>
+                        <Button
+                            Height="50"
+                            Margin="0,0,0,0"
+                            Click="NavigateTo_AboutMorePage"
+                            Content="关于更多"/>
+>>>>>>> Stashed changes
                     </StackPanel>
                 </Grid>
             </Border>

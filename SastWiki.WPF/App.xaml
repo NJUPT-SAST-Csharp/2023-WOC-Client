@@ -7,8 +7,15 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+<<<<<<< Updated upstream
                 <ResourceDictionary Source="Resource/Theme/GrayColor.xaml"/>
                 <ResourceDictionary Source="Resource/Theme/WhiteColor.xaml"/>
+=======
+                <ResourceDictionary Source="Resource/Theme/GrayColor.xaml" />
+                <ResourceDictionary Source="Resource/Theme/WhiteColor.xaml" />
+                <ResourceDictionary Source="Styles/TagsViewerStyles.xaml" />
+                <ResourceDictionary Source="Styles/Button.xaml"/>
+>>>>>>> Stashed changes
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
