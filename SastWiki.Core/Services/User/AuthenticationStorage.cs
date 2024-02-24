@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Messaging;
 using SastWiki.Core.Contracts.Infrastructure.SettingsService;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Models.Messages;
 
 namespace SastWiki.Core.Services.User
 {
@@ -42,6 +44,9 @@ namespace SastWiki.Core.Services.User
                     _currentUser = value ?? new UserDto();
                 }
                 _settings.SetItem("CurrentUser", _currentUser);
+                WeakReferenceMessenger.Default.Send(
+                    new UserLoginStatusChangedMessage(_currentUser)
+                );
             }
         }
     }

@@ -8,8 +8,12 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using SastWiki.Core.Contracts.Backend.Category;
 using SastWiki.Core.Contracts.Backend.Entry;
+using SastWiki.Core.Contracts.User;
+using SastWiki.Core.Models.Dto;
+using SastWiki.Core.Models.Messages;
 using SastWiki.Core.Services.Backend.Category;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Models;
@@ -17,22 +21,26 @@ using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class MainWindowVM : ObservableObject
+    public partial class MainWindowVM : ObservableObject, IRecipient<UserLoginStatusChangedMessage>
     {
         private readonly INavigationService _navigationService;
         private readonly IEntryProvider _entryProvider;
         private readonly ICategoryProvider _categoryProvider;
+        private readonly IUserStatus _userStatus;
 
         public MainWindowVM(
             INavigationService navigationService,
             IEntryProvider entryProvider,
-            ICategoryProvider categoryProvider
+            ICategoryProvider categoryProvider,
+            IUserStatus userStatus
         )
         {
             _navigationService = navigationService;
             _entryProvider = entryProvider;
             _categoryProvider = categoryProvider;
+            _userStatus = userStatus;
             _ = LoadTreeViewContentAsync();
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         [ObservableProperty]
@@ -132,5 +140,17 @@ namespace SastWiki.WPF.ViewModels
                     }
                 }
             );
+
+        // User Status
+
+        [ObservableProperty]
+        private UserDto _currentUser = new();
+
+        public void Receive(UserLoginStatusChangedMessage message)
+        {
+            MessageBox.Show($"Received Message! {message.Value}");
+            CurrentUser = message.Value;
+            OnPropertyChanged(nameof(CurrentUser));
+        }
     }
 }
