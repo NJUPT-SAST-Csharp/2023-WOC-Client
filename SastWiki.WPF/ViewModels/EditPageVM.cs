@@ -107,7 +107,7 @@ namespace SastWiki.WPF.ViewModels
                         var uploadedImg = await imageProvider.UploadImageAsync(imgBytes);
                         MessageBox.Show($"Upload success! Image Id is {uploadedImg.PictureId}");
                         Content +=
-                            $"\\n\\n![](http://sast-wiki/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
+                            $"\n\n![](http://sast-wiki/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
                     }
                     catch (ApiException e)
                     {
