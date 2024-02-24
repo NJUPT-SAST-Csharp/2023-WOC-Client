@@ -20,7 +20,7 @@
     </Window.Resources>
     <DockPanel Background="Transparent">
         <Grid
-            Width="160"
+            Width="180"
             Background="#11555555"
             DockPanel.Dock="Left">
             <Grid.RowDefinitions>
@@ -59,7 +59,8 @@
                 x:Name="treeView"
                 Grid.Row="4"
                 Background="Transparent"
-                ItemsSource="{Binding TreeViewNodes}">
+                ItemsSource="{Binding TreeViewNodes}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Path=ChildNodes}">
                         <StackPanel>

@@ -15,21 +15,33 @@ using SastWiki.WPF.Views.Pages;
 
 namespace SastWiki.WPF.ViewModels
 {
-    public partial class HomePageVM : ObservableObject, INavigationAware
+    public partial class HomePageVM(
+        INavigationService navigationService,
+        IEntryProvider entryProvider
+    ) : ObservableObject, INavigationAware
     {
-        private INavigationService _navigationService;
+        public ICommand RandomEntryCommand =>
+            new RelayCommand(async () =>
+            {
+                var idList = (await entryProvider.GetEntryMetadataList())
+                    .Select(x => x.Id ?? 0)
+                    .Where(x => x != 0)
+                    .ToList();
+                await navigationService.NavigateTo<int>(
+                    App.GetService<EntryViewPage>(),
+                    (int)idList[new Random().Next(0, idList.Count)]
+                );
+            });
 
-        public HomePageVM(INavigationService navigationSevice)
-        {
-            _navigationService = navigationSevice;
-        }
-
-        private async void TestWebview2()
-        {
-            await _navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), 1);
-        }
-
-        public ICommand TestWebView2_Click => new RelayCommand(TestWebview2);
+        public ICommand LatestChangedEntryCommand =>
+            new RelayCommand(async () =>
+            {
+                var id = (await entryProvider.GetEntryMetadataList())
+                    .Select(x => x.Id ?? 0)
+                    .Where(x => x != 0)
+                    .Max();
+                await navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), id);
+            });
 
         Task<bool> INavigationAware.OnNavigatedFrom()
         {
