@@ -50,6 +50,9 @@ namespace SastWiki.WPF.ViewModels
         private async void NavigateTo_BrowsePage() =>
             await _navigationService.NavigateTo(App.GetService<BrowsePage>());
 
+        private async void NavigateTo_EditPage() =>
+            await _navigationService.NavigateTo(App.GetService<EditPage>(), 0);
+
         private async void NavigateTo_SettingsPage() =>
             await _navigationService.NavigateTo(App.GetService<SettingsPage>());
 
@@ -71,6 +74,7 @@ namespace SastWiki.WPF.ViewModels
         public ICommand GoToSearchResultPageCommand =>
             new RelayCommand(NavigateTo_SearchResultPage);
         public ICommand GoToUserPageCommand => new RelayCommand(NavigateTo_UserPage);
+        public ICommand GoToEditPageCommand => new RelayCommand(NavigateTo_EditPage);
 
         // TreeView Section
         [ObservableProperty]

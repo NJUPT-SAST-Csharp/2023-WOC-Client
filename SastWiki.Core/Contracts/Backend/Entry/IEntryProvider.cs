@@ -22,7 +22,7 @@ namespace SastWiki.Core.Contracts.Backend.Entry
         /// </summary>
         /// <param name="entry"></param>
         /// <returns>Returns the id if complete, -1 if not successful</returns>
-        public Task<int> AddEntryAsync(EntryDto entry);
+        public Task<EntryDto> AddEntryAsync(EntryDto entry);
 
         /// <summary>
         /// 请求修改一个词条，与AddEntryAsync的区别在于会使用传入Entry的id
