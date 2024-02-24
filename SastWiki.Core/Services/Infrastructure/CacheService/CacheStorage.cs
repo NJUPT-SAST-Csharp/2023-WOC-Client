@@ -106,9 +106,23 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             throw new NotImplementedException();
         }
 
-        public Task ForceClearCacheAsync()
+        public async Task ForceClearCacheAsync()
         {
-            throw new NotImplementedException();
+            // 删除全部缓存文件
+            await InitializeTask;
+
+            lock (_cacheList)
+            {
+                _cacheList = [];
+            }
+
+            await _settings.SetItem("CacheList", new List<CacheFile>());
+
+            // 递归删除_cachePath下全部文件
+            foreach (var file in Directory.GetFiles(_cachePath))
+            {
+                File.Delete(file);
+            }
         }
 
         public async Task<FileStream> GetCacheFileStreamAsync(string ID)
@@ -172,7 +186,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             catch (Exception)
             {
                 throw;
-            } // I SHOULDN'T HAVE DONE THIS, but idk why the locker exits before I let it exit
+            }
         }
     }
 }
