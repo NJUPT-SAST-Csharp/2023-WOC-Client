@@ -13,12 +13,25 @@ namespace SastWiki.Core.Services.User
     {
         public async Task<UserDto> GetUserStatus()
         {
-            throw new NotImplementedException();
+            var currentUser = _authentication.CurrentUser;
+            if (currentUser is null)
+            {
+                return new UserDto();
+            }
+            else
+            {
+                return new UserDto()
+                {
+                    Email = currentUser.Email,
+                    Role = currentUser.Role,
+                    Username = currentUser.Username
+                };
+            }
         }
 
         public async Task<bool> IsUserLoggedin()
         {
-            throw new NotImplementedException();
+            return _authentication.CurrentUser.Token != String.Empty;
         }
     }
 }
