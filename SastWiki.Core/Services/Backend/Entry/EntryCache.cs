@@ -51,6 +51,7 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task InitializeAsync()
         {
+            await _storage.InitializeTask;
             try
             {
                 var task = _settings.GetItem<Dictionary<string, string>>("EntryCacheList");

@@ -27,7 +27,7 @@ namespace SastWiki.Core.Services.Infrastructure.CacheService
             InitializeTask = InitializeAsync();
         }
 
-        Task InitializeTask;
+        public Task InitializeTask { get; set; }
         readonly ILocalStorage _storage;
         readonly ISettingsProvider _settings;
         readonly IOptions<AppOptions> _options;
