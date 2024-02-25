@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:SastWiki.WPF.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:SastWiki.WPF.ViewModels"
+    xmlns:usercontrol="clr-namespace:SastWiki.WPF.UserControl"
     Title="EditPage"
     d:DataContext="{d:DesignInstance Type=viewmodels:EditPageVM}"
     d:DesignHeight="450"
@@ -29,59 +30,60 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="40" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <TextBlock
-                Grid.Row="0"
-                Style="{StaticResource EditViewTitle}"
-                Text="{Binding Id, Converter={StaticResource EditPageTitleConverter}}" />
+             Grid.Row="0"
+             Style="{StaticResource EditViewTitle}"
+             Text="{Binding Id, Converter={StaticResource EditPageTitleConverter}}" />
 
             <TextBlock Grid.Row="1" Text="Title:" />
             <TextBox
-                xmlns:local="clr-namespace:SastWiki.WPF.Services"
-                Grid.Row="2"
-                Height="40"
-                Margin="10"
-                local:WatermarkService.IsWatermarkEnabled="True"
-                local:WatermarkService.Watermark="请输入标题"
-                AcceptsReturn="True"
-                Text="{Binding Title}"
-                TextWrapping="Wrap" />
+             xmlns:local="clr-namespace:SastWiki.WPF.Services"
+             Grid.Row="2"
+             Height="40"
+             Margin="10"
+             local:WatermarkService.IsWatermarkEnabled="True"
+             local:WatermarkService.Watermark="请输入标题"
+             AcceptsReturn="True"
+             Text="{Binding Title}"
+             TextWrapping="Wrap" />
 
             <TextBlock Grid.Row="3" Text="Content:" />
             <TextBox
-                xmlns:local="clr-namespace:SastWiki.WPF.Services"
-                Grid.Row="4"
-                Margin="10"
-                local:WatermarkService.IsWatermarkEnabled="True"
-                local:WatermarkService.Watermark="请输入内容"
-                AcceptsReturn="True"
-                Text="{Binding Content}"
-                TextWrapping="Wrap" />
+             xmlns:local="clr-namespace:SastWiki.WPF.Services"
+             Grid.Row="4"
+             Margin="10"
+             local:WatermarkService.IsWatermarkEnabled="True"
+             local:WatermarkService.Watermark="请输入内容"
+             AcceptsReturn="True"
+             Text="{Binding Content}"
+             TextWrapping="Wrap" />
 
-            <Grid Grid.Row="5" Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-                <Button
-                    Grid.Column="0"
-                    Command="{Binding SubmitCommand}"
-                    Content="Submit" />
-                <Button
-                    Grid.Column="1"
-                    Command="{Binding DeleteCommand}"
-                    Content="DELETE ENTRY" />
-            </Grid>
+            <TextBox 
+             Grid.Row="5"
+             Margin="10"
+             Text="{Binding Category}"/>
 
-
+            <usercontrol:TagViewer
+             Grid.Row="6"
+             Margin="10"
+             Click="{Binding DeleteTagCommand}"
+             Tags="{Binding Tag}"/>
+            <Button
+             Grid.Row="7"
+             Margin="10"
+             Command="{Binding SubmitCommand}"
+             Content="Submit" />
 
             <Button
-                Grid.Row="6"
-                Margin="10"
-                Command="{Binding AddImageCommand}"
-                Content="Add Image" />
+             Grid.Row="8"
+             Margin="10"
+             Command="{Binding AddImageCommand}"
+             Content="Add Image" />
         </Grid>
     </Grid>
 </Page>
