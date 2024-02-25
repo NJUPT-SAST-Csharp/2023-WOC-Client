@@ -159,6 +159,15 @@ namespace SastWiki.WPF.ViewModels
                 () => !IsUploading && Id != 0
             );
 
+        public ICommand DeleteTagCommand =>
+            new RelayCommand<string>(
+                (tag) =>
+                {
+                    if (tag is not null && Tags.Contains(tag))
+                        Tags.Remove(tag);
+                }
+            );
+
         private async Task LoadEntry(int id)
         {
             IsUploading = true;
