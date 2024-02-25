@@ -108,7 +108,7 @@ namespace SastWiki.WPF.ViewModels
                 var EntryNodes = (await _entryProvider.GetEntryMetadataList()).Select(
                     x => new TreeNode()
                     {
-                        NodeID = x.Id.ToString()!, // 由GetEntryMetadataList()获取的EntryID必不为null
+                        NodeID = x.Id.ToString()!, // 鐢盙etEntryMetadataList()鑾峰彇鐨凟ntryID蹇呬笉涓簄ull
                         ParentID = x.CategoryName ?? "",
                         NodeName = x.Title ?? "Untitled",
                         Type = NodeType.Entry
