@@ -19,16 +19,34 @@ namespace SastWiki.Core.Services.Backend.Entry
     {
         private List<int> _entryIdList = [];
 
+        public async Task DeleteEntryAsync(int id)
+        {
+            var deleteTask = _api.DeleteEntry(
+                (await GetEntryMetadataList()).Where(x => x.Id == id).Select(x => x.Title).First()
+                    ?? String.Empty
+            );
+
+            if ((await deleteTask).IsSuccessStatusCode)
+            {
+                _cache.EntryMetadataList = null; // 清空词条列表缓存
+                _ = GetEntryMetadataList();
+            }
+            else
+            {
+                throw (await deleteTask).Error!;
+            }
+        }
+
         public async Task<EntryDto> AddEntryAsync(EntryDto entry)
         {
             entry.Id = null;
             var postTask = _api.PostEntry(entry);
 
-            _cache.EntryMetadataList = null; // 清空词条列表缓存
-            _ = GetEntryMetadataList();
             var postResponse = await postTask;
             if (postResponse.IsSuccessStatusCode)
             {
+                _cache.EntryMetadataList = null; // 清空词条列表缓存
+                _ = GetEntryMetadataList();
                 if (postResponse.Content is not null && postResponse.Content.Id is int id)
                 {
                     entry.Id = id;

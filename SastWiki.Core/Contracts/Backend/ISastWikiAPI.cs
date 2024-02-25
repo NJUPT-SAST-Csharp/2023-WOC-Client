@@ -35,8 +35,8 @@ namespace SastWiki.Core.Contracts.Backend
         );
 
         [Headers("Authorization: Bearer")]
-        [Delete("/api/Entry/DeleteEntry/{id}")]
-        public Task<IApiResponse<string>> DeleteEntry(int id);
+        [Delete("/api/Entry/DeleteEntry")]
+        public Task<IApiResponse<string>> DeleteEntry([Refit.Query] string title);
 
         // Picture
         [Multipart]
