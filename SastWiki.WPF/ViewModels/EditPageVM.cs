@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -165,8 +166,19 @@ namespace SastWiki.WPF.ViewModels
                 {
                     if (tag is not null && Tags.Contains(tag))
                         Tags.Remove(tag);
+                    Tags = [.. Tags]; // <--自己的UserControl没写好导致的
                 }
             );
+
+        public ICommand AddTagCommand =>
+            new RelayCommand(() =>
+            {
+                // 弹出对话框输入Tag
+                InputTagDialog inputDialog = new();
+                if (inputDialog.ShowDialog() == true)
+                    Tags.Add(inputDialog.GetText());
+                Tags = [.. Tags]; // <--自己的UserControl没写好导致的
+            });
 
         private async Task LoadEntry(int id)
         {
