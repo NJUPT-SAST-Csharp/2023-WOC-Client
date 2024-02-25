@@ -21,7 +21,10 @@ namespace SastWiki.Core.Services.Backend.Entry
 
         public async Task DeleteEntryAsync(int id)
         {
-            var deleteTask = _api.DeleteEntry(id);
+            var deleteTask = _api.DeleteEntry(
+                (await GetEntryMetadataList()).Where(x => x.Id == id).Select(x => x.Title).First()
+                    ?? String.Empty
+            );
 
             if ((await deleteTask).IsSuccessStatusCode)
             {
