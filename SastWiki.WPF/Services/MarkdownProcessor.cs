@@ -1,37 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig;
-using Markdig.Syntax;
+﻿using Markdig;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.Utils;
 
-namespace SastWiki.WPF.Services
+namespace SastWiki.WPF.Services;
+
+public class MarkdownProcessor : IMarkdownProcessor
 {
-    public class MarkdownProcessor : IMarkdownProcessor
+    private readonly MarkdownPipeline _pipeline;
+    private readonly string HTMLTemplate =
+        "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>{0}</style></head><body class=\"markdown-body\" margin=\"20\">{1}</body></html>";
+
+    public string CSSStyle { get; set; }
+
+    public MarkdownProcessor(MarkdownCSSProvider cssProvider)
     {
-        private MarkdownPipeline _pipeline;
-        private string HTMLTemplate =
-            "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>{0}</style></head><body class=\"markdown-body\" margin=\"20\">{1}</body></html>";
+        _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+        CSSStyle = cssProvider.CSS;
+    }
 
-        public string CSSStyle { get; set; }
+    public void Output(string input, out string html, out IEnumerable<int> images)
+    {
+        Markdig.Syntax.MarkdownDocument document = Markdown.Parse(input, _pipeline);
 
-        public MarkdownProcessor(MarkdownCSSProvider cssProvider)
-        {
-            _pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            CSSStyle = cssProvider.CSS;
-        }
+        // html output
+        html = string.Format(HTMLTemplate, CSSStyle, document.ToHtml());
 
-        public void Output(string input, out string html, out IEnumerable<int> images)
-        {
-            var document = Markdown.Parse(input, _pipeline);
-
-            // html output
-            html = string.Format(HTMLTemplate, CSSStyle, document.ToHtml());
-
-            images = []; // No longer needed
-        }
+        images = []; // No longer needed
     }
 }

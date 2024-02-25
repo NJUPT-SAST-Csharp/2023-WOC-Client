@@ -1,53 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using SastWiki.Core.Contracts.Infrastructure.SettingsService;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
 using SastWiki.Core.Models.Messages;
 
-namespace SastWiki.Core.Services.User
-{
-    public class AuthenticationStorage(ISettingsProvider _settings) : IAuthenticationStorage
-    {
-        object currentUserLock = new object();
-        private UserDto _currentUser = new UserDto();
+namespace SastWiki.Core.Services.User;
 
-        public UserDto CurrentUser
+public class AuthenticationStorage(ISettingsProvider _settings) : IAuthenticationStorage
+{
+    private readonly object currentUserLock = new();
+    private UserDto _currentUser = new();
+
+    public UserDto CurrentUser
+    {
+        get
         {
-            get
-            {
-                _ = _settings
-                    .GetItem<UserDto>("CurrentUser")
-                    .ContinueWith(
-                        (task) =>
+            _ = _settings
+                .GetItem<UserDto>("CurrentUser")
+                .ContinueWith(
+                    (task) =>
+                    {
+                        if (task.Result is not null)
                         {
-                            if (task.Result is not null)
-                                lock (currentUserLock)
-                                {
-                                    _currentUser = task.Result;
-                                }
+                            lock (currentUserLock)
+                            {
+                                _currentUser = task.Result;
+                            }
                         }
-                    );
-                lock (currentUserLock)
-                {
-                    return _currentUser;
-                }
-            }
-            set
-            {
-                lock (currentUserLock)
-                {
-                    _currentUser = value ?? new UserDto();
-                }
-                _settings.SetItem("CurrentUser", _currentUser);
-                WeakReferenceMessenger.Default.Send(
-                    new UserLoginStatusChangedMessage(_currentUser)
+                    }
                 );
+            lock (currentUserLock)
+            {
+                return _currentUser;
             }
+        }
+        set
+        {
+            lock (currentUserLock)
+            {
+                _currentUser = value ?? new UserDto();
+            }
+
+            _ = _settings.SetItem("CurrentUser", _currentUser);
+            _ = WeakReferenceMessenger.Default.Send(
+                new UserLoginStatusChangedMessage(_currentUser)
+            );
         }
     }
 }

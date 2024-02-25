@@ -1,37 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SastWiki.Core.Contracts.Backend;
+﻿using SastWiki.Core.Contracts.Backend;
 using SastWiki.Core.Contracts.User;
 using SastWiki.Core.Models.Dto;
 
-namespace SastWiki.Core.Services.User
-{
-    public class UserStatus(IAuthenticationStorage _authentication, ISastWikiAPI _api) : IUserStatus
-    {
-        public async Task<UserDto> GetUserStatus()
-        {
-            var currentUser = _authentication.CurrentUser;
-            if (currentUser is null)
-            {
-                return new UserDto();
-            }
-            else
-            {
-                return new UserDto()
-                {
-                    Email = currentUser.Email,
-                    Role = currentUser.Role,
-                    Username = currentUser.Username
-                };
-            }
-        }
+namespace SastWiki.Core.Services.User;
 
-        public async Task<bool> IsUserLoggedin()
-        {
-            return _authentication.CurrentUser.Token != String.Empty;
-        }
+public class UserStatus(IAuthenticationStorage _authentication, ISastWikiAPI _api) : IUserStatus
+{
+    public UserDto GetUserStatus()
+    {
+        UserDto? currentUser = _authentication.CurrentUser;
+        return currentUser is null
+            ? new UserDto()
+            : new UserDto()
+            {
+                Email = currentUser.Email,
+                Role = currentUser.Role,
+                Username = currentUser.Username
+            };
     }
+
+    public bool IsUserLoggedin() => _authentication.CurrentUser.Token != string.Empty;
+
+    Task<UserDto> IUserStatus.GetUserStatus() => throw new NotImplementedException();
+
+    Task<bool> IUserStatus.IsUserLoggedin() => throw new NotImplementedException();
 }

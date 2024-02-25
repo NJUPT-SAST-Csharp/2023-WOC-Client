@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Specialized;
 
-namespace SastWiki.Core.Contracts.InternalLink
+namespace SastWiki.Core.Contracts.InternalLink;
+
+public interface IInternalLinkService
 {
-    public interface IInternalLinkService
-    {
-        public Dictionary<string, EventHandler<NameValueCollection>> Paths { get; }
+    public Dictionary<string, EventHandler<NameValueCollection>> Paths { get; }
 
-        public bool Register(string path, EventHandler<NameValueCollection> handler);
+    public bool Register(string path, EventHandler<NameValueCollection> handler);
 
-        public bool ContainsPath(string path);
-    }
+    public bool ContainsPath(string path);
 }

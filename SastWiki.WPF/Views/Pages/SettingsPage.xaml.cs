@@ -1,45 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Jamesnet.Wpf.Controls;
 using SastWiki.WPF.Contracts;
-using SastWiki.WPF.Services;
-using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
 
-namespace SastWiki.WPF.Views.Pages
+namespace SastWiki.WPF.Views.Pages;
+
+/// <summary>
+/// SettingsPage.xaml 的交互逻辑
+/// </summary>
+public partial class SettingsPage : Page
 {
-    /// <summary>
-    /// SettingsPage.xaml 的交互逻辑
-    /// </summary>
-    public partial class SettingsPage : Page
+    private readonly INavigationService _navigationService;
+
+    public SettingsPage(INavigationService navigationService)
     {
-        private INavigationService _navigationService;
-
-        public SettingsPage(INavigationService navigationService)
-        {
-            _navigationService = navigationService;
-            InitializeComponent();
-        }
-
-        private void NavigateTo_ThemeChangePage(object sender, RoutedEventArgs e) =>
-            SettingsFrame.Navigate(App.GetService<ThemeChangePage>());
-
-        private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
-            SettingsFrame.Navigate(App.GetService<AboutMorePage>());
-
-        private void NavigateTo_SystemSettingsPage(object sender, RoutedEventArgs e) =>
-            SettingsFrame.Navigate(App.GetService<SystemSettingsPage>());
+        _navigationService = navigationService;
+        InitializeComponent();
     }
+
+    private void NavigateTo_ThemeChangePage(object sender, RoutedEventArgs e) =>
+        SettingsFrame.Navigate(App.GetService<ThemeChangePage>());
+
+    private void NavigateTo_AboutMorePage(object sender, RoutedEventArgs e) =>
+        SettingsFrame.Navigate(App.GetService<AboutMorePage>());
+
+    private void NavigateTo_SystemSettingsPage(object sender, RoutedEventArgs e) =>
+        SettingsFrame.Navigate(App.GetService<SystemSettingsPage>());
 }

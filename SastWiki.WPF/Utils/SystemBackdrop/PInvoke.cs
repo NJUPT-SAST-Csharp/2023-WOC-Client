@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace SastWiki.WPF.Utils.SystemBackdrop;
 
@@ -27,13 +26,13 @@ public class PInvoke
     public static class Methods
     {
         [DllImport("DwmApi.dll")]
-        static extern int DwmExtendFrameIntoClientArea(
+        private static extern int DwmExtendFrameIntoClientArea(
             nint hwnd,
             ref ParameterTypes.MARGINS pMarInset
         );
 
         [DllImport("dwmapi.dll")]
-        static extern int DwmSetWindowAttribute(
+        private static extern int DwmSetWindowAttribute(
             nint hwnd,
             ParameterTypes.DWMWINDOWATTRIBUTE dwAttribute,
             ref int pvAttribute,

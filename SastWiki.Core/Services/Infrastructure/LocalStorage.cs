@@ -1,75 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SastWiki.Core.Contracts.Infrastructure;
+﻿using SastWiki.Core.Contracts.Infrastructure;
 
-namespace SastWiki.Core.Services.Infrastructure
+namespace SastWiki.Core.Services.Infrastructure;
+
+public class LocalStorage : ILocalStorage
 {
-    public class LocalStorage : ILocalStorage
-    {
-        public async Task<bool> Contains(string absolutePath, string fileName)
+    public async Task<bool> Contains(string absolutePath, string fileName) =>
+        await Task.Run(() =>
         {
-            return await Task.Run(() =>
+            try
             {
-                try
-                {
-                    string filePath = System.IO.Path.Combine(absolutePath, fileName);
-                    return System.IO.File.Exists(filePath);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occurred while checking if the file exists", ex);
-                }
-            });
-        }
+                string filePath = System.IO.Path.Combine(absolutePath, fileName);
+                return System.IO.File.Exists(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while checking if the file exists", ex);
+            }
+        });
 
-        public async Task CreateAsync(string absolutePath, string fileName)
+    public async Task CreateAsync(string absolutePath, string fileName) =>
+        await Task.Run(() =>
         {
-            await Task.Run(() =>
+            try
             {
-                try
-                {
-                    string filePath = System.IO.Path.Combine(absolutePath, fileName);
+                string filePath = System.IO.Path.Combine(absolutePath, fileName);
 
-                    System.IO.File.Create(filePath).Close();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occurred while creating the file", ex);
-                }
-            });
-        }
-
-        public async Task DeleteAsync(string absolutePath, string fileName)
-        {
-            await Task.Run(() =>
+                System.IO.File.Create(filePath).Close();
+            }
+            catch (Exception ex)
             {
-                try
-                {
-                    string filePath = System.IO.Path.Combine(absolutePath, fileName);
+                throw new Exception("An error occurred while creating the file", ex);
+            }
+        });
 
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException($"File not found. {filePath}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occurred while deleting the file", ex);
-                }
-            });
-        }
-
-        public async Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName) =>
-            await Task.Run(() => GetFileStream(absolutePath, fileName));
-
-        public FileStream GetFileStream(string absolutePath, string fileName)
+    public async Task DeleteAsync(string absolutePath, string fileName) =>
+        await Task.Run(() =>
         {
             try
             {
@@ -77,12 +42,7 @@ namespace SastWiki.Core.Services.Infrastructure
 
                 if (System.IO.File.Exists(filePath))
                 {
-                    return new FileStream(
-                        filePath,
-                        FileMode.Open,
-                        FileAccess.ReadWrite,
-                        FileShare.None
-                    );
+                    System.IO.File.Delete(filePath);
                 }
                 else
                 {
@@ -91,8 +51,26 @@ namespace SastWiki.Core.Services.Infrastructure
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while getting the file stream", ex);
+                throw new Exception("An error occurred while deleting the file", ex);
             }
+        });
+
+    public async Task<FileStream> GetFileStreamAsync(string absolutePath, string fileName) =>
+        await Task.Run(() => GetFileStream(absolutePath, fileName));
+
+    public FileStream GetFileStream(string absolutePath, string fileName)
+    {
+        try
+        {
+            string filePath = System.IO.Path.Combine(absolutePath, fileName);
+
+            return System.IO.File.Exists(filePath)
+                ? new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                : throw new FileNotFoundException($"File not found. {filePath}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while getting the file stream", ex);
         }
     }
 }

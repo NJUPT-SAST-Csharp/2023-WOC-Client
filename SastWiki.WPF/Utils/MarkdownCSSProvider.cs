@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SastWiki.WPF.Utils;
 
-namespace SastWiki.WPF.Utils
+public class MarkdownCSSProvider
 {
-    public class MarkdownCSSProvider
-    {
-        public string CSS =>
-            @"
+    public string CSS =>
+        @"
 @media (prefers-color-scheme: dark) {
   .markdown-body,
   [data-theme=""dark""] {
@@ -1203,5 +1197,4 @@ namespace SastWiki.WPF.Utils
 .markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
   color: var(--color-danger-fg);
 }";
-    }
 }

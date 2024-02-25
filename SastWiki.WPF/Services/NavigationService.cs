@@ -1,117 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Printing;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Navigation;
-using SastWiki.WPF;
 using SastWiki.WPF.Contracts;
 
-namespace SastWiki.WPF.Services
+namespace SastWiki.WPF.Services;
+
+/// <summary>
+/// 将MainWindow中的Frame抽象出来以便于实现链接跳转至其它词条等等导航功能的导航服务
+/// </summary>
+internal class NavigationService : INavigationService
 {
-    /// <summary>
-    /// 将MainWindow中的Frame抽象出来以便于实现链接跳转至其它词条等等导航功能的导航服务
-    /// </summary>
-    internal class NavigationService : INavigationService
+    private Frame? _frame;
+    private object? _currentParameters;
+    private INavigationAware? _currentVM;
+    public Frame? Frame
     {
-        private Frame? _frame;
-        private object? _currentParameters;
-        private INavigationAware? _currentVM;
-        public Frame? Frame
+        get
         {
-            get
+            if (_frame == null)
             {
-                if (_frame == null)
+                _frame = App.GetService<MainWindow>().ContentFrame;
+                _frame.Navigated += OnNavigated;
+            }
+
+            return _frame;
+        }
+        set => _frame = value;
+    }
+
+    public NavigationService() { }
+
+    Task<bool> INavigationService.NavigateBackward() => throw new NotImplementedException();
+
+    Task<bool> INavigationService.NavigateForward() => throw new NotImplementedException();
+
+    public async Task<bool> NavigateTo(Page page)
+    {
+        if (
+            Frame is Frame frame
+            && _currentVM?.GetType() != page.GetType() // 应该避免不了了，开摆
+        )
+        {
+            bool navigated = frame.Navigate(page);
+
+            if (navigated)
+            {
+                if (_currentVM is INavigationAware old_viewmodel)
                 {
-                    _frame = App.GetService<MainWindow>().ContentFrame;
-                    _frame.Navigated += OnNavigated;
+                    _ = await old_viewmodel.OnNavigatedFrom();
                 }
 
-                return _frame;
+                _currentParameters = null;
+                if (page.DataContext is INavigationAware new_viewmodel)
+                {
+                    _currentVM = new_viewmodel;
+                }
             }
-            set { _frame = value; }
+
+            return navigated;
         }
 
-        public NavigationService() { }
+        return false;
+    }
 
-        Task<bool> INavigationService.NavigateBackward()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> INavigationService.NavigateForward()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> NavigateTo(Page page)
-        {
-            if (
-                Frame is Frame frame && _currentVM?.GetType() != page.GetType() // 应该避免不了了，开摆
+    public async Task<bool> NavigateTo<T>(Page page, T parameter)
+    {
+        if (
+            Frame is Frame frame
+            && (
+                _currentVM?.GetType() != page.GetType()
+                || (parameter != null && !parameter.Equals(_currentParameters))
             )
-            {
-                var navigated = frame.Navigate(page);
+        )
+        {
+            bool navigated = frame.Navigate(page, parameter);
 
-                if (navigated)
+            if (navigated)
+            {
+                if (_currentVM is INavigationAware old_viewmodel)
                 {
-                    if (_currentVM is INavigationAware old_viewmodel)
-                    {
-                        await old_viewmodel.OnNavigatedFrom();
-                    }
-                    _currentParameters = null;
-                    if (page.DataContext is INavigationAware new_viewmodel)
-                    {
-                        _currentVM = new_viewmodel;
-                    }
+                    _ = await old_viewmodel.OnNavigatedFrom();
                 }
 
-                return navigated;
-            }
-            return false;
-        }
-
-        public async Task<bool> NavigateTo<T>(Page page, T parameter)
-        {
-            if (
-                Frame is Frame frame
-                && (
-                    _currentVM?.GetType() != page.GetType()
-                    || parameter != null && !parameter.Equals(_currentParameters)
-                )
-            )
-            {
-                var navigated = frame.Navigate(page, parameter);
-
-                if (navigated)
+                _currentParameters = parameter;
+                if (page.DataContext is INavigationAware new_viewmodel)
                 {
-                    if (_currentVM is INavigationAware old_viewmodel)
-                    {
-                        await old_viewmodel.OnNavigatedFrom();
-                    }
-                    _currentParameters = parameter;
-                    if (page.DataContext is INavigationAware new_viewmodel)
-                    {
-                        _currentVM = new_viewmodel;
-                    }
+                    _currentVM = new_viewmodel;
                 }
-
-                return navigated;
             }
 
-            return false;
+            return navigated;
         }
 
-        private void OnNavigated(object sender, NavigationEventArgs e) // TODO: 是否需要把这玩意换成异步？
+        return false;
+    }
+
+    private void OnNavigated(object sender, NavigationEventArgs e) // TODO: 是否需要把这玩意换成异步？
+    {
+        if (sender is Frame && _currentVM is INavigationAware navigationAware)
         {
-            if (sender is Frame frame && _currentVM is INavigationAware navigationAware)
-            {
-                navigationAware.OnNavigatedTo(e.ExtraData);
-            }
+            _ = navigationAware.OnNavigatedTo(e.ExtraData);
         }
     }
 }
