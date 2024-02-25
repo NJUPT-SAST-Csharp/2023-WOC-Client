@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Refit;
 using SastWiki.Core.Contracts.Backend.Category;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.User;
@@ -93,26 +94,37 @@ namespace SastWiki.WPF.ViewModels
 
         private async Task LoadTreeViewContentAsync()
         {
-            var mainNodes = (await _categoryProvider.GetAllCategoryList()).Select(
-                x => new TreeNode()
-                {
-                    NodeID = x,
-                    ParentID = "",
-                    NodeName = x,
-                    Type = NodeType.Category
-                }
-            );
-            var EntryNodes = (await _entryProvider.GetEntryMetadataList()).Select(
-                x => new TreeNode()
-                {
-                    NodeID = x.Id.ToString()!, // 由GetEntryMetadataList()获取的EntryID必不为null
-                    ParentID = x.CategoryName ?? "",
-                    NodeName = x.Title ?? "Untitled",
-                    Type = NodeType.Entry
-                }
-            );
-            TreeViewNodes = getNodes("", mainNodes.Concat(EntryNodes).ToList());
-            OnPropertyChanged(nameof(TreeViewNodes));
+            try
+            {
+                var mainNodes = (await _categoryProvider.GetAllCategoryList()).Select(
+                    x => new TreeNode()
+                    {
+                        NodeID = x,
+                        ParentID = "",
+                        NodeName = x,
+                        Type = NodeType.Category
+                    }
+                );
+                var EntryNodes = (await _entryProvider.GetEntryMetadataList()).Select(
+                    x => new TreeNode()
+                    {
+                        NodeID = x.Id.ToString()!, // 鐢盙etEntryMetadataList()鑾峰彇鐨凟ntryID蹇呬笉涓簄ull
+                        ParentID = x.CategoryName ?? "",
+                        NodeName = x.Title ?? "Untitled",
+                        Type = NodeType.Entry
+                    }
+                );
+                TreeViewNodes = getNodes("", mainNodes.Concat(EntryNodes).ToList());
+                OnPropertyChanged(nameof(TreeViewNodes));
+            }
+            catch (ApiException e)
+            {
+                MessageBox.Show(e.Message, e.Content);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private List<TreeNode> getNodes(string parentID, List<TreeNode> nodes)

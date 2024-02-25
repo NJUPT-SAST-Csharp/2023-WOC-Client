@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -50,6 +50,9 @@ namespace SastWiki.WPF.ViewModels
         }
 
         [ObservableProperty]
+        private bool isUploading = false;
+
+        [ObservableProperty]
         private int _id = 0;
 
         [ObservableProperty]
@@ -65,51 +68,30 @@ namespace SastWiki.WPF.ViewModels
         private List<string> _tags = [];
 
         public ICommand SubmitCommand =>
-            new RelayCommand(async () =>
-            {
-                var entry = new EntryDto
+            new RelayCommand(
+                async () =>
                 {
-                    Id = Id,
-                    Title = Title,
-                    Content = Content,
-                    CategoryName = Category,
-                    TagNames = Tags
-                };
-                try
-                {
-                    var newentry =
-                        (Id == 0)
-                            ? await entryProvider.AddEntryAsync(entry)
-                            : await entryProvider.UpdateEntryAsync(entry);
-                    await navigationService.NavigateTo(
-                        App.GetService<EntryViewPage>(),
-                        newentry.Id
-                    );
-                }
-                catch (ApiException e)
-                {
-                    MessageBox.Show(e.Message, e.Content);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-            });
-
-        public ICommand AddImageCommand =>
-            new RelayCommand(async () =>
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    string imagePath = openFileDialog.FileName;
+                    IsUploading = true;
+                    OnPropertyChanged(nameof(SubmitCommand));
+                    OnPropertyChanged(nameof(AddImageCommand));
+                    var entry = new EntryDto
+                    {
+                        Id = Id,
+                        Title = Title,
+                        Content = Content,
+                        CategoryName = Category,
+                        TagNames = Tags
+                    };
                     try
                     {
-                        var imgBytes = await File.ReadAllBytesAsync(imagePath);
-                        var uploadedImg = await imageProvider.UploadImageAsync(imgBytes);
-                        MessageBox.Show($"Upload success! Image Id is {uploadedImg.PictureId}");
-                        Content +=
-                            $"\n\n![](http://{options.Value.HostName}/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
+                        var newentry =
+                            (Id == 0)
+                                ? await entryProvider.AddEntryAsync(entry)
+                                : await entryProvider.UpdateEntryAsync(entry);
+                        await navigationService.NavigateTo(
+                            App.GetService<EntryViewPage>(),
+                            newentry.Id
+                        );
                     }
                     catch (ApiException e)
                     {
@@ -119,11 +101,47 @@ namespace SastWiki.WPF.ViewModels
                     {
                         MessageBox.Show(e.Message);
                     }
-                }
-            });
+                    IsUploading = false;
+                    OnPropertyChanged(nameof(SubmitCommand));
+                    OnPropertyChanged(nameof(AddImageCommand));
+                },
+                () => !IsUploading
+            );
+
+        public ICommand AddImageCommand =>
+            new RelayCommand(
+                async () =>
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    if (openFileDialog.ShowDialog() == true)
+                    {
+                        string imagePath = openFileDialog.FileName;
+                        try
+                        {
+                            var imgBytes = await File.ReadAllBytesAsync(imagePath);
+                            var uploadedImg = await imageProvider.UploadImageAsync(imgBytes);
+                            MessageBox.Show($"Upload success! Image Id is {uploadedImg.PictureId}");
+                            Content +=
+                                $"\n\n![](http://{options.Value.HostName}/api/Picture/GetPictureById?id={uploadedImg.PictureId})";
+                        }
+                        catch (ApiException e)
+                        {
+                            MessageBox.Show(e.Message, e.Content);
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message);
+                        }
+                    }
+                },
+                () => !IsUploading
+            );
 
         private async Task LoadEntry(int id)
         {
+            IsUploading = true;
+            OnPropertyChanged(nameof(SubmitCommand));
+            OnPropertyChanged(nameof(AddImageCommand));
             if (id == 0)
             {
                 Id = 0;
@@ -131,6 +149,9 @@ namespace SastWiki.WPF.ViewModels
                 Content = "";
                 Category = "";
                 Tags = [];
+                IsUploading = false;
+                OnPropertyChanged(nameof(SubmitCommand));
+                OnPropertyChanged(nameof(AddImageCommand));
                 return;
             }
             try
@@ -141,6 +162,9 @@ namespace SastWiki.WPF.ViewModels
                 Content = currentEntry.Content ?? "";
                 Category = currentEntry.CategoryName ?? "";
                 Tags = currentEntry.TagNames;
+                IsUploading = false;
+                OnPropertyChanged(nameof(SubmitCommand));
+                OnPropertyChanged(nameof(AddImageCommand));
             }
             catch (ApiException e)
             {

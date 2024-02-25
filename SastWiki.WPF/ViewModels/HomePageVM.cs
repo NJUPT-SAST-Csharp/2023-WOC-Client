@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Refit;
 using SastWiki.Core.Contracts.Backend.Entry;
 using SastWiki.Core.Contracts.Infrastructure.CacheService;
 using SastWiki.Core.Contracts.Infrastructure.SettingsService;
@@ -23,24 +24,46 @@ namespace SastWiki.WPF.ViewModels
         public ICommand RandomEntryCommand =>
             new RelayCommand(async () =>
             {
-                var idList = (await entryProvider.GetEntryMetadataList())
-                    .Select(x => x.Id ?? 0)
-                    .Where(x => x != 0)
-                    .ToList();
-                await navigationService.NavigateTo<int>(
-                    App.GetService<EntryViewPage>(),
-                    (int)idList[new Random().Next(0, idList.Count)]
-                );
+                try
+                {
+                    var idList = (await entryProvider.GetEntryMetadataList())
+                        .Select(x => x.Id ?? 0)
+                        .Where(x => x != 0)
+                        .ToList();
+                    await navigationService.NavigateTo<int>(
+                        App.GetService<EntryViewPage>(),
+                        (int)idList[new Random().Next(0, idList.Count)]
+                    );
+                }
+                catch (ApiException e)
+                {
+                    MessageBox.Show(e.Message, e.Content);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             });
 
         public ICommand LatestChangedEntryCommand =>
             new RelayCommand(async () =>
             {
-                var id = (await entryProvider.GetEntryMetadataList())
-                    .Select(x => x.Id ?? 0)
-                    .Where(x => x != 0)
-                    .Max();
-                await navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), id);
+                try
+                {
+                    var id = (await entryProvider.GetEntryMetadataList())
+                        .Select(x => x.Id ?? 0)
+                        .Where(x => x != 0)
+                        .Max();
+                    await navigationService.NavigateTo<int>(App.GetService<EntryViewPage>(), id);
+                }
+                catch (ApiException e)
+                {
+                    MessageBox.Show(e.Message, e.Content);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             });
 
         Task<bool> INavigationAware.OnNavigatedFrom()
