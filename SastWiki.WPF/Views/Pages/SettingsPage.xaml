@@ -29,21 +29,21 @@
                         <Button
                             Height="30"
                             Margin="10,10,10,10"
-                            Click="NavigateTo_ThemeChangePage">
+                            Click="NavigateTo_ThemeChangePage" Style="{DynamicResource ButtonDefault_Focuse}">
                             <TextBlock Text="个性化" />
                         </Button>
 
                         <Button
                             Height="30"
                             Margin="10,10,10,10"
-                            Click="NavigateTo_SystemSettingsPage">
+                            Click="NavigateTo_SystemSettingsPage" Style="{DynamicResource ButtonDefault_Focuse}">
                             <TextBlock Text="系统设置" />
                         </Button>
 
                         <Button
                             Height="30"
                             Margin="10,10,10,10"
-                            Click="NavigateTo_AboutMorePage">
+                            Click="NavigateTo_AboutMorePage" Style="{DynamicResource ButtonDefault_Focuse}">
                             <TextBlock Text="关于更多" />
                         </Button>
 

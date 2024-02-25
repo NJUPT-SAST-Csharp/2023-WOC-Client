@@ -82,7 +82,7 @@
                     Grid.Column="2"
                     Margin="5,0"
                     Command="{Binding AddTagCommand}"
-                    Content="Add Tag" />
+                    Content="Add Tag" Style="{DynamicResource ButtonDefault_Focuse}" />
             </Grid>
 
             <Grid Grid.Row="7" Margin="10">
@@ -95,17 +95,17 @@
                     Grid.Column="0"
                     Margin="5,0"
                     Command="{Binding SubmitCommand}"
-                    Content="Submit" />
+                    Content="Submit" Style="{DynamicResource ButtonDefault_Focuse}" />
                 <Button
                     Grid.Column="1"
                     Margin="5,0"
                     Command="{Binding DeleteCommand}"
-                    Content="DELETE ENTRY" />
+                    Content="DELETE ENTRY" Style="{DynamicResource ButtonDefault_Focuse}" />
                 <Button
                     Grid.Column="2"
                     Margin="5,0"
                     Command="{Binding AddImageCommand}"
-                    Content="Add Image" />
+                    Content="Add Image" Style="{DynamicResource ButtonDefault_Focuse}" />
             </Grid>
 
 

@@ -39,7 +39,7 @@
                 Height="24"
                 HorizontalAlignment="Left"
                 Command="{Binding RefreshCommand}"
-                Content="Refresh" />
+                Content="Refresh" Style="{DynamicResource ButtonDefault_Focuse}" />
             <Button
                 x:Name="EditButton"
                 Grid.Column="1"
@@ -47,7 +47,7 @@
                 Height="24"
                 HorizontalAlignment="Left"
                 Command="{Binding EditCommand}"
-                Content="Edit" />
+                Content="Edit" Style="{DynamicResource ButtonDefault_Focuse}" />
             <TextBlock
                 x:Name="TitleTextBlock"
                 Grid.Column="2"

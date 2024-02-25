@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SastWiki.WPF.Contracts;
+using static MaterialDesignThemes.Wpf.Theme;
 
 namespace SastWiki.WPF.Views.Pages
 {
@@ -43,7 +44,7 @@ namespace SastWiki.WPF.Views.Pages
             {
                 resource.Source = new Uri(ThemeDefault);
                 mw.IsDark = true;
-                mw.RefreshDarkMode();
+                mw.RefreshDarkMode();              
             }
             Application.Current.Resources.MergedDictionaries[0] = resource;
         }

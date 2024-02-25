@@ -8,9 +8,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resource/Theme/GrayColor.xaml" />
-                <ResourceDictionary Source="Resource/Theme/WhiteColor.xaml" />
                 <ResourceDictionary Source="Styles/TagsViewerStyles.xaml" />
-                <ResourceDictionary Source="Styles/Button.xaml" />
+                <ResourceDictionary Source="Styles/ButtonDefault_Focuse.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

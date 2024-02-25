@@ -20,7 +20,7 @@
                 Padding="20,5"
                 HorizontalAlignment="Left"
                 Command="{Binding ClearAllCacheCommand}"
-                Content="Clear All Cached Files" />
+                Content="Clear All Cached Files" Style="{DynamicResource ButtonDefault_Focuse}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

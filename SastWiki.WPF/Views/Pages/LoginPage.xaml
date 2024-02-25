@@ -51,7 +51,8 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Command="{Binding LoginCommand}"
-            Content="Login" />
+            Content="Login" 
+            Style="{DynamicResource ButtonDefault_Focuse}"/>
 
         <CheckBox
             x:Name="rememberPasswordCheckBox"
@@ -73,6 +74,6 @@
             VerticalAlignment="Top"
             Command="{Binding RegisterCommand}"
             Content="Register"
-            Visibility="{Binding RegisterVisibility}" />
+            Visibility="{Binding RegisterVisibility}" Style="{DynamicResource ButtonDefault_Focuse}" />
     </Grid>
 </Page>

@@ -35,7 +35,7 @@
                 Margin="0,307,0,0" 
                 VerticalAlignment="Top"
                 Height="30" Width="154" 
-                Command="{Binding RegisterButton}"/>
+                Command="{Binding RegisterButton}" Style="{DynamicResource ButtonDefault_Focuse}"/>
         <Label Content="New Password" 
                 HorizontalAlignment="Left" 
                 Margin="36,217,0,0" 

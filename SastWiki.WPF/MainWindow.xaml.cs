@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Extensions.Hosting;
 using SastWiki.WPF.Contracts;
 using SastWiki.WPF.ViewModels;
@@ -66,6 +67,18 @@ namespace SastWiki.WPF
                 flag
             );
         }
+        public void Refresh()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(delegate (object f)
+                {
+                    ((DispatcherFrame)f).Continue = false;
+                    return null;
+                }), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
 
         private void SearchBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {

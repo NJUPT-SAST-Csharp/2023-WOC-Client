@@ -31,13 +31,13 @@
         </TextBlock>
         <Button
             Grid.Row="2"
-            Command="{Binding LatestChangedEntryCommand}">
+            Command="{Binding LatestChangedEntryCommand}" Style="{DynamicResource ButtonDefault_Focuse}">
             Latest Change
         </Button>
         <Button
             Grid.Row="2"
             Grid.Column="1"
-            Command="{Binding RandomEntryCommand}">
+            Command="{Binding RandomEntryCommand}" Style="{DynamicResource ButtonDefault_Focuse}">
             Feeling Lucky?
         </Button>
     </Grid>

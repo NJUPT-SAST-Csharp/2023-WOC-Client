@@ -35,15 +35,16 @@
             <Button
                 Grid.Row="0"
                 Command="{Binding GoToHomePageCommand}"
-                Content="Home" />
+                Content="Home" Style="{DynamicResource ButtonDefault_Focuse}" />
             <Button
                 Grid.Row="1"
                 Command="{Binding GoToBrowsePageCommand}"
-                Content="Browse" />
+                Content="Browse"
+                Style="{DynamicResource ButtonDefault_Focuse}"/>
             <Button
                 Grid.Row="2"
                 Command="{Binding GoToEditPageCommand}"
-                Content="Add Entry" />
+                Content="Add Entry" Style="{DynamicResource ButtonDefault_Focuse}" />
             <TextBox
                 x:Name="SearchBox"
                 Grid.Row="3"
@@ -78,11 +79,11 @@
             <Button
                 Grid.Row="5"
                 Command="{Binding GoToSettingsPageCommand}"
-                Content="Settings" />
+                Content="Settings" Style="{DynamicResource ButtonDefault_Focuse}" />
             <Button
                 Grid.Row="6"
                 Command="{Binding GoToUserPageCommand}"
-                Content="{Binding CurrentUser, Converter={StaticResource CurrentUserButtonLabelConverter}}" />
+                Content="{Binding CurrentUser, Converter={StaticResource CurrentUserButtonLabelConverter}}" Style="{DynamicResource ButtonDefault_Focuse}" />
         </Grid>
         <Frame x:Name="ContentFrame" />
     </DockPanel>
