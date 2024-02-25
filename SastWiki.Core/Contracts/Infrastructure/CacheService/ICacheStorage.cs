@@ -11,6 +11,8 @@ namespace SastWiki.Core.Contracts.Infrastructure.CacheService
     /// </summary>
     public interface ICacheStorage
     {
+        public Task InitializeTask { get; set; }
+
         /// <summary>
         /// 删除所有缓存文件
         /// </summary>
