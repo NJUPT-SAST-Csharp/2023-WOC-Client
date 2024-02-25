@@ -1,15 +1,15 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Microsoft.Extensions.Hosting;
-using SastWiki.WPF.Contracts;
-using SastWiki.WPF.ViewModels;
-using SastWiki.WPF.Views.Pages;
-using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
 using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.ParameterTypes;
+using static SastWiki.WPF.Utils.SystemBackdrop.PInvoke.Methods;
+using SastWiki.WPF.Views.Pages;
+using Microsoft.Extensions.Hosting;
+using SastWiki.WPF.ViewModels;
+using SastWiki.WPF.Contracts;
+using System.Windows.Input;
 
 namespace SastWiki.WPF
 {
@@ -25,7 +25,6 @@ namespace SastWiki.WPF
             this.DataContext = mainWindowVM;
             _navigationService = navigationService;
             InitializeComponent();
-            ContentFrame.Navigate(App.GetService<HomePage>());
         }
 
         public bool IsDark { get; set; } = false;

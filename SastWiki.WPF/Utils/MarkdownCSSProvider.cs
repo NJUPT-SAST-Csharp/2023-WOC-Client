@@ -128,6 +128,7 @@ namespace SastWiki.WPF.Utils
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 50px 60px 100px;
+  color: var(--color-fg-default);
   font-family: -apple-system,BlinkMacSystemFont,""Segoe UI"",""Noto Sans"",Helvetica,Arial,sans-serif,""Apple Color Emoji"",""Segoe UI Emoji"";
   font-size: 16px;
   line-height: 1.5;

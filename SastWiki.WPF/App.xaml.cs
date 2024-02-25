@@ -1,12 +1,9 @@
-﻿using System.Configuration;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Refit;
 using SastWiki.Core.Contracts.InternalLink;
 using SastWiki.Core.Contracts.User;
-using SastWiki.Core.Models;
 using SastWiki.Core.Services.Backend;
 using SastWiki.Core.Services.InternalLink;
 using SastWiki.Core.Services.User;
@@ -48,29 +45,8 @@ namespace SastWiki.WPF
                 .ConfigureServices(
                     (context, services) =>
                     {
-                        services.AddOptions();
-                        services.Configure<AppOptions>(
-                            context.Configuration.GetSection("AppOptions")
-                        );
-
                         // Core Services
                         Core.Helper.ServicesHelper.SetServices(services);
-
-                        services
-                            .AddRefitClient<SastWiki.Core.Contracts.Backend.ISastWikiAPI>(
-                                provider => new RefitSettings()
-                                {
-                                    AuthorizationHeaderValueGetter = (_, ct) =>
-                                        SastWiki.Core.Helper.RefitAuthBearerTokenFactory.GetBearerTokenAsync(
-                                            ct
-                                        )
-                                }
-                            )
-                            .ConfigureHttpClient(c =>
-                                c.BaseAddress = new Uri(
-                                    App.GetService<IOptions<AppOptions>>().Value.ServerURI
-                                )
-                            );
 
                         // WPF.Contracts
                         services.AddSingleton<INavigationService, NavigationService>();
@@ -87,7 +63,6 @@ namespace SastWiki.WPF
                         services.AddTransient<EntryViewVM>();
                         services.AddSingleton<LoginPageVM>();
                         services.AddSingleton<RegisterPageVM>();
-                        services.AddSingleton<SystemSettingsVM>();
 
                         // Register Views
                         services.AddSingleton<MainWindow>();
@@ -101,7 +76,6 @@ namespace SastWiki.WPF
                         services.AddTransient<EntryViewPage>();
                         services.AddSingleton<LoginPage>();
                         services.AddSingleton<RegisterPage>();
-                        services.AddSingleton<SystemSettingsPage>();
                     }
                 )
                 .Build();
