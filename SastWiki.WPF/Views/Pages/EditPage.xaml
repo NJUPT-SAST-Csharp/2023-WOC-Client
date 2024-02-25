@@ -60,11 +60,22 @@
                 Text="{Binding Content}"
                 TextWrapping="Wrap" />
 
-            <Button
-                Grid.Row="5"
-                Margin="10"
-                Command="{Binding SubmitCommand}"
-                Content="Submit" />
+            <Grid Grid.Row="5" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Command="{Binding SubmitCommand}"
+                    Content="Submit" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding DeleteCommand}"
+                    Content="DELETE ENTRY" />
+            </Grid>
+
+
 
             <Button
                 Grid.Row="6"

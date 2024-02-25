@@ -72,8 +72,7 @@ namespace SastWiki.WPF.ViewModels
                 async () =>
                 {
                     IsUploading = true;
-                    OnPropertyChanged(nameof(SubmitCommand));
-                    OnPropertyChanged(nameof(AddImageCommand));
+                    UpdateButtons();
                     var entry = new EntryDto
                     {
                         Id = Id,
@@ -102,8 +101,7 @@ namespace SastWiki.WPF.ViewModels
                         MessageBox.Show(e.Message);
                     }
                     IsUploading = false;
-                    OnPropertyChanged(nameof(SubmitCommand));
-                    OnPropertyChanged(nameof(AddImageCommand));
+                    UpdateButtons();
                 },
                 () => !IsUploading
             );
@@ -137,11 +135,34 @@ namespace SastWiki.WPF.ViewModels
                 () => !IsUploading
             );
 
+        public ICommand DeleteCommand =>
+            new RelayCommand(
+                async () =>
+                {
+                    if (Id == 0)
+                    {
+                        return;
+                    }
+                    try
+                    {
+                        await entryProvider.DeleteEntryAsync(Id);
+                    }
+                    catch (ApiException e)
+                    {
+                        MessageBox.Show(e.Message, e.Content);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
+                },
+                () => !IsUploading && Id != 0
+            );
+
         private async Task LoadEntry(int id)
         {
             IsUploading = true;
-            OnPropertyChanged(nameof(SubmitCommand));
-            OnPropertyChanged(nameof(AddImageCommand));
+            UpdateButtons();
             if (id == 0)
             {
                 Id = 0;
@@ -150,8 +171,7 @@ namespace SastWiki.WPF.ViewModels
                 Category = "";
                 Tags = [];
                 IsUploading = false;
-                OnPropertyChanged(nameof(SubmitCommand));
-                OnPropertyChanged(nameof(AddImageCommand));
+                UpdateButtons();
                 return;
             }
             try
@@ -163,8 +183,7 @@ namespace SastWiki.WPF.ViewModels
                 Category = currentEntry.CategoryName ?? "";
                 Tags = currentEntry.TagNames;
                 IsUploading = false;
-                OnPropertyChanged(nameof(SubmitCommand));
-                OnPropertyChanged(nameof(AddImageCommand));
+                UpdateButtons();
             }
             catch (ApiException e)
             {
@@ -174,6 +193,13 @@ namespace SastWiki.WPF.ViewModels
             {
                 MessageBox.Show(e.Message);
             }
+        }
+
+        void UpdateButtons()
+        {
+            OnPropertyChanged(nameof(SubmitCommand));
+            OnPropertyChanged(nameof(AddImageCommand));
+            OnPropertyChanged(nameof(DeleteCommand));
         }
     }
 }
