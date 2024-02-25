@@ -106,6 +106,35 @@ namespace SastWiki.WPF
                 )
                 .Build();
 
+            // Create Folders if not existed
+            var options = GetService<IOptions<AppOptions>>();
+            try
+            {
+                var appOptions = options.Value;
+
+                // Check if SettingsFilePath exists, if not, create it
+                if (!System.IO.Directory.Exists(appOptions.SettingsFilePath))
+                {
+                    System.IO.Directory.CreateDirectory(appOptions.SettingsFilePath);
+                }
+
+                // Check if CacheBasePath exists, if not, create it
+                if (!System.IO.Directory.Exists(appOptions.CacheBasePath))
+                {
+                    System.IO.Directory.CreateDirectory(appOptions.CacheBasePath);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(
+                    "Error while creating folders. Please check if the application has the necessary permissions to create folders in the application directory.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                throw;
+            }
+
             // Register Refit Authentication Handler
             Core.Helper.ServicesHelper.SetRefitBearerTokenGetter(
                 GetService<IAuthenticationStorage>()
