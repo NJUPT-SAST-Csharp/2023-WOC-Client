@@ -39,10 +39,6 @@ namespace SastWiki.Core.Helper
                 SastWiki.Core.Contracts.Backend.Entry.IEntryCache,
                 SastWiki.Core.Services.Backend.Entry.EntryCache
             >();
-            services.AddSingleton<
-                SastWiki.Core.Contracts.Backend.Image.IImageCache,
-                SastWiki.Core.Services.Backend.Image.ImageCache
-            >();
 
             // Core.Contracts.Infrastructure
             services.AddSingleton<

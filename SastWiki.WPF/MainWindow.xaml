@@ -27,7 +27,6 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
                 <RowDefinition />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
@@ -38,15 +37,11 @@
                 Content="Home" />
             <Button
                 Grid.Row="1"
-                Command="{Binding GoToBrowsePageCommand}"
-                Content="Browse" />
-            <Button
-                Grid.Row="2"
                 Command="{Binding GoToEditPageCommand}"
                 Content="Add Entry" />
             <TextBox
                 x:Name="SearchBox"
-                Grid.Row="3"
+                Grid.Row="2"
                 VerticalContentAlignment="Center"
                 Cursor="IBeam"
                 PreviewKeyUp="SearchBox_KeyUp">
@@ -57,7 +52,7 @@
 
             <TreeView
                 x:Name="treeView"
-                Grid.Row="4"
+                Grid.Row="3"
                 Background="Transparent"
                 ItemsSource="{Binding TreeViewNodes}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -76,11 +71,11 @@
             </TreeView>
 
             <Button
-                Grid.Row="5"
+                Grid.Row="4"
                 Command="{Binding GoToSettingsPageCommand}"
                 Content="Settings" />
             <Button
-                Grid.Row="6"
+                Grid.Row="5"
                 Command="{Binding GoToUserPageCommand}"
                 Content="{Binding CurrentUser, Converter={StaticResource CurrentUserButtonLabelConverter}}" />
         </Grid>

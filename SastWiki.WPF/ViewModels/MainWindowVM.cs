@@ -59,9 +59,6 @@ namespace SastWiki.WPF.ViewModels
         private async void NavigateTo_HomePage() =>
             await _navigationService.NavigateTo(App.GetService<HomePage>());
 
-        private async void NavigateTo_BrowsePage() =>
-            await _navigationService.NavigateTo(App.GetService<BrowsePage>());
-
         private async void NavigateTo_EditPage() =>
             await _navigationService.NavigateTo(App.GetService<EditPage>(), 0);
 
@@ -81,7 +78,6 @@ namespace SastWiki.WPF.ViewModels
         }
 
         public ICommand GoToHomePageCommand => new RelayCommand(NavigateTo_HomePage);
-        public ICommand GoToBrowsePageCommand => new RelayCommand(NavigateTo_BrowsePage);
         public ICommand GoToSettingsPageCommand => new RelayCommand(NavigateTo_SettingsPage);
         public ICommand GoToSearchResultPageCommand =>
             new RelayCommand(NavigateTo_SearchResultPage);
