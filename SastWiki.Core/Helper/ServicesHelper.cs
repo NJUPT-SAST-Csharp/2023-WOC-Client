@@ -64,7 +64,7 @@ public class ServicesHelper
     }
 
     public static void SetRefitBearerTokenGetter(IAuthenticationStorage authenticationStorage) =>
-        SastWiki.Core.Helper.RefitAuthBearerTokenFactory.SetBearerTokenGetterFunc(_ =>
+        SastWiki.Core.Helper.RefitAuthBearerTokenFactory.SetBearerTokenGetterFunc(async _ =>
             authenticationStorage.CurrentUser.Token ?? ""
         );
 }
